@@ -120,11 +120,16 @@ of a non-Anthropic model, Google Gemini, entirely offline). Every document is
 content-hashed so nothing is reprocessed unless it changes. Thousands of PDFs have
 been through it.
 
-The deep operational detail (notebook-by-notebook inventory, runbooks, alerting)
-lives in the private operations documentation. One scope note: the **Metric
-Calculator** is a previous, parallel data-ingestion project and is not part of
-Compass; its data is kept in the same bronze/silver/gold layers but is otherwise out
-of scope for this documentation.
+The [Databricks notebook inventory](reference/databricks-notebook-inventory.md)
+records the nine folders and 47 notebooks requested in the client outline, along
+with each notebook's purpose, pipeline order, inputs, outputs, and owner. It is
+based on the July 6, 2026 handoff source and marks workspace names or owners that
+the source did not supply as items to verify against Databricks and Azure Data
+Factory. Runbooks, alerting details, and credentials remain operational concerns;
+this public reference contains no secrets. One scope note: the **Metric Calculator**
+is a previous, parallel data-ingestion project and is not part of Compass; its data
+is kept in the same bronze/silver/gold layers but is otherwise out of scope for this
+documentation.
 
 ## The data dictionary
 
