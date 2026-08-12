@@ -24,7 +24,7 @@ in [PROVENANCE.md](PROVENANCE.md).
 ## Documentation
 
 The `/docs` folder is the documentation set. Sections are numbered against the master
-outline; sections 5-7 (administration, hosting and security, costs and accounts)
+outline; sections 5-7 (administration, hosting and security, account ownership)
 describe internal operations and are maintained privately, which is why the numbering
 here has gaps.
 
