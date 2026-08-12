@@ -289,6 +289,9 @@ models, routed through the Pydantic AI Gateway:
 | Catalog adjudicator | Chooses among supplied candidates when a name is ambiguous. | Claude Haiku 4.5 |
 | Criterion classifier and quality judges | Select relevant checks and grade the response after it ships. | Claude Haiku 4.5 |
 
+For the complete role-by-role inventory of instruction files, guardrails, and
+failure fallbacks, see the [prompt and model inventory](reference/prompt-and-model-inventory.md).
+
 The reasoning behind the split:
 
 - Planning gets the strongest model for structured reasoning. This is the
