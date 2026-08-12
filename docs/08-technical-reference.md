@@ -175,6 +175,9 @@ planner, adjudicator, stylist, and judges do, and why facts live in typed code r
 than prompt prose, is in [Prompts and instructions: where they live, how they
 work](02-product-and-answer-flow.md#prompts-and-instructions-where-they-live-how-they-work).
 
+For the current role-by-role mapping of models, instruction files, guardrails, and
+fallbacks, see the [prompt and model inventory](reference/prompt-and-model-inventory.md).
+
 For the implementation and history, use:
 
 - [Instruction directory README](../backend/src/compass_backend/instructions/README.md)
