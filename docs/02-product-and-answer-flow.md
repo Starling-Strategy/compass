@@ -163,7 +163,23 @@ manifest validator rejects any cited title or URL outside that set.
 
 ## Generation: facts first, phrasing second
 
-Execution is deterministic: typed operations (lookup, ranking, count, trend, peer
+> **A foundational concept for trusting the answers Compass gives.** By this point
+> the hard judgment calls are behind Compass. It knows what kind of question it is
+> answering, and every district, metric, and topic has been exchanged for a
+> verified catalog ID, so it knows exactly what it is working with. Building the
+> answer is designed to involve as little decision-making as possible from here:
+> the way to set an AI system up for success is to limit its options, and by
+> answer time Compass has almost none left. Ordinary database queries fetch the
+> facts. Plain code, with no AI model anywhere in it, lays them out as the answer:
+> the lead sentence, the tables, the citation markers, the CSV download. Given the
+> same plan and the same data, this stage produces the same result every time. In
+> the librarian-and-writer picture, this is the moment between the two: the exact
+> books are on the desk, and the answer is assembled straight from their pages
+> before the writer writes a word. What comes out is a finished briefing prepared
+> for the writer, facts checked and a source pinned to every value. The writer's
+> turn is next, and wording is the only thing left in its hands.
+
+In code, execution is deterministic: typed operations (lookup, ranking, count, trend, peer
 comparison, and so on) run against read-only views of the `compass` schema. The
 **renderer** — plain Python, no model — assembles the answer skeleton: a lead
 sentence, data tables with a Sources column, coverage notes, and a downloadable CSV
