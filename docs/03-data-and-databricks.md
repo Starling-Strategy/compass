@@ -18,18 +18,20 @@ reported before it lands.
 
 ## What Compass covers
 
-The data universe, as measured by the dashboard's live inventory (figures move as
-NCTQ's review work continues; these are the values asserted in the code's tests):
+The data universe, in orders of magnitude. Exact counts move as NCTQ's review work
+continues, so this table deliberately avoids them; the dashboard's live data
+inventory, which reads straight from the database, is the authority for current
+figures.
 
 | What | Scale |
 | --- | --- |
-| Districts reviewed by NCTQ | 133, across 51 states |
-| Policy topics | 27 |
-| Academic years | 11 (2015-16 through 2024-25) |
-| Reviewed policy answers | ~47,000 |
-| Source documents behind those answers | ~7,400 |
-| NCTQ publications available to chat | ~750 |
-| NCES district directory (context data) | ~19,500 districts |
+| Districts reviewed by NCTQ | Large school districts spanning all 50 states and D.C. |
+| Policy topics | About two dozen |
+| Academic years | Every school year from 2015-16 through the current one |
+| Reviewed policy answers | Tens of thousands |
+| Source documents behind those answers | Thousands |
+| NCTQ publications available to chat | Hundreds |
+| NCES district directory (context data) | Nearly every U.S. public school district |
 
 Coverage is honest by construction. Every district × topic × year cell carries one
 of five coverage states (`covered`, `issue not addressed`, `not applicable`,
@@ -79,12 +81,12 @@ Each source, what Compass gleans from it, and its role:
 
 | Source | What it provides | Role |
 | --- | --- | --- |
-| **NCTQ TCD API** | The core policy dataset: districts (with enrollment, FRPL, bargaining status), topics, ~114 metrics, reviewed answers per district/metric/year, and the citations linking each answer to its source documents | **Answer source:** this is where district facts come from |
+| **NCTQ TCD API** | The core policy dataset: districts (with enrollment, FRPL, bargaining status), topics and their metrics, reviewed answers per district/metric/year, and the citations linking each answer to its source documents | **Answer source:** this is where district facts come from |
 | **District policy documents** (PDFs) | The contracts, handbooks, and board policies NCTQ reviewed; a document pipeline extracts their text and metadata so answers can cite them | **Citation source:** they back answers; Compass does not free-read them at chat time |
 | **Urban Institute / NCES** | Federal district data: enrollment, locale, staffing, finance | **Answer source, allowlisted:** only explicitly approved fields are user-facing, each with a governed citation URL |
 | **Airtable publications catalog** | NCTQ's published reports and analyses | **Answer source for "what has NCTQ written" questions only,** never for district facts |
 | **NCTQ WordPress (Pathfinder)** | Pathfinder guidance content | **Reference/audit copy:** the website remains authoritative; chat does not answer from it |
-| **NCTQ policy positions** (git-managed content) | NCTQ's stances, rationales, and exemplar policies for 8 topics | **Answer source for "what does NCTQ recommend" questions only,** never mixed into data answers except as labeled asides |
+| **NCTQ policy positions** (git-managed content) | NCTQ's stances, rationales, and exemplar policies for a curated set of topics | **Answer source for "what does NCTQ recommend" questions only,** never mixed into data answers except as labeled asides |
 
 The closed-system rule, stated precisely: the chat path reads only the `compass`
 schema's tables and materialized views. No backend code calls a source API during a
@@ -92,7 +94,7 @@ turn, and no web-search or browsing tool exists in the backend.
 
 ## The nightly pipeline
 
-The Databricks platform (about 47 notebooks organized in 9 folders, scheduled by
+The Databricks platform (several dozen notebooks organized by function, scheduled by
 Azure Data Factory) runs every night on a fixed order: copy the NCTQ research
 database → track row-level changes → build and push the Compass dataset → export the
 website tables. Data moves through four stages, and never skips one:
@@ -115,8 +117,8 @@ plain-English report with the full SQL log attached.
 A separate document pipeline processes the policy PDFs behind citations: text
 extraction, classification, and AI-generated summaries (the pipeline's one use
 of a non-Anthropic model, Google Gemini, entirely offline). Every document is
-content-hashed so nothing is reprocessed unless it changes. Roughly eleven thousand
-PDFs have been through it.
+content-hashed so nothing is reprocessed unless it changes. Thousands of PDFs have
+been through it.
 
 The deep operational detail (notebook-by-notebook inventory, runbooks, alerting)
 lives in the private operations documentation. One scope note: the **Metric
@@ -183,7 +185,7 @@ Stated here because honesty about coverage is a product feature:
 
 - FRPL (free/reduced-price lunch) percentages are unavailable from the federal CCD
   source used for NCES context; that field is null pending an alternate source.
-- A small share of covered answers (~3%) have no fallback citation document.
+- A small share of covered answers have no fallback citation document.
 - NCES context lags the current academic year by federal release schedules, as noted
   above.
 
