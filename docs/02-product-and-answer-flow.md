@@ -143,42 +143,60 @@ its own route.
 > words: words are exchanged for catalog IDs before any data is touched, and
 > everything after the exchange deals only in IDs. The picture to hold is a
 > librarian and a writer. The librarian doesn't fetch a book by how well someone
-> describes it — the description is exchanged at the card catalog for a call
-> number, and the call number retrieves the exact book. And the words inside that
-> book are sacrosanct, delivered to the reader as printed: the writer may introduce
-> and frame them, but never rewrite them. In Compass, the planner's phrases are the
+> describes it. The description is exchanged at the card catalog for a call number,
+> and the call number retrieves the exact book. The words inside that book are
+> sacrosanct, delivered to the reader as printed: the writer may introduce and
+> frame them, but not rewrite them. In Compass, the planner's phrases are the
 > description, the catalog issues the call number, and the facts that come back are
-> the book's contents — carried through the tables, citations, and CSV download
-> untouched. A phrase the catalog can't exchange stops the plan — a clarifying
-> question or an honest refusal, never a guess — because a made-up thing has no ID,
-> and without an ID nothing runs. (Different kinds of phrases make the exchange at
-> slightly different points — district names are checked at query time rather than
-> plan time — but the rule is identical everywhere: no ID, nothing runs.)
+> the book's contents, carried untouched through the tables, the citations, and the
+> CSV download. A phrase the catalog can't exchange stops the plan: Compass asks a
+> clarifying question or declines, rather than guessing, because a made-up thing
+> has no ID and nothing runs without one. (District names make the exchange a
+> little later than metrics and topics do, at query time rather than plan time, but
+> the rule is the same everywhere.)
 
-The planner's phrases carry no authority. The **CatalogResolver** turns them into
-real identifiers or blocks the plan:
+In code, the card catalog is the **CatalogResolver**. The planner's phrases carry
+no authority of their own; the resolver turns them into real identifiers or blocks
+the plan:
 
-- District, metric, and topic phrases are reconciled against the catalog — exact
-  matches and curated aliases resolve directly; genuinely ambiguous phrases go to a
-  bounded AI adjudicator that may only choose among the supplied candidates, never
-  invent one.
+- District, metric, and topic phrases are reconciled against the catalog. Exact
+  matches and curated aliases resolve in plain code; a genuinely ambiguous phrase
+  goes to a bounded AI adjudicator that may only choose among the candidates it
+  is given and cannot add one of its own.
 - Every resolution is recorded in a `CatalogResolutionReport` (phrase, method,
-  approved IDs, candidates, blockers) that is persisted with the turn — each answer
+  approved IDs, candidates, blockers) and saved with the turn, so each answer
   carries its own audit trail.
-- The coverage universe — which districts Compass can speak about at all — derives
-  from the `district_profiles` view, never from hardcoded lists or prompt text.
+- The coverage universe, the set of districts Compass can speak about at all,
+  derives from the `district_profiles` view rather than from hardcoded lists or
+  prompt text.
 - Questions about concepts NCTQ hasn't reviewed (registered as out-of-universe
   aliases) are refused honestly instead of answered loosely.
 
-Supporting NCTQ context — a relevant rationale, exemplar policy, or publication —
-can be attached to data answers as clearly-labeled asides, capped at two, each
-carrying its source link. Publications behave the same way as data: the renderer may
-only name publications that the query actually fetched, and a manifest validator
-rejects any cited title or URL outside that set.
+The same discipline applies to NCTQ's supporting materials. A data answer can carry
+NCTQ context (a relevant rationale, exemplar policy, or publication) as clearly
+labeled asides, capped at two, each with its source link. Publications behave like
+data: the renderer may only name publications the query actually fetched, and a
+manifest validator rejects any cited title or URL outside that set.
 
 ## Generation: facts first, phrasing second
 
-Execution is deterministic: typed operations (lookup, ranking, count, trend, peer
+> **A foundational concept for trusting the answers Compass gives.** By this point
+> the hard judgment calls are behind Compass. It knows what kind of question it is
+> answering, and every district, metric, and topic has been exchanged for a
+> verified catalog ID, so it knows exactly what it is working with. Building the
+> answer is designed to involve as little decision-making as possible from here:
+> the way to set an AI system up for success is to limit its options, and by
+> answer time Compass has almost none left. Ordinary database queries fetch the
+> facts. Plain code, with no AI model anywhere in it, lays them out as the answer:
+> the lead sentence, the tables, the citation markers, the CSV download. Given the
+> same plan and the same data, this stage produces the same result every time. In
+> the librarian-and-writer picture, this is the moment between the two: the exact
+> books are on the desk, and the answer is assembled straight from their pages
+> before the writer writes a word. What comes out is a finished briefing prepared
+> for the writer, facts checked and a source pinned to every value. The writer's
+> turn is next, and wording is the only thing left in its hands.
+
+In code, execution is deterministic: typed operations (lookup, ranking, count, trend, peer
 comparison, and so on) run against read-only views of the `compass` schema. The
 **renderer** — plain Python, no model — assembles the answer skeleton: a lead
 sentence, data tables with a Sources column, coverage notes, and a downloadable CSV
