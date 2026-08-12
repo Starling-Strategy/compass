@@ -83,9 +83,10 @@ District facts and NCTQ opinion are never mixed: district data answers come from
 policy dataset, and NCTQ's stances come only from its published positions, each with
 its own route.
 
-> **In flight:** how the planner pre-commits to a query shape is being redesigned
-> (toward tool-first exploration with the same typed execution). The grounding
-> invariants above are not up for renegotiation; the planner's path to a plan is.
+> **In flight:** today the planner must commit to one query shape before it has
+> looked at the data; letting it explore the catalog first — with the same typed
+> execution and the same grounding rules — is a known improvement under way. See
+> [Known Issues & Limitations](09-known-issues-and-limitations.md#the-planner-picks-a-query-shape-before-it-sees-the-data).
 
 ## Retrieval: phrases become verified entities
 
