@@ -97,6 +97,21 @@ its own route.
 
 ## Retrieval: phrases become verified entities
 
+> **A foundational concept for trusting the answers Compass gives.** Catalog
+> resolution is a one-way door between language and data. Compass never acts on
+> words: words are exchanged for catalog IDs at this one checkpoint, and everything
+> after the checkpoint deals only in IDs. The picture to hold is a librarian and a
+> writer. The librarian doesn't fetch a book by how well someone describes it — the
+> description is exchanged at the card catalog for a call number, and the call
+> number retrieves the exact book. And the words inside that book are sacrosanct,
+> delivered to the reader as printed: the writer may introduce and frame them, but
+> never rewrite them. In Compass, the planner's phrases are the description, the
+> catalog issues the call number, and the facts that come back are the book's
+> contents — carried through the tables, citations, and CSV download untouched.
+> A phrase the catalog can't exchange stops the plan — a clarifying question or an
+> honest refusal, never a guess — because a made-up thing has no ID, and without an
+> ID nothing runs.
+
 The planner's phrases carry no authority. The **CatalogResolver** turns them into
 real identifiers or blocks the plan:
 
