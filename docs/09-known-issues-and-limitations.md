@@ -42,6 +42,21 @@ contract. Version one shipped the precise half and sealed the most important pro
 as the mitigation. The proper fix is the fact-coverage gate described in
 [the writer improvement below](#a-writer-that-composes-from-the-full-data-behind-a-fact-coverage-gate).
 
+### NCTQ policy guidance is a managed Markdown stopgap
+
+Compass serves NCTQ positions, research rationales, and exemplary policies from
+the reviewed [NCTQ Policy Content Markdown Stopgap](../backend/content/nctq-policy/README.md).
+The files are parsed and rendered deterministically, so the model does not invent
+this guidance or its citations. But the library began as a compact, May 2026
+snapshot of the source documents; in particular, the research-rationale document
+contains more narrative and source-backed detail than has been migrated here.
+
+The next step is a structured migration of that richer rationale material into
+topic and subtopic entries, with its source references preserved. Until that work
+is complete, Compass can safely present the reviewed guidance in the library, but
+it should not imply that the library contains every research rationale NCTQ has
+prepared.
+
 ## Improvements under way
 
 ### The planner picks a query shape before it sees the data
