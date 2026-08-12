@@ -11,6 +11,10 @@ file. It does not repeat the product narrative or copy the model instructions.
 - For the data universe, ingestion path, and `compass` schema, read [Data & the
   Databricks Platform](03-data-and-databricks.md) and the [Compass schema
   reference](reference/compass-schema.md).
+- For the complete logical system map, read the [Compass system architecture
+  reference](reference/architecture.md). It connects the applications, runtime
+  context, database, data refresh, model roles, Logfire, and evaluation loop
+  without duplicating the detailed pages below.
 - For quality dimensions, scenarios, and evaluation, read [Quality &
   Evaluation](04-quality-and-evaluation.md).
 - For operational details that are intentionally kept out of the public docs,
