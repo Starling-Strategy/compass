@@ -41,6 +41,10 @@ Writing conventions for every section: a plain-language overview first, then a b
 that assumes technical fluency; each fact lives in exactly one doc and is linked from
 the others; diagrams are Mermaid so they render on GitHub and diff in review.
 
+For the cross-system view, start with the [Compass system architecture
+reference](docs/reference/architecture.md). The [Compass schema
+reference](docs/reference/compass-schema.md) is the field-level companion.
+
 ## License
 
 [MIT](LICENSE) © National Council on Teacher Quality.

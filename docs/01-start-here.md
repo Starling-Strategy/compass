@@ -75,6 +75,11 @@ prose.
 
 ## How the parts fit together
 
+This small diagram is an orientation aid, not the complete architecture. The full
+map includes runtime context, the `compass` schema, Databricks and Data Factory,
+model roles, Logfire, and the evaluation/feedback loop in the [Compass system
+architecture reference](reference/architecture.md).
+
 ```mermaid
 flowchart LR
     U[User question] --> FE[Compass frontend]
@@ -101,19 +106,20 @@ short orientation for a first-time reader.
 
 ```mermaid
 flowchart TD
-    START([👤 What do you need to understand?])
+    START([What do you need to understand?])
 
-    START --> PRODUCT["🧭 Product behavior<br/>How does a question become an answer?"]
-    START --> DATA["📊 Data and structure<br/>What does Compass know and where is it stored?"]
-    START --> TRUST["✅ Quality and limits<br/>How is trust measured and what remains imperfect?"]
-    START --> TECH["⚙️ Implementation<br/>Where are the code, API, and integrations?"]
-    START --> ORIENT["📖 Orientation and operations<br/>What do terms mean and where are private details?"]
+    START --> PRODUCT["Product behavior<br/>How does a question become an answer?"]
+    START --> DATA["Data and structure<br/>What does Compass know and where is it stored?"]
+    START --> TRUST["Quality and limits<br/>How is trust measured and what remains imperfect?"]
+    START --> TECH["Implementation<br/>Where are the code, API, and integrations?"]
+    START --> ORIENT["Orientation and operations<br/>What do terms mean and where are private details?"]
 
     PRODUCT --> D2["§2 Product & Answer Flow"]
     DATA --> D3["§3 Data & the Databricks Platform"]
     DATA --> DS["Compass schema reference"]
     TRUST --> D4["§4 Quality & Evaluation"]
     TRUST --> D9["§9 Known Issues & Limitations"]
+    TECH --> ARCH["System architecture reference"]
     TECH --> D8["§8 Technical Reference"]
     ORIENT --> DG["Compass glossary"]
     ORIENT --> D57["Private §§5–7"]
@@ -124,7 +130,7 @@ flowchart TD
 
     class START start
     class PRODUCT,DATA,TRUST,TECH,ORIENT question
-    class D2,D3,DS,D4,D8,D9,DG,D57 destination
+    class D2,D3,DS,D4,ARCH,D8,D9,DG,D57 destination
 ```
 
 ## Which document should I read?
@@ -132,6 +138,7 @@ flowchart TD
 | If your question is... | Read this next | It covers... |
 | --- | --- | --- |
 | What happens from a user question to a final answer? | [§2 Product & Answer Flow](02-product-and-answer-flow.md) | Planning, retrieval, execution, citations, answer structure, prompts, models, and voice |
+| Where is the complete system architecture? | [System architecture reference](reference/architecture.md) | Pathfinder, frontend, API, Dashboard, PostgreSQL, runtime context, data refresh, models, Logfire, and evaluation |
 | What data can Compass answer from, and what does "current" mean? | [§3 Data & the Databricks Platform](03-data-and-databricks.md) | Sources, coverage, nightly sync, bronze/silver/gold stages, data freshness, and known data gaps |
 | How are tables, fields, relationships, and views organized? | [Compass schema reference](reference/compass-schema.md) | The `compass` PostgreSQL views, tables, columns, relationships, and sync ledgers |
 | How do we know whether Compass is working? | [§4 Quality & Evaluation](04-quality-and-evaluation.md) | Quality dimensions, scenarios, cases, criteria, verdicts, sweeps, scorecards, and feedback |
@@ -228,7 +235,8 @@ projects. The manifests and lockfiles remain the complete dependency record.
 ### What should I read if I am reviewing the technical implementation?
 
 Read this page first, then [§8 Technical Reference](08-technical-reference.md) and
-the [schema reference](reference/compass-schema.md). If you need to understand
+the [System architecture reference](reference/architecture.md) and the [schema reference](reference/compass-schema.md).
+If you need to understand
 answer behavior rather than deployment or code boundaries, read [§2](02-product-and-answer-flow.md)
 before §8.
 
