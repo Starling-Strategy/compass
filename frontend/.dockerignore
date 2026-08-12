@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Documentation
+*.md
+LICENSE
+
+# CI/CD
+azure-pipelines.yml
+infra/
+
+# Build artifacts
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+tests/
+phpunit.xml
+
+# Misc
+*.zip
+*.tar.gz

@@ -1,0 +1,52 @@
+version: compass_scorecard_exemplars_v1
+minimum_active_cases_per_dimension: 3
+dimensions:
+  selection-accuracy:
+    dimension_name: Selection Accuracy
+    minimum_active_cases: 6
+    required_archetypes:
+      - named_districts
+      - profile_field_sort
+      - qualifier_or_threshold
+  data-fidelity:
+    dimension_name: Data Fidelity
+    minimum_active_cases: 3
+    required_archetypes:
+      - numeric_value
+      - year_bound
+      - longitudinal_or_profile
+  coverage-state-labeling:
+    dimension_name: Coverage-State Labeling
+    minimum_active_cases: 3
+    required_archetypes:
+      - reviewed
+      - not_reviewed
+      - no_data
+  filter-accuracy:
+    dimension_name: Filter Accuracy
+    minimum_active_cases: 3
+    required_archetypes:
+      - top_n
+      - threshold
+      - relative_filter
+  sort-accuracy:
+    dimension_name: Sort Accuracy
+    minimum_active_cases: 6
+    required_archetypes:
+      - descending
+      - tie_break
+      - multi_turn_resort
+  citation-accuracy:
+    dimension_name: Citation Accuracy
+    minimum_active_cases: 3
+    required_archetypes:
+      - policy_source
+      - nces_source
+      - source_dedupe
+  consistency:
+    dimension_name: Consistency
+    minimum_active_cases: 3
+    required_archetypes:
+      - multi_turn
+      - referent_context
+      - repeated_prompt

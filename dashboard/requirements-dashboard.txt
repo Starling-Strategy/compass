@@ -1,0 +1,46 @@
+# NCTQ.ai Dashboard — minimal dependencies
+# Excludes heavy ML packages (torch, docling) not needed by the web UI.
+# Full pipeline deps remain in requirements.txt for local dev.
+
+# Web framework
+python-fasthtml>=0.12.48
+monsterui>=0.1
+uvicorn>=0.30
+
+# Data
+pydantic>=2.0
+pydantic-settings>=2.0
+psycopg2-binary>=2.9
+# asyncpg is used by the vendored compass_backend.db.scorecard /
+# compass_backend.quality.scorecard modules that power the /compass/quality/*
+# routes. Async-only; psycopg2 still drives the rest of the dashboard.
+asyncpg>=0.29
+# pyyaml is required by the vendored compass_backend.quality.exemplar_manifest
+# and compass_backend.quality.thresholds modules, which read scorecard_exemplars.yaml
+# and scorecard_thresholds.yaml at runtime from inside the package directory.
+pyyaml>=6.0
+
+# HTTP client (used by Compass routes to call nctq-pa-api)
+httpx>=0.28.0
+
+# Markdown rendering — used by services that format conversation content
+markdown-it-py>=3,<5
+
+# TTL cache for Umami auth + stats (services/umami_stats.py)
+cachetools>=5.3.0
+
+# Google Analytics 4 Data API — visitor stats for the Compass Overview tile
+# (services/ga_stats.py). Read-only; service-account credentials via env.
+google-analytics-data>=0.23.0
+google-auth>=2.30.0
+
+# IANA time-zone database for zoneinfo.ZoneInfo("America/New_York"), used at
+# module load in overview.py / range_pills.py / timestamps.py. python:3.12-slim
+# does not reliably ship system tz data, so declare the pip fallback explicitly.
+tzdata>=2024.1
+
+# Observability (optional, gracefully skipped if missing)
+logfire>=0.37
+
+# Misc
+python-dotenv

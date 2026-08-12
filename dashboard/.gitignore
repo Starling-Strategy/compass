@@ -1,0 +1,43 @@
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / credentials
+.sesskey
+secrets.toml
+*.pem
+*.key
+
+# Evaluation snapshots
+eval_snapshots/
+
+# Deployment staging
+.deploy/
+deploy.zip
+data/piper_data.sqlite
+
+# Browser automation logs
+.playwright-mcp/
+.worktrees/

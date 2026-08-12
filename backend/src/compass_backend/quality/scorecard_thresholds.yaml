@@ -1,0 +1,17 @@
+version: compass_scorecard_thresholds_v1
+review_date: "2026-06-22"
+dimensions:
+  selection-accuracy:
+    launch_threshold_pct: 95
+  data-fidelity:
+    launch_threshold_pct: 99
+  coverage-state-labeling:
+    launch_threshold_pct: 98
+  filter-accuracy:
+    launch_threshold_pct: 95
+  sort-accuracy:
+    launch_threshold_pct: 98
+  citation-accuracy:
+    launch_threshold_pct: 98
+  consistency:
+    launch_threshold_pct: 95
