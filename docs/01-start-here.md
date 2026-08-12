@@ -260,11 +260,3 @@ the documentation set. It starts with the terms in the client's outline, then ad
 the names readers need to follow the answer pipeline and quality loop. If a term
 has a precise database meaning, the glossary links to the schema reference rather
 than trying to duplicate every column definition here.
-
-## A note on document status
-
-The numbered docs are a living reference set. A page marked "Draft for review"
-should be read as the current design and implementation explanation, not as a
-promise that every operational runbook or live metric has been finalized. Live
-counts, credentials, deployment state, account ownership, and budget figures
-belong in the systems or private operating documents that own them.

@@ -2,9 +2,10 @@
 
 **How Compass knows whether an answer is grounded, accurate, and useful — and how a failure becomes a fix.**
 
-> **Draft for review.** This is a first pass at the quality model. It deliberately
-> does not state a current scenario count or a current overall accuracy result;
-> those should come from a fresh, dated ledger export rather than an old note.
+> **A living reference, not a live dashboard.** This section describes the
+> quality model itself. It deliberately does not state a current scenario count
+> or a current overall accuracy result; those should come from a fresh, dated
+> ledger export rather than an old note.
 
 ## The short version
 
@@ -116,7 +117,7 @@ data, product contract, or expected behavior changes, the case should be
 reviewed and versioned rather than silently rewritten to make a new result look
 better.
 
-The current count is intentionally omitted from this draft. The number changes
+The current count is intentionally omitted from this document. The number changes
 as scenarios are added, retired, split, or deduplicated, and the documentation
 should report it only alongside the date, active/inactive definition, and ledger
 query that produced it.
@@ -295,9 +296,10 @@ is: the system has defined failure modes, tests them with saved evidence, protec
 known grounding boundaries at answer time, and turns newly discovered failures
 into tests and fixes.
 
-## Open points for review
+## Open questions for the evaluation program
 
-Before this section is treated as final, we should confirm:
+These items do not have a settled answer yet. They are tracked here deliberately
+rather than papered over with a stale or invented figure:
 
 - the current active scenario/case inventory and the date and query used to count
   it;

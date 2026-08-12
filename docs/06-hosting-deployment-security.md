@@ -3,8 +3,8 @@
 Compass runs as three applications that share data but have separate operational
 roles. Production runs on Microsoft Azure. Staging runs on Coolify and is a
 separate deployment path. Local development runs the same application code on a
-developer machine against approved configuration. This private handoff explains
-how to release, verify, secure, observe, and recover the system without including
+developer machine against approved configuration. This section explains how to
+release, verify, secure, observe, and recover the system without including
 credentials, private hostnames, or personal data.
 
 ## 6.1 Authority and scope
@@ -86,7 +86,7 @@ Before the next production release, the platform owner must confirm:
 - whether production settings are still carried as deploy-branch differences or
   now live entirely in Container Apps configuration.
 
-Do not consolidate or retire a production lane based only on this draft.
+Do not consolidate or retire a production lane based only on this document.
 
 ## 6.4 Production release flow
 
