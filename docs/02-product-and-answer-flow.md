@@ -27,8 +27,11 @@ architecture and the voice standards. It assumes technical fluency from here on.
 ## The pipeline
 
 Read the diagram top to bottom — each box is one stage, with a line on what it
-does. The key thing to watch: an AI model appears at only three points (steps 1,
-7, and the after-the-fact quality check), and never as the source of a fact.
+does. Color marks the division of labor: colored boxes are where an AI model
+acts — **blue** plans, **purple** writes, **green** makes small bounded
+judgments — and **gray** boxes are plain code. No AI box is ever the source of
+a fact. And no box names a model, on purpose: Compass assigns models to
+*roles*, explained in [Which model does what](#which-model-does-what) below.
 
 ```mermaid
 flowchart TD
@@ -39,7 +42,7 @@ page or embedded on nctq.org`"]
 the backend that runs the whole turn`"]
 
     subgraph API_TURN ["One turn inside the API"]
-        P["`**1 · Plan** — Claude Sonnet
+        P["`**1 · Plan** — the planning model
 An AI model works out what the question is asking for.
 It names things in plain phrases — no facts, IDs, or SQL.`"]
         V["`**2 · Check the plan**
@@ -57,7 +60,7 @@ No AI involved.`"]
         RD["`**6 · Assemble the answer**
 Plain code builds the answer skeleton:
 lead sentence, tables, citations, CSV download.`"]
-        S["`**7 · Polish the wording** — Claude Opus
+        S["`**7 · Polish the wording** — the writing model
 An AI model rewrites the prose for a human reader.
 The facts, numbers, and citations are locked.`"]
         G{"`**8 · Final check**
@@ -71,12 +74,26 @@ same facts, plainer prose`"]
     end
 
     API --> P
+    R -.-|"ambiguous names only"| ADJ["`**Catalog adjudicator** — a judge model
+An AI model picks among the listed candidates
+for an ambiguous name — it can never invent one.`"]
     X --- DB[("`**PostgreSQL**
 NCTQ's reviewed data,
 compass schema`")]
-    OUT -.->|"afterward, in the background"| Q["`**Quality check**
-Claude Haiku judges grade the answer for the
-quality dashboard — it never edits an answer`"]
+    OUT -.->|"afterward, in the background"| Q["`**Quality check** — the judge models
+AI judges pick the relevant checks and grade the answer
+for the quality dashboard — they never edit an answer.`"]
+
+    classDef planning fill:#dbeafe,stroke:#2563eb,color:#111827
+    classDef writing fill:#f3e8ff,stroke:#9333ea,color:#111827
+    classDef judging fill:#dcfce7,stroke:#16a34a,color:#111827
+    classDef code fill:#f3f4f6,stroke:#4b5563,color:#111827
+    classDef endpoint fill:#fef3c7,stroke:#d97706,color:#111827
+    class P planning
+    class S writing
+    class ADJ,Q judging
+    class FE,API,V,M,R,X,RD,G,FB,DB code
+    class U,OUT endpoint
 ```
 
 A turn's stages in code: session load → planner → context merge and normalization →
@@ -87,7 +104,7 @@ named stage helpers — the stage order above is readable directly from it.
 
 ## Planning: intent becomes a typed plan
 
-The planner (Claude Sonnet) is the single model authority for **what the question
+The planner is the single model authority for **what the question
 is asking** — and nothing else. Its output is a typed `PlannerTurn` object, not
 prose. It chooses one of five routes:
 
@@ -144,8 +161,8 @@ the plan:
 
 - District, metric, and topic phrases are reconciled against the catalog. Exact
   matches and curated aliases resolve in plain code; a genuinely ambiguous phrase
-  goes to a bounded adjudicator (Claude Haiku) that may only choose among the
-  candidates it is given and cannot add one of its own.
+  goes to a bounded AI adjudicator that may only choose among the candidates it
+  is given and cannot add one of its own.
 - Every resolution is recorded in a `CatalogResolutionReport` (phrase, method,
   approved IDs, candidates, blockers) and saved with the turn, so each answer
   carries its own audit trail.
@@ -186,7 +203,8 @@ sentence, data tables with a Sources column, coverage notes, and a downloadable 
 artifact whose rows match the table exactly (same values, same citations; if there
 are no rows, no CSV is offered).
 
-Then the **answer stylist** (Claude Opus) rewrites the prose for a human reader.
+Then the **answer stylist** — the pipeline's writing model — rewrites the prose
+for a human reader.
 It works inside a sealed brief: the facts, tables, caveat lines, and source blocks
 are immutable, and the style guide's hard rules forbid adding facts, numbers, or
 markers, rounding or computing values, or inventing NCTQ positions. Validation
@@ -254,18 +272,45 @@ routing judgment, and voice. A house style guide and lint tests keep the instruc
 files consistent. Because the files are in git, their version history **is** the
 prompt version history.
 
-Which models run where (via the Pydantic AI Gateway, all Anthropic Claude):
+## Which model does what
 
-| Stage | Model | Why |
+Compass uses different AI models for different jobs inside a single turn — the
+model that interprets the question is not the one that polishes the final wording
+or grades quality afterward. The pipeline is built around **roles, not models**:
+the diagram above names no model on purpose, because which model fills each role
+is a configuration setting (one per role, in
+`src/compass_backend/agents/model_settings.py`), not part of the design. As of
+this writing, every chat role runs an Anthropic Claude model through the Pydantic
+AI Gateway:
+
+| Role | The job in the pipeline | Model today |
 | --- | --- | --- |
-| Planner | Claude Sonnet | Fast, strong structured output for typed plans |
-| Answer & clarification stylist | Claude Opus | Best writing quality for user-facing prose |
-| Catalog adjudicator, quality judges | Claude Haiku | Small bounded judgments, high volume |
+| Planner | Step 1 — interpret the question, produce the typed plan | Claude Sonnet 4.6 |
+| Answer & clarification stylist | Step 7 — polish validated text; also phrase clarifying questions | Claude Opus 4.6 |
+| Catalog adjudicator | Step 4 — pick among listed candidates when a name is ambiguous | Claude Haiku 4.5 |
+| Criterion classifier & quality judges | After the answer — choose the relevant quality checks, then grade against them | Claude Haiku 4.5 |
 
-One operational consequence: if Anthropic has an outage, chat pauses even though
-everything NCTQ hosts is healthy (provider status: status.claude.com). A separate
-Google Gemini model appears only in the data-preparation pipeline (document
-summaries, offline) — never in chat.
+The reasoning behind the split:
+
+- **Planning gets the strongest reasoning.** Interpreting a request and producing
+  a valid, structured plan is the highest-stakes model step in the turn.
+- **Small, bounded judgments get a small, fast model.** The adjudicator,
+  classifier, and judges only choose among options Compass supplies — a limited
+  decision space, at high volume, where speed and cost matter.
+- **Writing polish is optional by design.** If the stylist fails, times out, or
+  its rewrite fails validation, the deterministic validated answer ships instead
+  — and the clarification stylist has a fixed pre-written question as its
+  fallback. A styled answer is never required for correctness.
+- **Any role can change models without changing the system.** Because each role
+  is an independent setting, a candidate model is evaluated for one role at a
+  time — against the evaluation suite in
+  [Quality & Evaluation](04-quality-and-evaluation.md) — and adopted only if it
+  measures better.
+
+One operational consequence of every chat role running on one provider: if
+Anthropic has an outage, chat pauses even though everything NCTQ hosts is healthy
+(provider status: status.claude.com). A separate Google Gemini model appears only
+in the data-preparation pipeline (document summaries, offline) — never in chat.
 
 ## Voice and tone
 
