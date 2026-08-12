@@ -145,6 +145,7 @@ flowchart TD
 | Where are the API, configuration, prompt, stack, and integration details? | [§8 Technical Reference](08-technical-reference.md) | API routes, environment names, application boundaries, prompt links, open-source credits, and Pathfinder embedding |
 | What is still limited, imperfect, or under active improvement? | [§9 Known Issues & Limitations](09-known-issues-and-limitations.md) | Known gaps, workarounds, and improvements in progress |
 | What does a term such as TCD, coverage state, or verdict mean? | [Compass glossary](reference/compass-glossary.md) | Plain-language definitions with links to the source documentation |
+| Is Metric Calculator part of Compass? How does its data reach Compass? | [Metric Calculator reference](reference/metric-calculator.md) | An adjacent NCTQ system, not part of Compass, and the indirect path (via the TCD/Pathfinder database) its approved data takes to reach Compass |
 
 Sections 5-7 cover administration, hosting/security, and service ownership plus
 cost planning. They are operational handoff documents rather than prerequisites

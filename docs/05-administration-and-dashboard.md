@@ -234,10 +234,10 @@ Two applications share the `nctqai` service but have different jobs:
   activity, feedback, data coverage, reports, and evaluation evidence. Its
   normal posture over `compass.*` is read-only, with controlled report actions
   delegated to the Compass backend.
-- The older **Metric Calculator** under `/mc/*` is an analyst workflow for
-  reviewing AI-suggested policy answers and writing validated metric data. It is
-  part of the policy-data preparation and review history, not the Compass
-  conversation-monitoring pipeline.
+- The older **[Metric Calculator](reference/metric-calculator.md)** under
+  `/mc/*` is an analyst workflow for reviewing AI-suggested policy answers and
+  writing validated metric data. It is part of the policy-data preparation and
+  review history, not the Compass conversation-monitoring pipeline.
 
 The broader data-ingestion project prepares and loads source policy data. It
 owns source acquisition, transformation, and loading. The Dashboard can reveal
