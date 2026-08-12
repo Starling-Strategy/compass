@@ -23,8 +23,8 @@ use placeholders and must be filled from the approved password manager and
 cloud inventory at execution time.
 
 Human access and Dashboard administration are covered in [Administration and
-Dashboard](05-administration-and-dashboard.md). Account ownership and service
-handoff are covered in [Accounts and Service Ownership](07-costs-accounts-and-budget.md).
+Dashboard](05-administration-and-dashboard.md). Account ownership, service
+handoff, and spending are covered in [Accounts and Service Ownership](07-costs-accounts-and-budget.md).
 
 ## 6.2 Applications and environments
 

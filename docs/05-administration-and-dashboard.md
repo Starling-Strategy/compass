@@ -26,8 +26,8 @@ authoring interface for Compass answers, or the source of truth for role and
 authentication rules.
 
 For release controls and environment boundaries, see [Hosting, Deployment, and
-Security](06-hosting-deployment-security.md). For account ownership and service
-handoff, see [Accounts and Service Ownership](07-costs-accounts-and-budget.md).
+Security](06-hosting-deployment-security.md). For account ownership, service
+handoff, and budget refreshes, see [Accounts and Service Ownership](07-costs-accounts-and-budget.md).
 
 ## Data boundaries
 
