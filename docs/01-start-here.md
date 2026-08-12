@@ -112,7 +112,7 @@ flowchart TD
     START --> DATA["Data and structure<br/>What does Compass know and where is it stored?"]
     START --> TRUST["Quality and limits<br/>How is trust measured and what remains imperfect?"]
     START --> TECH["Implementation<br/>Where are the code, API, and integrations?"]
-    START --> ORIENT["Orientation and operations<br/>What do terms mean and where are private details?"]
+    START --> ORIENT["Orientation and operations<br/>What do terms mean and where is the operational handoff?"]
 
     PRODUCT --> D2["§2 Product & Answer Flow"]
     DATA --> D3["§3 Data & the Databricks Platform"]
@@ -122,7 +122,9 @@ flowchart TD
     TECH --> ARCH["System architecture reference"]
     TECH --> D8["§8 Technical Reference"]
     ORIENT --> DG["Compass glossary"]
-    ORIENT --> D57["Private §§5–7"]
+    ORIENT --> D5["§5 Administration and Dashboard"]
+    ORIENT --> D6["§6 Hosting, Deployment & Security"]
+    ORIENT --> D7["§7 Accounts and Service Ownership"]
 
     classDef start fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#111827
     classDef question fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#111827
@@ -130,7 +132,7 @@ flowchart TD
 
     class START start
     class PRODUCT,DATA,TRUST,TECH,ORIENT question
-    class D2,D3,DS,D4,ARCH,D8,D9,DG,D57 destination
+    class D2,D3,DS,D4,ARCH,D8,D9,DG,D5,D6,D7 destination
 ```
 
 ## Which document should I read?
@@ -243,10 +245,13 @@ before §8.
 
 ### Where are administration, hosting, security, account-ownership, and budget questions answered?
 
-Those subjects belong to private sections 5–7. The public set identifies their
-scope, but access details, deployment identifiers, secrets, account ownership,
-and cost assumptions should live in the private operational docs and their
-source systems.
+[§5 Administration and Dashboard](05-administration-and-dashboard.md), [§6
+Hosting, Deployment, and Security](06-hosting-deployment-security.md), and [§7
+Accounts and Service Ownership](07-costs-accounts-and-budget.md) cover those
+subjects as operational handoff documentation for NCTQ. They describe scope,
+process, and ownership; live credentials, deployment identifiers, secrets, and
+account access still live only in the approved secret manager and source
+systems, not in this repository.
 
 ## Glossary
 
