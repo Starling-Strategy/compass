@@ -258,10 +258,22 @@ loaded through one cached loader. Two tiers:
   selection is persisted with the turn for auditability.
 
 The division of labor is strict: *facts live in code* (IDs, coverage truth,
-selection rules, validators, renderer decisions); instruction files own phrasing,
-routing judgment, and voice. A house style guide and lint tests keep the instruction
-files consistent. Because the files are in git, their version history **is** the
-prompt version history.
+selection rules, validators, renderer decisions); instruction files guide phrasing,
+routing judgment, and voice. Python owns dynamic context and the deterministic
+selection of any planner guidance. A house style guide and lint tests keep the
+instruction files consistent. Because the files are in git, their version history
+**is** the prompt version history.
+
+> **Why this is split up:** Compass did not begin with this design. Early versions
+> asked one model to understand the question, find the data, cite it, explain it,
+> and write the answer. Later versions separated intake, research, writing, and
+> review. The current design keeps models for bounded language work, but puts facts,
+> coverage, citations, query rules, and required answer sections in typed contracts
+> and ordinary code. That makes the initial model context smaller and easier to
+> review, but the main benefit is reliability: changing prose guidance cannot
+> silently change what Compass is allowed to claim. See
+> [Prompt and instruction history](research/compass-prompt-history/README.md) for
+> the full evolution, preserved prompt extracts, and the lessons from each redesign.
 
 ## How Compass uses different AI models
 
