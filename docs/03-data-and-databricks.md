@@ -42,24 +42,37 @@ than answering loosely.
 
 ```mermaid
 flowchart LR
-    subgraph SOURCES [Source systems]
-        TCD[NCTQ TCD API\ndistricts, topics, metrics,\nanswers, citations, sources]
-        WP[NCTQ WordPress\nPathfinder guidance pages]
-        AT[Airtable\npublications catalog]
-        UI[Urban Institute API\nNCES district data]
-        PDF[District policy PDFs\ncontracts, handbooks, board policies]
+    subgraph SOURCES ["Source systems"]
+        TCD["`**NCTQ TCD API**
+districts, topics, metrics,
+answers, citations, sources`"]
+        WP["`**NCTQ WordPress**
+Pathfinder guidance pages`"]
+        AT["`**Airtable**
+publications catalog`"]
+        UI["`**Urban Institute API**
+NCES district data`"]
+        PDF["`**District policy PDFs**
+contracts, handbooks, board policies`"]
     end
 
-    subgraph DBX [Azure Databricks — nightly, ~1:00 AM ET]
-        B[Bronze\nexact copy of source] --> S[Silver\ncleaned, deduplicated, typed]
-        S --> G[Gold\napp-ready shape]
-        G --> VAL{Validation gate\nrow counts, nulls, schema shape}
+    subgraph DBX ["Azure Databricks — nightly, ~1:00 AM ET"]
+        B["`**Bronze**
+exact copy of source`"] --> S["`**Silver**
+cleaned, deduplicated, typed`"]
+        S --> G["`**Gold**
+app-ready shape`"]
+        G --> VAL{"`**Validation gate**
+row counts, nulls, schema shape`"}
     end
 
     SOURCES --> B
-    VAL -->|pass| PG[(Production PostgreSQL\ncompass schema)]
-    VAL -->|fail| STOP[Stop — nothing partial ships\nalert to the data team]
-    PG --> APPS[Compass API · Frontend · Dashboard\nread-only during chat]
+    VAL -->|"pass"| PG[("`**Production PostgreSQL**
+compass schema`")]
+    VAL -->|"fail"| STOP["`**Stop — nothing partial ships**
+alert to the data team`"]
+    PG --> APPS["`**Compass API · Frontend · Dashboard**
+read-only during chat`"]
 ```
 
 Each source, what Compass gleans from it, and its role:
