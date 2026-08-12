@@ -207,7 +207,7 @@ production application hosting on Azure Container Apps, a shared production
 PostgreSQL environment, and a separate Coolify-based staging path. It also
 contains the release, security, backup, and incident procedures that should not be
 duplicated here. See [§6 Hosting, Deployment, and Security](../06-hosting-deployment-security.md)
-and [§7 Accounts and Service Ownership](../07-costs-accounts-and-budget.md).
+and [§7 Costs, Accounts, and Budget](../07-costs-accounts-and-budget.md).
 
 ## Related references
 

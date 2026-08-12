@@ -124,7 +124,7 @@ flowchart TD
     ORIENT --> DG["Compass glossary"]
     ORIENT --> D5["§5 Administration and Dashboard"]
     ORIENT --> D6["§6 Hosting, Deployment & Security"]
-    ORIENT --> D7["§7 Accounts and Service Ownership"]
+    ORIENT --> D7["§7 Costs, Accounts & Budget"]
 
     classDef start fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#111827
     classDef question fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#111827
@@ -247,7 +247,7 @@ before §8.
 
 [§5 Administration and Dashboard](05-administration-and-dashboard.md), [§6
 Hosting, Deployment, and Security](06-hosting-deployment-security.md), and [§7
-Accounts and Service Ownership](07-costs-accounts-and-budget.md) cover those
+Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) cover those
 subjects as operational handoff documentation for NCTQ. They describe scope,
 process, and ownership; live credentials, deployment identifiers, secrets, and
 account access still live only in the approved secret manager and source
@@ -260,11 +260,3 @@ the documentation set. It starts with the terms in the client's outline, then ad
 the names readers need to follow the answer pipeline and quality loop. If a term
 has a precise database meaning, the glossary links to the schema reference rather
 than trying to duplicate every column definition here.
-
-## A note on document status
-
-The numbered docs are a living reference set. A page marked "Draft for review"
-should be read as the current design and implementation explanation, not as a
-promise that every operational runbook or live metric has been finalized. Live
-counts, credentials, deployment state, account ownership, and budget figures
-belong in the systems or private operating documents that own them.

@@ -1,12 +1,10 @@
 # 9. Known Issues & Limitations
 
-> **Stub: mostly to be drafted.** An honest, current list of what is broken, worked
-> around, or deliberately out of scope, kept as a running punch list in this file
-> for now. This doc goes stale fastest, so it carries an owner and a review date
-> once drafted. The entries under [Known limitations](#known-limitations) and
-> [Improvements under way](#improvements-under-way) are live.
+> **An honest, current list.** What is broken, worked around, or deliberately out
+> of scope, kept as a running punch list. This doc goes stale fastest of any
+> section here, so any future addition should carry an owner and a review date.
 
-Planned contents:
+This section covers:
 
 - Known issues with workarounds in place.
 - Items flagged as needing fixes but not yet resolved.
