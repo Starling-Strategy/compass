@@ -66,9 +66,11 @@ The runtime authority for roles and section access is
 | `admin` | All sections, user administration, and admin-only Compass evaluation and operations pages. |
 
 The current code opens Compass Overview, Conversations, Flagged Issues, and Data
-Universe to all four roles. Scenarios, Scorecard, Operations, trace tools, and
-user administration remain admin-only. Page navigation is not a security
-boundary; route guards enforce access.
+Universe to all four roles. This includes the Flagged Issues status and
+dimension controls: those actions use the same all-roles Compass section gate.
+Scenarios, Scorecard, Operations, trace tools, and user administration remain
+admin-only. Page navigation is not a security boundary; route guards enforce
+access.
 
 The role model and route guards in the dashboard source are authoritative. If
 this prose differs from `dashboard/src/nctqai/models/auth.py` or the route
@@ -242,14 +244,17 @@ owns source acquisition, transformation, and loading. The Dashboard can reveal
 the resulting coverage but does not replace that pipeline. Shared deployment or
 database infrastructure does not make these responsibilities interchangeable.
 
-## Open question
+## Decision: Compass monitoring access
 
-The current role code grants all four roles access to the Compass monitoring
-surfaces. The permissions concept still describes those pages as limited to
-`power_user` and `admin`. Confirm whether the broader access introduced in the
-current code is the intended durable policy, then update the canonical
-permissions prose in a separate documentation change. Until that decision is
-recorded, code and route guards remain the operational authority.
+The dashboard follows the current role and route implementation: **all four
+roles** (`viewer`, `analyst`, `power_user`, and `admin`) can access the Compass
+monitoring surface — Overview, Conversations and conversation detail, Data
+Universe, and Flagged Issues. All four roles can also use the Flagged Issues
+status and dimension controls.
+
+The restricted set is separate: Scenarios, Scorecard, Operations, trace tools,
+and user administration are admin-only. The shared role map and route guards in
+the dashboard source remain the operational authority for any future change.
 
 ## What this document does not contain
 
