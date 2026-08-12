@@ -8,7 +8,7 @@ documents. Compass powers the chat experience on NCTQ's
 [District Policy Pathfinder](https://www.nctq.org/district-policy-pathfinder/).
 
 This repository holds the production code for the three Compass applications and the
-public documentation set.
+documentation set.
 
 | Application | What it is |
 | --- | --- |
