@@ -6,7 +6,7 @@ stays current.**
 ## The short version
 
 Compass is a **closed system**. It answers only from data that NCTQ has reviewed and
-loaded into its own database — it does not browse the web, and no model call during
+loaded into its own database. It does not browse the web, and no model call during
 a chat turn ever reaches an outside source. Behind that database sits a
 data-preparation platform (Azure Databricks) that collects the source data every
 night, cleans and validates it, and pushes finished tables into the production
@@ -25,15 +25,15 @@ NCTQ's review work continues; these are the values asserted in the code's tests)
 | --- | --- |
 | Districts reviewed by NCTQ | 133, across 51 states |
 | Policy topics | 27 |
-| Academic years | 11 (2015–16 through 2024–25) |
+| Academic years | 11 (2015-16 through 2024-25) |
 | Reviewed policy answers | ~47,000 |
 | Source documents behind those answers | ~7,400 |
 | NCTQ publications available to chat | ~750 |
 | NCES district directory (context data) | ~19,500 districts |
 
 Coverage is honest by construction. Every district × topic × year cell carries one
-of five coverage states — `covered`, `issue not addressed`, `not applicable`,
-`not reviewed`, or `out of universe` — and answers label missing data instead of
+of five coverage states (`covered`, `issue not addressed`, `not applicable`,
+`not reviewed`, or `out of universe`), and answers label missing data instead of
 papering over it. Concepts NCTQ has not reviewed (for example, teacher induction)
 are registered explicitly as out-of-universe so Compass refuses them cleanly rather
 than answering loosely.
@@ -56,7 +56,7 @@ NCES district data`"]
 contracts, handbooks, board policies`"]
     end
 
-    subgraph DBX ["Azure Databricks — nightly, ~1:00 AM ET"]
+    subgraph DBX ["Azure Databricks (nightly, ~1:00 AM ET)"]
         B["`**Bronze**
 exact copy of source`"] --> S["`**Silver**
 cleaned, deduplicated, typed`"]
@@ -69,7 +69,7 @@ row counts, nulls, schema shape`"}
     SOURCES --> B
     VAL -->|"pass"| PG[("`**Production PostgreSQL**
 compass schema`")]
-    VAL -->|"fail"| STOP["`**Stop — nothing partial ships**
+    VAL -->|"fail"| STOP["`**Stop: nothing partial ships**
 alert to the data team`"]
     PG --> APPS["`**Compass API · Frontend · Dashboard**
 read-only during chat`"]
@@ -79,12 +79,12 @@ Each source, what Compass gleans from it, and its role:
 
 | Source | What it provides | Role |
 | --- | --- | --- |
-| **NCTQ TCD API** | The core policy dataset: districts (with enrollment, FRPL, bargaining status), topics, ~114 metrics, reviewed answers per district/metric/year, and the citations linking each answer to its source documents | **Answer source** — this is where district facts come from |
-| **District policy documents** (PDFs) | The contracts, handbooks, and board policies NCTQ reviewed; a document pipeline extracts their text and metadata so answers can cite them | **Citation source** — they back answers; Compass does not free-read them at chat time |
-| **Urban Institute / NCES** | Federal district data: enrollment, locale, staffing, finance | **Answer source, allowlisted** — only explicitly approved fields are user-facing, each with a governed citation URL |
-| **Airtable publications catalog** | NCTQ's published reports and analyses | **Answer source for "what has NCTQ written" questions only** — never for district facts |
-| **NCTQ WordPress (Pathfinder)** | Pathfinder guidance content | **Reference/audit copy** — the website remains authoritative; chat does not answer from it |
-| **NCTQ policy positions** (git-managed content) | NCTQ's stances, rationales, and exemplar policies for 8 topics | **Answer source for "what does NCTQ recommend" questions only** — never mixed into data answers except as labeled asides |
+| **NCTQ TCD API** | The core policy dataset: districts (with enrollment, FRPL, bargaining status), topics, ~114 metrics, reviewed answers per district/metric/year, and the citations linking each answer to its source documents | **Answer source:** this is where district facts come from |
+| **District policy documents** (PDFs) | The contracts, handbooks, and board policies NCTQ reviewed; a document pipeline extracts their text and metadata so answers can cite them | **Citation source:** they back answers; Compass does not free-read them at chat time |
+| **Urban Institute / NCES** | Federal district data: enrollment, locale, staffing, finance | **Answer source, allowlisted:** only explicitly approved fields are user-facing, each with a governed citation URL |
+| **Airtable publications catalog** | NCTQ's published reports and analyses | **Answer source for "what has NCTQ written" questions only,** never for district facts |
+| **NCTQ WordPress (Pathfinder)** | Pathfinder guidance content | **Reference/audit copy:** the website remains authoritative; chat does not answer from it |
+| **NCTQ policy positions** (git-managed content) | NCTQ's stances, rationales, and exemplar policies for 8 topics | **Answer source for "what does NCTQ recommend" questions only,** never mixed into data answers except as labeled asides |
 
 The closed-system rule, stated precisely: the chat path reads only the `compass`
 schema's tables and materialized views. No backend code calls a source API during a
@@ -104,17 +104,17 @@ website tables. Data moves through four stages, and never skips one:
 | **Gold** | Exactly the columns, keys, and shape the applications expect |
 | **Production** | Written by the push notebook; what the applications read |
 
-The push itself runs five phases — prepare, upsert, refresh materialized views,
-audit, report — and stops entirely if any phase fails, so production is never left
+The push itself runs five phases (prepare, upsert, refresh materialized views,
+audit, report) and stops entirely if any phase fails, so production is never left
 half-updated. Before anything is written, a validation gate checks row counts
 against last-known-good (a drop over five percent fails the run), null and
 uniqueness constraints, and schema shape. Every completed push writes audit rows
 recording exactly what was inserted, updated, and deleted, and sends the data team a
 plain-English report with the full SQL log attached.
 
-A separate document pipeline processes the policy PDFs behind citations — text
-extraction, classification, AI-generated summaries (this is the pipeline's one use
-of a non-Anthropic model, Google Gemini, entirely offline) — with every document
+A separate document pipeline processes the policy PDFs behind citations: text
+extraction, classification, and AI-generated summaries (the pipeline's one use
+of a non-Anthropic model, Google Gemini, entirely offline). Every document is
 content-hashed so nothing is reprocessed unless it changes. Roughly eleven thousand
 PDFs have been through it.
 
@@ -133,17 +133,17 @@ and append-only `migrations/`); this is the map:
 
 **Runtime materialized views (what a chat turn reads):**
 
-- `district_profiles` — one row per covered district: TCD attributes joined with
+- `district_profiles`: one row per covered district, with TCD attributes joined to
   NCES context and an enrollment-authority override. This view *is* the coverage
   universe.
-- `policy_questions` — the metric catalog (topics, subtopics, metrics).
-- `policy_answers` — the reviewed answers, one per district/metric/year.
-- `answer_sources` — the citation joins from answers to source documents.
+- `policy_questions`: the metric catalog (topics, subtopics, metrics).
+- `policy_answers`: the reviewed answers, one per district/metric/year.
+- `answer_sources`: the citation joins from answers to source documents.
 
 **Governance tables (staff-reviewed configuration):** the NCES field allowlist,
 curated catalog aliases, district normalization rules, peer-scoring policies, and
-topic–content links. Several carry an explicit `review_status`
-(`approved`/`candidate`/`rejected`) column — staff review is encoded in the data,
+topic-content links. Several carry an explicit `review_status`
+(`approved`/`candidate`/`rejected`) column; staff review is encoded in the data,
 not in someone's memory.
 
 **Ledgers (append-only history):** sync run records and audit rows for every push,
@@ -153,26 +153,26 @@ plus the evaluation ledger (scenarios, cases, criteria, verdicts) described in
 ## What "current" means
 
 - The current academic year is a single constant in the backend
-  (`2024–25` at the time of writing), enforced by a test that forbids year literals
+  (`2024-25` at the time of writing), enforced by a test that forbids year literals
   anywhere else in the code.
 - Answers serve the **latest reviewed value, labeled with its year**. If a district
-  was last reviewed in an earlier year, Compass says so — canonical phrasing:
+  was last reviewed in an earlier year, Compass says so, in canonical phrasing:
   *"NCTQ last reviewed [District] for [subject] in [year]; the value then was [X]."*
 - Rankings never mix years; districts with only prior-year values become narrative
   mentions rather than table rows.
-- NCES data lags by design (federal release schedules) — directory year 2022 and
-  finance year 2020 at the time of writing — and each district row carries those
-  years explicitly so answers can label them.
+- NCES data lags by design, on federal release schedules: directory year 2022 and
+  finance year 2020 at the time of writing. Each district row carries those years
+  explicitly so answers can label them.
 
 ## How content gets added or updated
 
 | Change | How it happens | Reviewed by staff? |
 | --- | --- | --- |
-| New or updated policy answers | NCTQ's review work lands in TCD; the nightly sync carries it through bronze→silver→gold→production | Yes — the review *is* the NCTQ process |
-| New publications | Added to the Airtable catalog (a "for chatbot" flag controls inclusion); the sync mirrors it | Yes — curated in Airtable |
+| New or updated policy answers | NCTQ's review work lands in TCD; the nightly sync carries it through bronze→silver→gold→production | Yes; the review *is* the NCTQ process |
+| New publications | Added to the Airtable catalog (a "for chatbot" flag controls inclusion); the sync mirrors it | Yes; curated in Airtable |
 | New source documents | PDFs enter the document pipeline; summaries and classifications are validated before publishing to the catalog | Automated with validation gates |
-| Catalog vocabulary (aliases, allowlists) | Database migrations in this repo, with `review_status` columns | Yes — code review + status columns |
-| Schema changes | Append-only numbered migrations in `src/compass_data_sync/migrations/` | Yes — code review |
+| Catalog vocabulary (aliases, allowlists) | Database migrations in this repo, with `review_status` columns | Yes; code review plus status columns |
+| Schema changes | Append-only numbered migrations in `src/compass_data_sync/migrations/` | Yes; code review |
 
 Nothing is hand-edited in production, and removals are soft (rows are flagged, not
 deleted) so history survives.

@@ -1,6 +1,6 @@
 # 8. Technical Reference
 
-> **Stub — to be drafted.** Durable reference material, kept out of the narrative docs.
+> **Stub: to be drafted.** Durable reference material, kept out of the narrative docs.
 
 Planned contents:
 
@@ -12,7 +12,7 @@ Planned contents:
 - API endpoint reference for the Policy Advisor API.
 - Configuration reference: environment variables and feature flags (names and
   purposes only, never values).
-- Appendix — system prompts and instruction sets: the instruction files live in this
+- Appendix (system prompts and instruction sets): the instruction files live in this
   repository under `src/compass_backend/instructions/`; version history is their git
   history.
 - Pathfinder website integration: the iframe embed, `?embed=true` mode, the
