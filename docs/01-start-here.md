@@ -105,9 +105,9 @@ described in [Generation: facts first, phrasing second](02-product-and-answer-fl
 | What is still limited, imperfect, or under active improvement? | [§9 Known Issues & Limitations](09-known-issues-and-limitations.md) | Known gaps, workarounds, and improvements in progress |
 | What does a term such as TCD, coverage state, or verdict mean? | [Compass glossary](reference/compass-glossary.md) | Plain-language definitions with links to the source documentation |
 
-Sections 5–7 cover administration, hosting/security, and costs. They are maintained
-as private operational documentation because they contain access, deployment, and
-budget details that are not part of the public product explanation.
+Sections 5-7 cover administration, hosting/security, and costs. They are
+operational handoff documents rather than prerequisites for understanding the
+public product explanation.
 
 ## FAQ: questions a new reader is likely to ask
 
