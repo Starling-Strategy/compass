@@ -199,12 +199,11 @@ enforces the contract mechanically:
   the deterministic rendering ships instead. A styled answer is never required for
   correctness.
 
-> **Direction of travel:** the target design gives the writing model the full
-> answer artifact and adds a fact-*coverage* gate (verifying required facts are
-> present, not just that nothing was invented). Today's guard is one-sided — it
-> catches additions reliably; a rewrite could still thin out a fact that appears
-> only in free prose. This is a known, tracked limitation (see
-> [Known Issues](09-known-issues-and-limitations.md)).
+> **On the punch list:** two related items live in
+> [Known Issues & Limitations](09-known-issues-and-limitations.md) — today's final
+> check [catches added facts, not dropped ones](09-known-issues-and-limitations.md#the-final-check-catches-added-facts-not-dropped-ones)
+> (and how sealing mitigates that), and the planned upgrade to
+> [a writer that composes from the full data, behind a fact-coverage gate](09-known-issues-and-limitations.md#a-writer-that-composes-from-the-full-data-behind-a-fact-coverage-gate).
 
 ## Citations
 
