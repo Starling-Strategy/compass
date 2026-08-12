@@ -32,27 +32,51 @@ does. The key thing to watch: an AI model appears at only three points (steps 1,
 
 ```mermaid
 flowchart TD
-    U["A user asks a question"] --> FE["<b>Chat window</b><br/>the Compass frontend, on its own<br/>page or embedded on nctq.org"]
-    FE -->|"server-to-server — keys stay off the browser"| API["<b>Policy Advisor API</b><br/>the backend that runs the whole turn"]
+    U["A user asks a question"] --> FE["`**Chat window**
+the Compass frontend, on its own
+page or embedded on nctq.org`"]
+    FE -->|"server-to-server — keys stay off the browser"| API["`**Policy Advisor API**
+the backend that runs the whole turn`"]
 
     subgraph API_TURN ["One turn inside the API"]
-        P["<b>1 · Plan</b> — Claude Sonnet<br/>An AI model works out what the question is asking for.<br/>It names things in plain phrases — it supplies no facts, IDs, or SQL."]
-        V["<b>2 · Check the plan</b><br/>Every district, topic, and metric the plan names is<br/>checked against NCTQ's catalog of reviewed data."]
-        M["<b>3 · Remember the conversation</b><br/>Context from earlier turns is merged in —<br/>as structured data, never loose text."]
-        R["<b>4 · Resolve to real IDs</b><br/>Verified phrases become real database identifiers.<br/>No catalog match means the plan is blocked, not guessed."]
-        X["<b>5 · Fetch the facts</b><br/>Ordinary database queries pull the data.<br/>No AI involved."]
-        RD["<b>6 · Assemble the answer</b><br/>Plain code builds the answer skeleton:<br/>lead sentence, tables, citations, CSV download."]
-        S["<b>7 · Polish the wording</b> — Claude Opus<br/>An AI model rewrites the prose for a human reader.<br/>The facts, numbers, and citations are locked."]
-        G{"<b>8 · Final check</b><br/>Did the rewrite add or change<br/>any number or citation?"}
+        P["`**1 · Plan** — Claude Sonnet
+An AI model works out what the question is asking for.
+It names things in plain phrases — no facts, IDs, or SQL.`"]
+        V["`**2 · Check the plan**
+Every district, topic, and metric the plan names is
+checked against NCTQ's catalog of reviewed data.`"]
+        M["`**3 · Remember the conversation**
+Context from earlier turns is merged in —
+as structured data, never loose text.`"]
+        R["`**4 · Resolve to real IDs**
+Verified phrases become real database identifiers.
+No catalog match means the plan is blocked, not guessed.`"]
+        X["`**5 · Fetch the facts**
+Ordinary database queries pull the data.
+No AI involved.`"]
+        RD["`**6 · Assemble the answer**
+Plain code builds the answer skeleton:
+lead sentence, tables, citations, CSV download.`"]
+        S["`**7 · Polish the wording** — Claude Opus
+An AI model rewrites the prose for a human reader.
+The facts, numbers, and citations are locked.`"]
+        G{"`**8 · Final check**
+Did the rewrite add or change
+any number or citation?`"}
         P --> V --> M --> R --> X --> RD --> S --> G
         G -->|"no — safe to send"| OUT["Answer streams to the user"]
-        G -->|"yes — reject it"| FB["Ship the unpolished version instead:<br/>same facts, plainer prose"]
+        G -->|"yes — reject it"| FB["`Ship the unpolished version instead:
+same facts, plainer prose`"]
         FB --> OUT
     end
 
     API --> P
-    X --- DB[("PostgreSQL<br/>NCTQ's reviewed data,<br/>compass schema")]
-    OUT -.->|"afterward, in the background"| Q["<b>Quality check</b><br/>Claude Haiku judges grade the answer for the<br/>quality dashboard — it never edits an answer"]
+    X --- DB[("`**PostgreSQL**
+NCTQ's reviewed data,
+compass schema`")]
+    OUT -.->|"afterward, in the background"| Q["`**Quality check**
+Claude Haiku judges grade the answer for the
+quality dashboard — it never edits an answer`"]
 ```
 
 A turn's stages in code: session load → planner → context merge and normalization →
