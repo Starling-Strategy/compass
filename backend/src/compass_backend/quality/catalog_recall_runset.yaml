@@ -1,0 +1,129 @@
+version: m1_catalog_recall_v1
+cases:
+  - case_id: golden-22-philadelphia-peer-benefits
+    user_prompt: "I am from Philadelphia, show me ten similar districts and their benefits information."
+    sources:
+      - "Golden scenario 22"
+      - "issue #738"
+      - "issue #782 benefits bundle rescue family"
+    expected_candidates:
+      - entity_type: district
+        entity_ref: "district:133"
+        label: "School District of Philadelphia"
+      - entity_type: metric_bundle
+        entity_ref: "metric_bundle:232,233,234,235"
+        label: "Benefits information metric bundle"
+
+  - case_id: golden-24-starting-salary-workdays
+    user_prompt: "Show me the 10 highest starting salaries and how many days teachers work in those districts."
+    sources:
+      - "Golden scenario 24"
+      - "issue #756"
+      - "issue #759"
+      - "issue #782 broad starting salary rescue family"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:89"
+        label: "Annual base salary for a first year teacher with a bachelor's degree"
+      - entity_type: metric
+        entity_ref: "metric:69"
+        label: "Total contracted workdays per academic year"
+
+  - case_id: m1-735-ma-starting-salary
+    user_prompt: "Compare starting salaries for teachers with a master's degree in the 20 largest districts."
+    sources:
+      - "issue #735"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:96"
+        label: "Annual base salary for a first year teacher with a master's degree"
+
+  - case_id: m1-735-special-ed-ell-stipends
+    user_prompt: "Which districts pay additional stipends for both special ed and ELL teachers?"
+    sources:
+      - "issue #735"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:182"
+        label: "Minimum amount of additional annual pay for special education teachers"
+      - entity_type: metric
+        entity_ref: "metric:184"
+        label: "Minimum amount of additional annual pay for English learner teachers"
+
+  - case_id: m1-736-frpl-salary-display
+    user_prompt: "Show me starting teacher salaries for districts with the highest free-and-reduced lunch share."
+    sources:
+      - "issue #736"
+      - "issue #782 FRPL salary display rescue family"
+    expected_candidates:
+      - entity_type: profile_field
+        entity_ref: "profile_field:frpl_pct"
+        label: "FRPL %"
+      - entity_type: metric
+        entity_ref: "metric:89"
+        label: "Annual base salary for a first year teacher with a bachelor's degree"
+
+  - case_id: m1-739-workdays-threshold
+    user_prompt: "Which districts have more than 190 teacher workdays?"
+    sources:
+      - "issue #739"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:69"
+        label: "Total contracted workdays per academic year"
+
+  - case_id: m1-722-health-premium-ranking
+    user_prompt: "Which districts cover the most of teachers health insurance premiums?"
+    sources:
+      - "issue #722"
+      - "issue #782 health premium filters rescue family"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:233"
+        label: "Health insurance premium contribution for employees"
+
+  - case_id: m1-782-full-health-premium-filter
+    user_prompt: "Which districts cover 100% of employees health insurance premium?"
+    sources:
+      - "issue #782 health premium filters rescue family"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:232"
+        label: "Does the district cover 100% of employees' health insurance premium?"
+
+  - case_id: m1-782-observation-frequency
+    user_prompt: "Which districts require teachers to be formally observed more than a couple times a year?"
+    sources:
+      - "issue #782 observation phrasing rescue family"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:39"
+        label: "Minimum number of formal observations per evaluation cycle for non-tenured teachers"
+
+  - case_id: m1-782-sick-leave-policy
+    user_prompt: "Compare sick leave policy for similar districts."
+    sources:
+      - "issue #782 sick leave peer comparison rescue family"
+    expected_candidates:
+      - entity_type: metric_bundle
+        entity_ref: "metric_bundle:198,201,202"
+        label: "Sick leave policy metric bundle"
+
+  - case_id: m1-719-strike-legality
+    user_prompt: "Which states allow teacher strikes?"
+    sources:
+      - "issue #719"
+      - "issue #782 strike legality rescue family"
+    expected_candidates:
+      - entity_type: metric
+        entity_ref: "metric:262"
+        label: "Legality of teacher strikes"
+
+  - case_id: m1-782-unsupported-union-release-time
+    user_prompt: "Do districts provide union release time?"
+    sources:
+      - "issue #782 unsupported concept family"
+    expected_candidates:
+      - entity_type: unsupported_concept
+        entity_ref: "unsupported_concept:union_release_time"
+        label: "Union release time"

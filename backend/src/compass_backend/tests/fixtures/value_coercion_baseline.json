@@ -1,0 +1,14 @@
+{
+  "roles": {
+    "guarded-by-isinstance": "The coercion is preceded by an isinstance(..., int | float) guard that returns/skips before the call, so the argument can never be a string. A comma-formatted string never reaches the float()/int(), so it cannot raise. Safe by construction; not a crash site."
+  },
+  "entries": [
+    {
+      "file": "src/compass_backend/execution/selection.py",
+      "func": "int",
+      "attr": "value",
+      "role": "guarded-by-isinstance",
+      "tracked_in": "selection.py: _resolve_enrollment_bounds skips any filter whose value is not isinstance(filter_spec.value, int | float) (the `if not isinstance(...): return None` immediately above), so int(filter_spec.value) only ever receives an int/float — never a comma-formatted string. Justified baseline per #1772."
+    }
+  ]
+}

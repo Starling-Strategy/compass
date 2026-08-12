@@ -1,0 +1,4 @@
+{
+  "type": "module",
+  "_comment": "Scopes Node's interpretation of .js files in this directory to ES modules. Required for `node --test` to import the browser-side modules without renaming them. Browser <script type=\"module\"> loading is unaffected (the browser doesn't read this file)."
+}

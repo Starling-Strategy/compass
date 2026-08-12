@@ -13,8 +13,9 @@ Planned contents:
 - Configuration reference: environment variables and feature flags (names and
   purposes only, never values).
 - Appendix (system prompts and instruction sets): the instruction files live in this
-  repository under `src/compass_backend/instructions/`; version history is their git
-  history.
+  repository under
+  [`backend/src/compass_backend/instructions/`](../backend/src/compass_backend/instructions/);
+  version history is their git history.
 - Pathfinder website integration: the iframe embed, `?embed=true` mode, the
   postMessage contract (`compass:ready`, `compass:resize`, `compass:visitor_id`),
   and the parent-page visitor-id snippet.

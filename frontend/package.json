@@ -1,0 +1,21 @@
+{
+  "name": "pa-fe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "watch-css": "npx tailwindcss -i ./src/input.css -o ./public/assets/css/index.css --watch",
+    "build-css": "npx tailwindcss -i ./src/input.css -o ./public/assets/css/index.css --minify",
+    "dev": "php -S localhost:3000 -t public"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19"
+  }
+}

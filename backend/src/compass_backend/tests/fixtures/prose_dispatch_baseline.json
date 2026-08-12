@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "description": "Baseline of prose-dispatch patterns under src/compass_backend/{execution,catalog,orchestration,planning,rendering}. Generated 2026-05-18 for the Bucket A scrub-brittle Wave 2 plan; extended to planning/+rendering/ scope. Every entry is a known multi-word phrase set or regex over user prose (or its semantic equivalent). New patterns not in this baseline fail the test_no_prose_dispatch.py guard; existing patterns are documented by role per the 'No prose-dispatch below the planner' section in CLAUDE.md.",
+  "roles": {
+    "deletable": "Slated for removal (see the 'No prose dispatch below the planning boundary' guardrail in src/compass_backend/AGENTS.md). Active routing/rewriting of typed plan based on user prose. New 'deletable' patterns should not pass review.",
+    "canonicalization": "Maps multiple typed-field labels (planner-emitted MetricSpec.name, SortStepSpec.field) onto a canonical key like 'enrollment' or 'frpl_pct'. Tracked for eventual migration into compass.catalog_aliases; doctrine-grandfathered today.",
+    "validator-data-filter": "Filters cell/answer values by content (e.g., excluding 'n/a', 'not addressed' from numeric answer parsing). Doctrine-correct because it filters DATA shape, not user prose routing.",
+    "false-positive": "Scanner match that is not actually a prose-dispatch pattern (display label, dict key tuple, output-rendering text assembly). Excluded from the rule by explicit baseline entry.",
+    "typed-referent-resolver": "Infers or maps typed prior-context fields from user prose (e.g., temporal context, profile fields) without routing, rewriting, or substituting typed-plan fields. The exemplar is planner._normalize_plan_sort_with_context. Doctrine-correct per CLAUDE.md 'No prose-dispatch below the planner' (the allowed third role). Added during scope extension to planning/+rendering/ for taxonomy completeness; no current entries use this role after PR #631 deleted the temporal-phrase regexes, but the role stays in the taxonomy for future use.",
+    "prompt-context-selection": "Matches user prose to select which optional planner-instruction snippets or prompt-assembly metadata (e.g., thinking-effort budget) to inject into the LLM's prompt context. Does not route, rewrite typed fields, add/subtract candidates, or substitute for planner work \u2014 the LLM is free to use or ignore the injected context. Distinct from validator (adds a check), candidate-broadener (adds a search term), and typed-referent-resolver (populates a typed field). Exemplars: planning.instruction_snippets.PlannerInstructionSnippet.trigger_phrases; planning.thinking._*_MARKERS."
+  },
+  "match_key": "(file, name) for named constants; (file, first_sample) for inline (anonymous) tuples/sets",
+  "entries": [
+    {
+      "file": "src/compass_backend/catalog/district_normalization.py",
+      "kind": "phrase_set",
+      "name": "DEFAULT_DISTRICT_NORMALIZATION_RULES",
+      "first_sample": "Collapse runs of whitespace to a single space and trim.",
+      "role": "false-positive",
+      "tracked_in": "AnnAssign scanner (PR B) now sees this tuple literal. The tuple contains DistrictNormalizationRule Pydantic objects; the scanner finds their `notes` strings (human-readable audit metadata, not routing phrases). No routing logic. Governed normalization data structure seeded to compass.district_normalization_rules. Pure false-positive from AnnAssign scanner walking nested constructor keyword args."
+    },
+    {
+      "file": "src/compass_backend/catalog/nces_allowlist.py",
+      "kind": "phrase_set",
+      "name": "DEFAULT_NCES_ALLOWLIST",
+      "first_sample": "District pupil-teacher ratio.",
+      "role": "false-positive",
+      "tracked_in": "W2-M5-00a (#863): governed NCES allowlist. AnnAssign scanner sees the tuple literal of NCESAllowlistEntry Pydantic objects; the strings it picks up are human-readable `label`/`description`/`canonical_title` fields, not routing phrases. Sibling to the district_normalization.py and peer_scoring.py governed-catalog entries. Pure false-positive from AnnAssign scanner walking nested constructor keyword args."
+    },
+    {
+      "file": "src/compass_backend/catalog/profile_rank_fields.py",
+      "kind": "phrase_set",
+      "name": "DEFAULT_PROFILE_RANK_FIELDS",
+      "first_sample": "FRPL %",
+      "role": "false-positive",
+      "tracked_in": "W2-M5-00a (#863): governed profile rank fields. Tuple of ProfileRankField Pydantic objects; the strings are display `label`/`vintage_label` audit fields, not routing phrases. Sibling to nces_allowlist.py entry above."
+    },
+    {
+      "file": "src/compass_backend/execution/count.py",
+      "kind": "phrase_set",
+      "name": "key",
+      "first_sample": "Not reviewed",
+      "role": "false-positive",
+      "tracked_in": "Local dict-key tuple ('not_reviewed','Not reviewed') used as bucket key, not a prose-dispatch phrase set. Scanner false positive."
+    },
+    {
+      "file": "src/compass_backend/execution/lookup.py",
+      "kind": "phrase_set",
+      "name": "_NON_QUALIFYING_TEXT",
+      "first_sample": "issue not addressed",
+      "role": "validator-data-filter",
+      "tracked_in": "Filters policy_answers text cell values when checking whether a lookup row qualifies (e.g., 'n/a', 'not addressed'). Doctrine-correct \u2014 operates on DATA from compass.policy_answers, not on user prose."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "actual",
+      "role": "deletable",
+      "tracked_in": "Orchestration-level policy-guidance follow-up resolver \u2014 constructs a PlannerTurn directly from user prose ('top one' / 'that one' / 'details/sources/contract language'). Doctrine-violating: routes below the planner from raw message text. Same family as answerability_recovery; retirement coordinated with #1006."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "amount",
+      "role": "deletable",
+      "tracked_in": "Orchestration-level policy-guidance follow-up resolver \u2014 constructs a PlannerTurn directly from user prose ('top one' / 'that one' / 'details/sources/contract language'). Doctrine-violating: routes below the planner from raw message text. Same family as answerability_recovery; retirement coordinated with #1006."
+    },
+    {
+      "file": "src/compass_backend/orchestration/planning_stage.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "bottom",
+      "role": "validator-data-filter",
+      "tracked_in": "W1-07 (#846): same _DATA_BEARING_DIRECT_PATTERNS tuple as the entry above \u2014 scanner picks up each compiled regex separately. Single conceptual entry; logged twice by the scanner per pattern shape. Doctrine-correct."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "district",
+      "role": "deletable",
+      "tracked_in": "Orchestration-level policy-guidance follow-up resolver \u2014 constructs a PlannerTurn directly from user prose ('top one' / 'that one' / 'details/sources/contract language'). Doctrine-violating: routes below the planner from raw message text. Same family as answerability_recovery; retirement coordinated with #1006."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "all",
+      "role": "deletable",
+      "tracked_in": "CONSIST-R4 (#1419): orchestration-level policy-guidance 'do all N separately' resolver \u2014 detects acceptance phrases ('do all', 'all of them', 'each one separately') after a multi-exemplar guidance turn and builds a PendingQueryContext with requires_composite_ranking=True so the next planner turn can promote to a typed composite-ranking plan. Same family as the other chat.py follow-up resolvers; retirement coordinated with #1006."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "them",
+      "role": "typed-referent-resolver",
+      "tracked_in": "#1755 (B14): _POLICY_GUIDANCE_DEICTIC_REFERENCE_RE \u2014 a deictic back-reference guard ('these'/'those'/'them') that gates whether _enrich_rescue_with_prior_context bridges the prior policy_guidance exemplar districts into a typed PendingQueryContext.selection (from typed memory, exemplar.district). It does NOT route, rewrite, or substitute a typed plan field: it only decides whether to populate a typed referent from typed prior context, the allowed typed-referent-resolver role (exemplar: planner._normalize_plan_sort_with_context). Retires when a pre-planner exemplar->selection bridge lets the planner resolve the anaphora directly (the deferred residual in #1755)."
+    },
+    {
+      "file": "src/compass_backend/orchestration/planning_stage.py",
+      "kind": "phrase_set",
+      "name": "_DATA_BEARING_DIRECT_PATTERNS",
+      "first_sample": "\\b(rank|ranking|top \\d+|bottom \\d+|largest \\d+)\\b",
+      "role": "validator-data-filter",
+      "tracked_in": "W1-07 (#846): orchestration-level guard that detects data-shaped tokens (dollar amounts, percentages, \u22653-digit numbers, ranking phrasing) in PLANNER OUTPUT (direct_response.message). When triggered, the orchestration force-converts the direct turn to a typed clarify turn. Operates on planner-produced prose, not on user-input prose routing. Doctrine-correct."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "districts",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() in delta_detection.py whose stripped word tokens start with 'districts'. Covers BOTH _LIST_THOSE_N_REFERENTS (the N districts / those N districts regex) AND the case-393 _THE_N_NUMERIC_RE (the/those/these N (districts)? \u2014 the numeric referent extractor; it only counts as a population referent when the captured N equals the prior count's denominator, never routing or rewriting typed fields). These collapse onto the same (file, name=None, first_sample='districts') key. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "how",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside _COUNT_QUESTION_CUES (how many / how much) - the aggregate-count-question cue that suppresses the forced list presentation on 'how many of those N' follow-ups (C2, #1414). Same single pre-planner prose pass as the existing delta-detection referents; prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "phrase_set",
+      "name": "_POPULATION_PHRASE_PATTERNS",
+      "first_sample": "have data on this",
+      "role": "prompt-context-selection",
+      "tracked_in": "Population-vs-matches phrasing fallback for count follow-ups (case 393). Two unambiguous shapes: the 'denominator' keyword and the ANAPHORIC 'have data on this/it/that' (the anaphor scopes the ask to the prior count's metric, so it cannot hijack a fresh 'have data on <new topic>' question — guarded by test_generic_have_data_phrasing_does_not_hijack_fresh_query). Added 2026-06-17 (#1658 fix-forward) so the reporter's literal 'who are the 90 districts that have data on this?' survives the TCD count drift (90->96) instead of falling to the matched subset. Same single pre-planner prose pass as the existing delta-detection referents; prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "current",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() for the anaphoric 'have data on this/it/that' population phrase (#1658 fix-forward) \u2014 paired with the _POPULATION_PHRASE_PATTERNS phrase_set entry of the same shape. The anaphor scopes it to the prior count's metric (no fresh-question hijack). prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "five",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside a delta-detection referent / replacement marker tuple \u2014 paired with the phrase_set entry of the same shape. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "list",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside a delta-detection referent / replacement marker tuple \u2014 paired with the phrase_set entry of the same shape. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "order",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside a delta-detection referent / replacement marker tuple \u2014 paired with the phrase_set entry of the same shape. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "rather",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside a delta-detection referent / replacement marker tuple \u2014 paired with the phrase_set entry of the same shape. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "same",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() inside a delta-detection referent / replacement marker tuple \u2014 paired with the phrase_set entry of the same shape. prompt-context-selection role; scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "phrase_set",
+      "name": "_LIST_THOSE_N_REFERENTS",
+      "first_sample": "the N districts",
+      "role": "prompt-context-selection",
+      "tracked_in": "_LIST_THOSE_N_REFERENTS added 2026-05-28 (PR for #1011/#937) \u2014 strong list-those-N referents (`the N districts`, `those N`, `those N districts`) that fire the delta-intent detector on their own when prior context exists. Same prompt-context-selection role as _REFERENT_PATTERNS and _REPLACEMENT_MARKERS \u2014 gates the DELTA-INTENT CONSTRAINT in the planner system prompt; never routes or rewrites typed fields. Scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "phrase_set",
+      "name": "_NAME_LIST_ANAPHORA",
+      "first_sample": "all of them",
+      "role": "prompt-context-selection",
+      "tracked_in": "_NAME_LIST_ANAPHORA added 2026-06-19 (#1665) \u2014 the prior-result anaphora (the pure pronouns 'them'/'all of them' and the qualifier-guarded 'the districts'; 'those' is deliberately excluded as a determiner that can introduce a fresh selection) that pair with a name/list verb (_NAME_LIST_VERBS) to fire the delta-intent detector on a digit-free 'name them' follow-up after a count. Same prompt-context-selection role as _LIST_THOSE_N_REFERENTS / _REFERENT_PATTERNS \u2014 gates the typed inherit_selection_from='prior_result_rows' constraint so the prior count's state-qualified result rows are enumerated (no Portland ME/OR collision); never routes or rewrites typed fields below the planner. Gated on verb AND anaphora so a first-turn 'name 5 districts with sick leave' stays inert. Scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "all",
+      "role": "prompt-context-selection",
+      "tracked_in": "Inline re.compile() for the 'all of them' name-list anaphora (#1665) \u2014 paired with the _NAME_LIST_ANAPHORA phrase_set entry of the same shape. Fires the digit-free 'name them' delta-intent only alongside a name/list verb; prompt-context-selection role, never routes or rewrites typed fields. Scope guarded by #1009."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "phrase_set",
+      "name": "_REFERENT_PATTERNS",
+      "first_sample": "same five",
+      "role": "prompt-context-selection",
+      "tracked_in": "Delta-detection referent recognition \u2014 same prompt-context-selection role as the existing _REPLACEMENT_MARKERS entry. Governs prior-result anaphora for the typed delta-intent gate. Scope guarded by #1009 (must not authorize typed-field changes; only identify 'this is a follow-up + which artifact')."
+    },
+    {
+      "file": "src/compass_backend/planning/delta_detection.py",
+      "kind": "phrase_set",
+      "name": "_REPLACEMENT_MARKERS",
+      "first_sample": "rather than",
+      "role": "prompt-context-selection",
+      "tracked_in": "Replacement markers consumed by detect_delta_intent() to gate whether sort/rank/order verbs qualify as delta signals. Same role as _ANAPHORA above: gates prompt-side context injection, never routes or rewrites typed fields. The planner remains the typed-plan authority."
+    },
+    {
+      "file": "src/compass_backend/planning/planner.py",
+      "kind": "phrase_set",
+      "name": "_SELECTION_REFERENT_SENTINELS",
+      "first_sample": "previous districts",
+      "role": "typed-referent-resolver",
+      "tracked_in": "PR Track 3.1: Multi-turn selection referents. _normalize_plan_selection_with_context detects these sentinels on typed SelectionSpec.districts list (a typed contract field, not free-text user prose). Sibling to _normalize_plan_sort_with_context's sentinel pattern. AnnAssign scanner extension landed in PR B (Phase 3 cleanup) \u2014 scanner now detects this natively."
+    },
+    {
+      "file": "src/compass_backend/orchestration/chat.py",
+      "kind": "phrase_set",
+      "name": "_MULTI_METRIC_CLARIFICATION_CANDIDATES",
+      "first_sample": "Show one combined table with each metric as a separate column",
+      "role": "false-positive",
+      "tracked_in": "M3 #1013: user-facing candidate strings rendered into ClarificationRequest.candidates when a multi-metric validation failure pivots to a typed clarification. The strings are output prose shown to the user, not dispatch keys — no code inspects them. Scanner false positive."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "inline_phrase_iterable",
+      "name": null,
+      "first_sample": "not supported",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Inline list of unsupported-intent markers used to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_COUNT_FILTER_MARKERS",
+      "first_sample": "at least",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Matches count/denominator-style markers to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_FOLLOWUP_MARKERS",
+      "first_sample": "break down",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy (SSN-271). Matches user prose to detect follow-up references; result feeds the per-turn thinking-effort budget overlay. Does not route, rewrite typed fields, or substitute for planner work \u2014 the planner LLM is free to use or ignore the budget. Prompt-side configuration, not plan-side dispatch."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_HISTORICAL_MARKERS",
+      "first_sample": "from 20",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Matches longitudinal/historical markers to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_MULTI_STEP_SORT_MARKERS",
+      "first_sample": "among the",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Matches multi-step-sort intent markers to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_PEER_NCES_MARKERS",
+      "first_sample": "similar districts",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Matches peer/NCES-comparison markers to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/planning/thinking.py",
+      "kind": "phrase_set",
+      "name": "_RESEARCH_MARKERS",
+      "first_sample": "what does the literature",
+      "role": "prompt-context-selection",
+      "tracked_in": "Planner-thinking admission policy. Matches research/publication-intent markers to tune thinking-effort budget. Prompt-side configuration."
+    },
+    {
+      "file": "src/compass_backend/rendering/policy_guidance.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "exemplar",
+      "role": "false-positive",
+      "tracked_in": "_BODY_MARKER_RE \u2014 parses citation markers ([1], [stance:key], [exemplar:key]) in policy-guidance markdown OUTPUT bodies. Static format-parsing of output prose, not routing of user-input prose."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "header",
+      "first_sample": "Academic year",
+      "role": "false-positive",
+      "tracked_in": "Markdown table header list \u2014 `header` local variable contains output column labels. Scanner sees multi-word strings; not routing. Pure output rendering."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "header",
+      "first_sample": "Covered by Compass",
+      "role": "false-positive",
+      "tracked_in": "Profile-lookup table header list (`_render_profile_lookup`) \u2014 the `header` local contains output column labels; the coverage-state column 'Covered by Compass' is the only multi-word label the scanner samples. Not routing; pure output rendering. Sibling to the existing writer.py header/lines false-positive entries."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "lines",
+      "first_sample": "Built a chronological trend for ",
+      "role": "false-positive",
+      "tracked_in": "Trend-result rendering \u2014 local `lines` list contains output narrative line prefixes. Scanner sees multi-word strings; not routing. Pure output rendering."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "lines",
+      "first_sample": "I selected comparison-ready peer districts using NCES-style similarity anchored on enrollment, urbanicity, and FRPL, with finance/staffing and distance/state used as secondary signals.",
+      "role": "false-positive",
+      "tracked_in": "Peer-comparison-result rendering \u2014 local `lines` list contains output narrative prefixes. Scanner sees multi-word strings; not routing. Pure output rendering."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "lines",
+      "first_sample": "Looked up sourced NCES/profile fields for selected districts.",
+      "role": "false-positive",
+      "tracked_in": "Profile-lookup-result rendering \u2014 local `lines` list contains output narrative prefixes. Scanner sees multi-word strings; not routing. Pure output rendering."
+    },
+    {
+      "file": "src/compass_backend/rendering/writer.py",
+      "kind": "phrase_set",
+      "name": "lines",
+      "first_sample": "| --- | ---: | --- | --- | --- | --- |",
+      "role": "false-positive",
+      "tracked_in": "Similarity-result rendering (_render_similarity) \u2014 local `lines` list contains markdown table header + alignment row. Scanner sees multi-character pipe-separated strings; not routing. Pure output rendering. Sibling to the existing writer.py false-positive entries for lookup/trend/profile/peer-comparison/categorical."
+    },
+    {
+      "file": "src/compass_backend/orchestration/structured_output_failure.py",
+      "kind": "inline_phrase_iterable",
+      "name": null,
+      "first_sample": "what data do you have",
+      "role": "deletable",
+      "tracked_in": "JSON-failure repair fallback when planner structured output fails. Not planner guidance; a separate recovery path. Refactor candidate but not blocking the doctrine goal."
+    },
+    {
+      "file": "src/compass_backend/orchestration/structured_output_failure.py",
+      "kind": "inline_phrase_iterable",
+      "name": null,
+      "first_sample": "differentiated pay",
+      "role": "deletable",
+      "tracked_in": "#1216 governed differentiated-pay-inventory repair: trigger-phrase classification mirroring instruction_snippets.DIFFERENTIATED_PAY_INVENTORY, on a structured-output failure. Same recovery path as the perf-pay repair above; refactor candidate, not blocking the doctrine goal."
+    },
+    {
+      "file": "src/compass_backend/orchestration/structured_output_failure.py",
+      "kind": "inline_phrase_iterable",
+      "name": null,
+      "first_sample": "how many",
+      "role": "deletable",
+      "tracked_in": "#1216 differentiated-pay-inventory block-phrase classification (mirrors the snippet block list). Same recovery path as the perf-pay repair above; refactor candidate."
+    },
+    {
+      "file": "src/compass_backend/planning/negative_filters.py",
+      "kind": "re_compile_prose",
+      "name": null,
+      "first_sample": "none",
+      "role": "deletable",
+      "tracked_in": "Belt-and-suspenders prose recognition for negative parental leave; recipe migration tracked in #1059."
+    },
+    {
+      "file": "src/compass_backend/planning/planner.py",
+      "kind": "phrase_set",
+      "name": "_GENERIC_UNSUPPORTED_CLARIFICATION_SENTINELS",
+      "first_sample": "deterministic execution does not support",
+      "role": "validator-data-filter",
+      "tracked_in": "#1057: _looks_like_generic_unsupported_clarification detects generic refusal phrases in LLM-produced clarification questions (e.g., 'deterministic execution does not support') and raises ModelRetry. Operates on planner OUTPUT, not user prose \u2014 same validator-data-filter pattern as _DATA_BEARING_DIRECT_PATTERNS. Doctrine-correct."
+    },
+    {
+      "file": "src/compass_backend/execution/_text_utils.py",
+      "kind": "phrase_set",
+      "name": "_BOOLEAN_FALSE_VALUES",
+      "first_sample": "issue not addressed",
+      "role": "validator-data-filter",
+      "tracked_in": "#1419 backend dedup (finding 5): the byte-identical _BOOLEAN_TRUE_VALUES / _BOOLEAN_FALSE_VALUES sets from operations.py and ranking.py were consolidated here so the two yes/no metric-value classifiers cannot drift. Filters DATA cell values from compass.policy_answers (e.g. 'not addressed', 'n/a') to boolean, not user prose. Doctrine-correct \u2014 same validator-data-filter role as before."
+    }
+  ]
+}

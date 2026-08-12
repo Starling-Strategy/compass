@@ -1,0 +1,42 @@
+# NCTQ Policy Content
+
+> This is a temporary Markdown index for Compass policy content until NCTQ publishes canonical policy pages.
+
+Compass should use these files as structured source content, not as general background reading. Select the topic and requested layer before injecting content into an answer.
+
+## Source Documents
+
+- District Policy Stances: https://docs.google.com/document/d/13RvhrLNmEDjAZaOFzjXzmZm0WEbSonh42jTQOTG1onU/edit?tab=t.0
+- Research rationales for Starling: https://docs.google.com/document/d/182nNO91oGow4yiOVL-z5-hni9ZBrl-fmgt-0zE37Ylg/edit?tab=t.0
+- Exemplary Policies: https://docs.google.com/document/d/1ADYojeXd1qZjleFIdpaRLtz_R6E6iNPJkUytTXb2TEQ/edit?tab=t.fwwto1ul62ol
+
+## Topics
+
+- [Benefits](topics/benefits.md)
+- [Collective Bargaining](topics/collective-bargaining.md)
+- [Differentiated Pay](topics/differentiated-pay.md)
+- [Evaluation](topics/evaluation.md)
+- [General Salary](topics/general-salary.md)
+- [Leave](topics/leave.md)
+- [Performance Pay](topics/performance-pay.md)
+- [Teacher Time](topics/teacher-time.md)
+
+## Layer Selection
+
+- Use `stances` when the user asks what NCTQ believes, recommends, supports, opposes, or thinks is good policy.
+- Use `research_rationales` when the user asks why, what the research says, what evidence supports a position, or asks for the research basis.
+- Use `exemplary_policies` when the user asks for a district, example, model, exemplar, who does this well, or a concrete implementation.
+- Use multiple layers only when the user asks for a full explanation or when a concise answer needs both an NCTQ position and a district example.
+
+## Citation Rules
+
+- Exemplary district policies must cite their `source_url`.
+- Research rationales marked `needs_source_url` should be attributed to NCTQ but should not be presented as externally sourced research until a public source URL is attached.
+- Do not present a national stance or rationale as if it were a specific district policy.
+- Do not present an exemplary district policy as if it were a statistical finding across all covered districts.
+
+## Topic Alias Notes
+
+- Performance pay is a subtopic of Differentiated Pay in the current source data.
+- Teacher Leave is represented as `Leave` in the legacy rationale and exemplar tables.
+- Differentiated Compensation is represented as `Differentiated Pay` in the legacy rationale and exemplar tables.

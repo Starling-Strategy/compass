@@ -12,12 +12,14 @@ public documentation set.
 
 | Application | What it is |
 | --- | --- |
-| `src/compass_backend` | The Policy Advisor API: the chat engine (Python / FastAPI) |
-| `src/compass_frontend` | The public chat web app (PHP / Apache) |
-| `src/nctqai` | The internal review-and-analytics dashboard (Python / FastHTML) |
+| [`backend/`](backend/) | The Policy Advisor API: the chat engine (Python / FastAPI) |
+| [`frontend/`](frontend/) | The public chat web app (PHP / Apache) |
+| [`dashboard/`](dashboard/) | The internal review-and-analytics dashboard (Python / FastHTML) |
 
-> **Status:** documentation is landing first; the application code is being seeded
-> from the production deploy branches and will follow.
+Each directory is a self-contained application with its own Dockerfile — the
+same image build that runs in production. Exactly which production commits the
+code was taken from, and every curation decision made in the copy, is recorded
+in [PROVENANCE.md](PROVENANCE.md).
 
 ## Documentation
 

@@ -1,0 +1,82 @@
+############################
+# OS / Editor files
+############################
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+############################
+# PHP
+############################
+/vendor/
+.env
+.env.*
+.phpunit.result.cache
+
+############################
+# Node / JavaScript
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################
+# Build / Bundlers
+############################
+/dist/
+/build/
+/public/build/
+/public/dist/
+.vite/
+.cache/
+
+############################
+# Frontend tooling
+############################
+.eslintcache
+.parcel-cache
+.turbo
+
+############################
+# Tailwind / PostCSS
+############################
+tailwind.config.js.tmp
+postcss.config.js.tmp
+
+############################
+# Framework-specific (optional)
+############################
+# Laravel
+/storage/
+bootstrap/cache/
+
+# Symfony
+/var/
+
+############################
+# Server / Deploy
+############################
+nohup.out
+*.pid
+
+############################
+# HTML / Static
+############################
+*.map
+
+############################
+# AI Instructions (local only)
+############################
+ai_instructions/
+
+############################
+# Claude Code (local only)
+############################
+.claude/
