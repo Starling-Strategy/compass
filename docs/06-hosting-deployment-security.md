@@ -187,8 +187,9 @@ it.
 The Dashboard has its own database, session, SMTP or email, analytics, and
 Logfire settings. Keep login delivery credentials, analytics service-account
 material, cookie signing material, and database passwords in the runtime secret
-store. Compass observability routes read `compass.*`; the Metric Calculator is a
-separate workflow that can write validated metric data.
+store. Compass observability routes read `compass.*`; the
+[Metric Calculator](reference/metric-calculator.md) is a separate workflow that
+can write validated metric data.
 
 Treat a configuration or secret change as a release. Record the change, create
 or restart the intended revision using the approved Azure method, and repeat
