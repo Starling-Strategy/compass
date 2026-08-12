@@ -1,6 +1,9 @@
 # NCTQ Policy Content Markdown Stopgap
 
-This directory is a lightweight, Git-managed source of truth for NCTQ policy content that Compass can later load deterministically.
+This directory is a lightweight, Git-managed stopgap for NCTQ policy content.
+It was generated from reviewed source material so Compass can serve NCTQ's
+positions, research rationales, and exemplary policies while the fuller content
+migration is completed.
 
 Generated from the staging database on 2026-05-07:
 
@@ -15,10 +18,13 @@ Reviewed against the three Google Drive source documents on 2026-05-07:
 - Research rationales for Starling: https://docs.google.com/document/d/182nNO91oGow4yiOVL-z5-hni9ZBrl-fmgt-0zE37Ylg/edit?tab=t.0
 - Exemplary Policies: https://docs.google.com/document/d/1ADYojeXd1qZjleFIdpaRLtz_R6E6iNPJkUytTXb2TEQ/edit?tab=t.fwwto1ul62ol
 
-This is not wired into the Compass runtime yet. The intended flow is:
+This content is already wired into the Compass runtime. The backend loads it at
+startup through a strict, deterministic parser; invalid content stops the app
+from starting instead of producing guidance with broken provenance. The live
+flow is:
 
 ```text
-Markdown files -> deterministic parser -> typed policy content bundle -> Writer prompt -> structured citations
+Markdown files -> deterministic parser -> typed policy content library -> policy-guidance renderer -> structured citations
 ```
 
 ## Content Layers
@@ -37,11 +43,27 @@ Every rationale and exemplar must have a `source_url` and a `citation_status` of
 
 A Pydantic `model_validator` enforces the two states symmetrically: a `placeholder` rationale must use the homepage URL, and a `ready` rationale must NOT use it. That symmetry catches drift in both directions — you can't accidentally mark something `ready` while leaving the homepage URL, and you can't fill in a real URL while leaving the status at `placeholder`.
 
-When NCTQ launches topic-anchored Pathfinder pages, replace each placeholder rationale's `source_url` with the topic/section URL and flip `citation_status: placeholder → ready`. Also fill the topic-level `canonical_url:` frontmatter slot per file (currently empty for all 8 topics). This cleanup is tracked under SSN-254.
+When NCTQ launches topic-anchored Pathfinder pages, replace each placeholder
+rationale's `source_url` with the topic/section URL and flip
+`citation_status: placeholder → ready`. Add or update the topic-level
+`canonical_url:` frontmatter for that topic at the same time. Redirect-only
+topics do not need their own canonical URL. This cleanup is tracked under
+SSN-254.
 
 Until those URLs land, the runtime renderer (`src/compass_backend/rendering/policy_guidance.py`) prefixes any rendered bullet whose citation is `placeholder` with the visible marker `[provisional source]`. This signals to readers that the link is a stopgap to the Pathfinder homepage rather than a real per-topic source page. Flipping `citation_status` to `ready` removes the marker automatically — no renderer change required.
 
-The research-rationale Google Doc is substantially richer than the compact DB-derived rationale summaries in these topic files. Do not treat the rationale layer as fully migrated until the full source document has been split into topic/subtopic sections with source references.
+## What Remains
+
+The research-rationale Google Doc is substantially richer than the compact
+DB-derived rationale summaries in these topic files. Do not treat the rationale
+layer as fully migrated until the full source document has been split into
+topic/subtopic sections with source references.
+
+The next step is to make that migration without losing provenance: split the
+source material into structured topic and subtopic entries, preserve its source
+references, and validate the changed library before release. Until then, this
+repository is the reviewed runtime snapshot—not a claim that every research
+rationale from the source document has been migrated.
 
 ## Runtime Contract
 
