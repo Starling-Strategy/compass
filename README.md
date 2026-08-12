@@ -33,7 +33,7 @@ here has gaps.
 | 1 | [Start Here & Glossary](docs/01-start-here.md) | What Compass is, how to read these docs, glossary | Stub |
 | 2 | [Product & Answer Flow](docs/02-product-and-answer-flow.md) | How a question becomes a grounded, cited answer: planning, retrieval, generation, verification, prompts, voice | **Draft for review** |
 | 3 | [Data & the Databricks Platform](docs/03-data-and-databricks.md) | What data Compass covers, where it comes from, the schema, how it stays current | **Draft for review** |
-| 4 | [Quality & Evaluation](docs/04-quality-and-evaluation.md) | The quality dimensions, the scenario library, how accuracy is measured | Stub |
+| 4 | [Quality & Evaluation](docs/04-quality-and-evaluation.md) | The quality dimensions, the scenario library, how accuracy is measured | Draft for review |
 | 8 | [Technical Reference](docs/08-technical-reference.md) | Licensing, stack, API endpoints, configuration, Pathfinder embed | Stub |
 | 9 | [Known Issues & Limitations](docs/09-known-issues-and-limitations.md) | What's broken, worked around, or out of scope, honestly stated | Stub (first entry drafted) |
 
