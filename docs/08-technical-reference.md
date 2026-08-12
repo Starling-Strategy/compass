@@ -14,7 +14,7 @@ file. It does not repeat the product narrative or copy the model instructions.
 - For quality dimensions, scenarios, and evaluation, read [Quality &
   Evaluation](04-quality-and-evaluation.md).
 - For operational details that are intentionally kept out of the public docs,
-  use the private administration, hosting/security, and account-ownership references
+  use the private administration, hosting/security, and cost/account references
   rather than adding secrets or deployment procedures here.
 
 The source manifests and lockfiles are the authority for the complete dependency

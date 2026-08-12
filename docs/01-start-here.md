@@ -139,9 +139,9 @@ flowchart TD
 | What is still limited, imperfect, or under active improvement? | [§9 Known Issues & Limitations](09-known-issues-and-limitations.md) | Known gaps, workarounds, and improvements in progress |
 | What does a term such as TCD, coverage state, or verdict mean? | [Compass glossary](reference/compass-glossary.md) | Plain-language definitions with links to the source documentation |
 
-Sections 5-7 cover administration, hosting/security, and account ownership. They are
-operational handoff documents rather than prerequisites for understanding the
-public product explanation.
+Sections 5-7 cover administration, hosting/security, and service ownership plus
+cost planning. They are operational handoff documents rather than prerequisites
+for understanding the public product explanation.
 
 ## FAQ: questions a new reader is likely to ask
 
@@ -232,11 +232,12 @@ the [schema reference](reference/compass-schema.md). If you need to understand
 answer behavior rather than deployment or code boundaries, read [§2](02-product-and-answer-flow.md)
 before §8.
 
-### Where are administration, hosting, security, and account-ownership questions answered?
+### Where are administration, hosting, security, account-ownership, and budget questions answered?
 
 Those subjects belong to private sections 5–7. The public set identifies their
-scope, but access details, deployment identifiers, secrets, and account ownership
-should live in the private operational docs and their source systems.
+scope, but access details, deployment identifiers, secrets, account ownership,
+and cost assumptions should live in the private operational docs and their
+source systems.
 
 ## Glossary
 
@@ -251,5 +252,5 @@ than trying to duplicate every column definition here.
 The numbered docs are a living reference set. A page marked "Draft for review"
 should be read as the current design and implementation explanation, not as a
 promise that every operational runbook or live metric has been finalized. Live
-counts, credentials, deployment state, and account ownership details belong in the systems or
-private operating documents that own them.
+counts, credentials, deployment state, account ownership, and budget figures
+belong in the systems or private operating documents that own them.
