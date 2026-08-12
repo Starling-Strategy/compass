@@ -167,11 +167,13 @@ manifest validator rejects any cited title or URL outside that set.
 
 > **A foundational concept for trusting the answers Compass gives.** By this point
 > the hard judgment calls are behind Compass. It knows what kind of question it is
-> answering, and every district, metric, and topic has been exchanged for a
-> verified catalog ID, so it knows exactly what it is working with. Building the
-> answer is designed to involve as little decision-making as possible from here:
-> the way to set an AI system up for success is to limit its options, and by
-> answer time Compass has almost none left. Ordinary database queries fetch the
+> answering, and the metric and topic phrases have already been exchanged for
+> verified catalog IDs. District names make their exchange right here, as the
+> first step of running the query, and the card-catalog rule still holds: until a
+> district name becomes a real ID, no data is fetched for it. Building the answer
+> is designed to involve as little decision-making as possible from here: the way
+> to set an AI system up for success is to limit its options, and by answer time
+> Compass has almost none left. Ordinary database queries fetch the
 > facts. Plain code, with no AI model anywhere in it, lays them out as the answer:
 > the lead sentence, the tables, the citation markers, the CSV download. Given the
 > same plan and the same data, this stage produces the same result every time. In
