@@ -1,4 +1,4 @@
-# 7. Accounts and Service Ownership
+# 7. Costs, Accounts, and Budget
 
 This page is an operational handoff checklist for the external accounts and
 services that Compass depends on. It records who should own or administer each

@@ -124,7 +124,7 @@ flowchart TD
     ORIENT --> DG["Compass glossary"]
     ORIENT --> D5["§5 Administration and Dashboard"]
     ORIENT --> D6["§6 Hosting, Deployment & Security"]
-    ORIENT --> D7["§7 Accounts and Service Ownership"]
+    ORIENT --> D7["§7 Costs, Accounts & Budget"]
 
     classDef start fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#111827
     classDef question fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#111827
@@ -247,7 +247,7 @@ before §8.
 
 [§5 Administration and Dashboard](05-administration-and-dashboard.md), [§6
 Hosting, Deployment, and Security](06-hosting-deployment-security.md), and [§7
-Accounts and Service Ownership](07-costs-accounts-and-budget.md) cover those
+Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) cover those
 subjects as operational handoff documentation for NCTQ. They describe scope,
 process, and ownership; live credentials, deployment identifiers, secrets, and
 account access still live only in the approved secret manager and source

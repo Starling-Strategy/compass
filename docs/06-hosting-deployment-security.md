@@ -24,7 +24,7 @@ cloud inventory at execution time.
 
 Human access and Dashboard administration are covered in [Administration and
 Dashboard](05-administration-and-dashboard.md). Account ownership, service
-handoff, and spending are covered in [Accounts and Service Ownership](07-costs-accounts-and-budget.md).
+handoff, and spending are covered in [Costs, Accounts, and Budget](07-costs-accounts-and-budget.md).
 
 ## 6.2 Applications and environments
 

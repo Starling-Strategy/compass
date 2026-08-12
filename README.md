@@ -27,17 +27,17 @@ The `/docs` folder is the documentation set. Sections are numbered against the m
 outline. Sections 5-7 (administration, hosting and security, and account ownership)
 are operational handoff documentation for NCTQ; the rest describe the product itself.
 
-| # | Doc | Covers | Status |
-| --- | --- | --- | --- |
-| 1 | [Start Here](docs/01-start-here.md) | What Compass is, FAQ, how to read these docs, and glossary entry point | **Draft for review** |
-| 2 | [Product & Answer Flow](docs/02-product-and-answer-flow.md) | How a question becomes a grounded, cited answer: planning, retrieval, generation, verification, prompts, voice | **Draft for review** |
-| 3 | [Data & the Databricks Platform](docs/03-data-and-databricks.md) | What data Compass covers, where it comes from, the schema, how it stays current | **Draft for review** |
-| 4 | [Quality & Evaluation](docs/04-quality-and-evaluation.md) | The quality dimensions, the scenario library, how accuracy is measured | Draft for review |
-| 5 | [Administration and Dashboard](docs/05-administration-and-dashboard.md) | The staff Dashboard's purpose, audience, and how NCTQ monitors conversations and quality results | **Draft for review** |
-| 6 | [Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md) | Azure production, Coolify staging, and local environments; release, security, observability, and recovery | **Draft for review** |
-| 7 | [Accounts and Service Ownership](docs/07-costs-accounts-and-budget.md) | External account ownership checklist plus Azure and model cost/budget planning | **Draft for review** |
-| 8 | [Technical Reference](docs/08-technical-reference.md) | Licensing, stack, API endpoints, configuration, Pathfinder embed | **Draft for review** |
-| 9 | [Known Issues & Limitations](docs/09-known-issues-and-limitations.md) | What's broken, worked around, or out of scope, honestly stated | Stub (first entry drafted) |
+| # | Doc | Covers |
+| --- | --- | --- |
+| 1 | [Start Here](docs/01-start-here.md) | What Compass is, FAQ, how to read these docs, and glossary entry point |
+| 2 | [Product & Answer Flow](docs/02-product-and-answer-flow.md) | How a question becomes a grounded, cited answer: planning, retrieval, generation, verification, prompts, voice |
+| 3 | [Data & the Databricks Platform](docs/03-data-and-databricks.md) | What data Compass covers, where it comes from, the schema, how it stays current |
+| 4 | [Quality & Evaluation](docs/04-quality-and-evaluation.md) | The quality dimensions, the scenario library, how accuracy is measured |
+| 5 | [Administration and Dashboard](docs/05-administration-and-dashboard.md) | The staff Dashboard's purpose, audience, and how NCTQ monitors conversations and quality results |
+| 6 | [Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md) | Azure production, Coolify staging, and local environments; release, security, observability, and recovery |
+| 7 | [Costs, Accounts, and Budget](docs/07-costs-accounts-and-budget.md) | External account ownership checklist plus Azure and model cost/budget planning |
+| 8 | [Technical Reference](docs/08-technical-reference.md) | Licensing, stack, API endpoints, configuration, Pathfinder embed |
+| 9 | [Known Issues & Limitations](docs/09-known-issues-and-limitations.md) | What's broken, worked around, or out of scope, honestly stated |
 
 Writing conventions for every section: a plain-language overview first, then a body
 that assumes technical fluency; each fact lives in exactly one doc and is linked from
