@@ -83,8 +83,9 @@ flowchart TD
 A turn's stages in code: session load → planner → context merge and normalization →
 catalog resolution → execution and rendering → persistence. The orchestration
 entrypoint is `build_chat_response()` in
-`src/compass_backend/orchestration/chat.py`, written as a table of contents over
-named stage helpers; the stage order above is readable directly from it.
+[`backend/src/compass_backend/orchestration/chat.py`](../backend/src/compass_backend/orchestration/chat.py),
+written as a table of contents over named stage helpers; the stage order above is
+readable directly from it.
 
 ## Planning: intent becomes a typed plan
 
@@ -235,14 +236,20 @@ discipline.
 ## Prompts and instructions: where they live, how they work
 
 All model instructions are markdown files in this repository under
-`src/compass_backend/instructions/`, loaded through one cached loader. Two tiers:
+[`backend/src/compass_backend/instructions/`](../backend/src/compass_backend/instructions/),
+loaded through one cached loader. Two tiers:
 
-- **Base instructions: always on, one per agent.** `model_instructions/planner.md`
-  (the planner's contract, routing rules, and examples), `judge.md` (quality
-  judging), plus `answer_style_guides/default.md` (the stylist's voice and hard
-  rules). The catalog adjudicator and other small agents have their own.
+- **Base instructions: always on, one per agent.**
+  [`model_instructions/planner.md`](../backend/src/compass_backend/instructions/model_instructions/planner.md)
+  (the planner's contract, routing rules, and examples),
+  [`judge.md`](../backend/src/compass_backend/instructions/model_instructions/judge.md) (quality
+  judging), plus
+  [`answer_style_guides/default.md`](../backend/src/compass_backend/instructions/answer_style_guides/default.md)
+  (the stylist's voice and hard rules). The catalog adjudicator and other small
+  agents have their own.
 - **Planner guidance: on demand, selected per question.** Small topic snippets in
-  `planner_guidance/` are chosen by a deterministic selector: word-boundary trigger
+  [`planner_guidance/`](../backend/src/compass_backend/instructions/planner_guidance/)
+  are chosen by a deterministic selector: word-boundary trigger
   phrases, blocked phrases, prior-route requirements, and priorities, capped at
   three snippets per question. Selected guidance is injected with an explicit
   warning that it carries no execution, catalog, or citation authority, and the
@@ -285,7 +292,9 @@ The reasoning behind the split:
 
 ## Voice and tone
 
-The voice standard lives in `answer_style_guides/default.md` and is summarized as a
+The voice standard lives in
+[`answer_style_guides/default.md`](../backend/src/compass_backend/instructions/answer_style_guides/default.md)
+and is summarized as a
 *plain-spoken explainer talking to a policy reader who doesn't need to be eased into
 the data*: lead with the answer, echo the user's words, name what's missing without
 apology, offer one observation the data invites, use contractions, skip preambles
