@@ -5,14 +5,14 @@
 ## The short version
 
 When someone asks Compass a question — *"What's the starting teacher salary in
-Denver?"* — the answer they get back is not something an AI model made up. Compass
+Denver?"* — the data in the answer is not something an AI model made up. Compass
 works in separated stages: an AI model **plans** what the question is asking for; a
 deterministic layer **verifies** that every district, topic, and metric in that plan
 actually exists in NCTQ's catalog; plain database queries **fetch** the facts; a
-renderer **assembles** the answer with its tables and citations; and only then does
-an AI model **phrase** the result in plain language — under validation rules that
-reject any rewrite that adds or changes a number. The facts and the wording come
-from different places, on purpose.
+renderer **assembles** the answer with its tables and citations; and, for eligible
+responses, an optional AI model may **phrase** the result in plain language under
+validation rules that reject a rewrite that adds or changes a number. The facts and
+the wording come from different places, on purpose.
 
 Two properties fall out of this design:
 
@@ -26,73 +26,57 @@ architecture and the voice standards. It assumes technical fluency from here on.
 
 ## The pipeline
 
-Read the diagram top to bottom — each box is one stage, with a line on what it
-does. Color marks the division of labor: colored boxes are where an AI model
-acts — **blue** plans, **purple** writes, **green** makes small bounded
-judgments — and **gray** boxes are plain code. No AI box is ever the source of
-a fact. And no box names a model, on purpose: Compass assigns models to
-*roles*, explained in [Which model does what](#which-model-does-what) below.
+Read the diagram top to bottom. The central path is a data question; the short
+branches show what happens when Compass instead needs clarification, can reply
+directly, or retrieves approved NCTQ material. Color marks the division of labor:
+blue plans, purple writes, green makes small bounded judgments, and gray boxes are
+plain code. No AI box is ever the source of a fact. The diagram names roles rather
+than models because the model for each role is a configuration setting, explained
+in [How Compass uses different LLM models](#how-compass-uses-different-llm-models).
 
 ```mermaid
 flowchart TD
-    U["A user asks a question"] --> FE["`**Chat window**
-the Compass frontend, on its own
-page or embedded on nctq.org`"]
-    FE -->|"server-to-server — keys stay off the browser"| API["`**Policy Advisor API**
-the backend that runs the whole turn`"]
+    U([A user asks a question]) --> FE[Chat window]
+    FE --> API[Compass API]
 
-    subgraph API_TURN ["One turn inside the API"]
-        P["`**1 · Plan** — the planning model
-An AI model works out what the question is asking for.
-It names things in plain phrases — no facts, IDs, or SQL.`"]
-        V["`**2 · Check the plan**
-Every district, topic, and metric the plan names is
-checked against NCTQ's catalog of reviewed data.`"]
-        M["`**3 · Remember the conversation**
-Context from earlier turns is merged in —
-as structured data, never loose text.`"]
-        R["`**4 · Resolve to real IDs**
-Verified phrases become real database identifiers.
-No catalog match means the plan is blocked, not guessed.`"]
-        X["`**5 · Fetch the facts**
-Ordinary database queries pull the data.
-No AI involved.`"]
-        RD["`**6 · Assemble the answer**
-Plain code builds the answer skeleton:
-lead sentence, tables, citations, CSV download.`"]
-        S["`**7 · Polish the wording** — the writing model
-An AI model rewrites the prose for a human reader.
-The facts, numbers, and citations are locked.`"]
-        G{"`**8 · Final check**
-Did the rewrite add or change
-any number or citation?`"}
-        P --> V --> M --> R --> X --> RD --> S --> G
-        G -->|"no — safe to send"| OUT["Answer streams to the user"]
-        G -->|"yes — reject it"| FB["`Ship the unpolished version instead:
-same facts, plainer prose`"]
-        FB --> OUT
+    subgraph API_TURN ["One turn inside Compass"]
+        M["Load earlier context<br/>Plain code"] --> P["1. Plan<br/>The planning model creates a typed plan<br/>and chooses what happens next."]
+        P --> ROUTE{Which route?}
+
+        ROUTE -->|Data question| R["2. Resolve the plan<br/>Plain code verifies phrases against<br/>NCTQ's reviewed catalog."]
+        R -.->|Only for an ambiguous name| ADJ["Catalog adjudicator<br/>Chooses only from supplied candidates."]
+        R --> X["3. Fetch the facts<br/>Plain database queries."]
+        X --> RD["4. Assemble the answer<br/>Plain code creates facts, tables,<br/>citations, and downloads."]
+
+        ROUTE -->|Needs clarification| C["Clarify<br/>The writing model may phrase a follow-up.<br/>A fixed fallback is always available."]
+        ROUTE -->|Direct reply| D["Build direct response<br/>Plain code"]
+        ROUTE -->|Policy or publication| N["Retrieve approved NCTQ material<br/>and render a grounded response."]
+
+        RD --> STYLE{Eligible for optional<br/>writing polish?}
+        N --> STYLE
+        STYLE -->|No| OUT([Response sent])
+        STYLE -->|Yes| S["Answer stylist<br/>May improve wording only;<br/>facts and citations stay locked."]
+        S --> G{Rewrite passes validation?}
+        G -->|Yes| OUT
+        G -->|No: use deterministic version| OUT
+        C --> OUT
+        D --> OUT
     end
 
-    API --> P
-    R -.-|"ambiguous names only"| ADJ["`**Catalog adjudicator** — a judge model
-An AI model picks among the listed candidates
-for an ambiguous name — it can never invent one.`"]
-    X --- DB[("`**PostgreSQL**
-NCTQ's reviewed data,
-compass schema`")]
-    OUT -.->|"afterward, in the background"| Q["`**Quality check** — the judge models
-AI judges pick the relevant checks and grade the answer
-for the quality dashboard — they never edit an answer.`"]
+    API --> M
+    X --- DB[(NCTQ reviewed data)]
+    OUT -.->|Afterward, in the background| Q["Quality evaluation<br/>Models select relevant checks and grade the response.<br/>They never edit or block it."]
 
     classDef planning fill:#dbeafe,stroke:#2563eb,color:#111827
     classDef writing fill:#f3e8ff,stroke:#9333ea,color:#111827
     classDef judging fill:#dcfce7,stroke:#16a34a,color:#111827
     classDef code fill:#f3f4f6,stroke:#4b5563,color:#111827
     classDef endpoint fill:#fef3c7,stroke:#d97706,color:#111827
+
     class P planning
-    class S writing
+    class C,S writing
     class ADJ,Q judging
-    class FE,API,V,M,R,X,RD,G,FB,DB code
+    class FE,API,M,R,X,RD,D,N,G,DB code
     class U,OUT endpoint
 ```
 
@@ -104,9 +88,9 @@ named stage helpers — the stage order above is readable directly from it.
 
 ## Planning: intent becomes a typed plan
 
-The planner is the single model authority for **what the question
-is asking** — and nothing else. Its output is a typed `PlannerTurn` object, not
-prose. It chooses one of five routes:
+The planner is the single model authority for **what the question is asking** — and
+nothing else. Its output is a typed `PlannerTurn` object, not prose. It chooses one
+of five routes:
 
 | Route | When | What happens next |
 | --- | --- | --- |
@@ -203,12 +187,11 @@ sentence, data tables with a Sources column, coverage notes, and a downloadable 
 artifact whose rows match the table exactly (same values, same citations; if there
 are no rows, no CSV is offered).
 
-Then the **answer stylist** — the pipeline's writing model — rewrites the prose
-for a human reader.
-It works inside a sealed brief: the facts, tables, caveat lines, and source blocks
-are immutable, and the style guide's hard rules forbid adding facts, numbers, or
-markers, rounding or computing values, or inventing NCTQ positions. Validation
-enforces the contract mechanically:
+For eligible responses, the optional **answer stylist** rewrites the prose for a
+human reader. It works inside a sealed brief: the facts, tables, caveat lines, and
+source blocks are immutable, and the style guide's hard rules forbid adding facts,
+numbers, or markers, rounding or computing values, or inventing NCTQ positions.
+Validation enforces the contract mechanically:
 
 - **Numeric-token provenance** — every number in the styled text must exist in the
   sealed facts; a rewrite that adds or changes a number is rejected.
@@ -271,45 +254,34 @@ routing judgment, and voice. A house style guide and lint tests keep the instruc
 files consistent. Because the files are in git, their version history **is** the
 prompt version history.
 
-## Which model does what
+## How Compass uses different LLM models
 
-Compass uses different AI models for different jobs inside a single turn — the
-model that interprets the question is not the one that polishes the final wording
-or grades quality afterward. The pipeline is built around **roles, not models**:
-the diagram above names no model on purpose, because which model fills each role
-is a configuration setting (one per role, in
-`src/compass_backend/agents/model_settings.py`), not part of the design. As of
-this writing, every chat role runs an Anthropic Claude model through the Pydantic
-AI Gateway:
+Compass uses different AI models for different jobs inside a single turn. The model
+that interprets the question is not the one that polishes the final wording or
+grades quality afterward. The current default assignments are Anthropic Claude
+models, routed through the Pydantic AI Gateway:
 
-| Role | The job in the pipeline | Model today |
+| Role | What it does | Default model |
 | --- | --- | --- |
-| Planner | Step 1 — interpret the question, produce the typed plan | Claude Sonnet 4.6 |
-| Answer & clarification stylist | Step 7 — polish validated text; also phrase clarifying questions | Claude Opus 4.6 |
-| Catalog adjudicator | Step 4 — pick among listed candidates when a name is ambiguous | Claude Haiku 4.5 |
-| Criterion classifier & quality judges | After the answer — choose the relevant quality checks, then grade against them | Claude Haiku 4.5 |
+| Planner | Interprets the question and produces the typed plan. | Claude Sonnet 4.6 |
+| Answer and clarification stylist | Optionally polishes validated text or phrases a follow-up question. | Claude Opus 4.6 |
+| Catalog adjudicator | Chooses among supplied candidates when a name is ambiguous. | Claude Haiku 4.5 |
+| Criterion classifier and quality judges | Select relevant checks and grade the response after it ships. | Claude Haiku 4.5 |
 
 The reasoning behind the split:
 
-- **Planning gets the strongest reasoning.** Interpreting a request and producing
-  a valid, structured plan is the highest-stakes model step in the turn.
-- **Small, bounded judgments get a small, fast model.** The adjudicator,
-  classifier, and judges only choose among options Compass supplies — a limited
-  decision space, at high volume, where speed and cost matter.
-- **Writing polish is optional by design.** If the stylist fails, times out, or
-  its rewrite fails validation, the deterministic validated answer ships instead
-  — and the clarification stylist has a fixed pre-written question as its
-  fallback. A styled answer is never required for correctness.
-- **Any role can change models without changing the system.** Because each role
-  is an independent setting, a candidate model is evaluated for one role at a
-  time — against the evaluation suite in
-  [Quality & Evaluation](04-quality-and-evaluation.md) — and adopted only if it
-  measures better.
-
-One operational consequence of every chat role running on one provider: if
-Anthropic has an outage, chat pauses even though everything NCTQ hosts is healthy
-(provider status: status.claude.com). A separate Google Gemini model appears only
-in the data-preparation pipeline (document summaries, offline) — never in chat.
+- Planning gets the model selected for reliable structured reasoning. This is the
+  highest-stakes model step: a wrong route or invalid plan sends the rest of the
+  turn down the wrong path.
+- Small, bounded judgments get a small, fast model. The adjudicator, classifier,
+  and judges only choose among options Compass supplies, so speed and cost matter.
+- Writing polish is optional by design. If the stylist fails, times out, or its
+  rewrite fails validation, the deterministic validated answer ships instead. The
+  clarification stylist also has a fixed fallback question.
+- Any role can change models without changing the system. Each role is an
+  independent setting, so a candidate model is evaluated for that job and adopted
+  only if it performs better on the relevant reliability, quality, speed, and cost
+  measures.
 
 ## Voice and tone
 
