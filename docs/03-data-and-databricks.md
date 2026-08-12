@@ -129,9 +129,38 @@ of scope for this documentation.
 ## The data dictionary
 
 The `compass` schema divides into runtime views the chat reads, the tables behind
-them, and governance/ledger tables. The authoritative definitions are in this
-repository (`src/compass_data_sync/`: `compass_schema.sql`, `compass_views.sql`,
-and append-only `migrations/`); this is the map:
+them, and governance/ledger tables. The authoritative definitions are maintained
+in the source repository's data-sync package (`compass_schema.sql`,
+`compass_views.sql`, and append-only migrations); this is the map:
+
+For the field-level reference, relationships, types, and purposes, see the linked
+[Compass schema reference](reference/compass-schema.md). This section keeps the
+orientation at the system level; the reference is the place to look up an
+individual table or field.
+
+```mermaid
+flowchart LR
+    D["District catalog"] --> A["Reviewed policy answers"]
+    M["Metric and topic catalog"] --> A
+    A --> C["Answer citations"]
+    C --> S["Reviewed source documents"]
+    D --> N["NCES enrichment"]
+    D --> DP["district_profiles"]
+    A --> PA["policy_answers"]
+    C --> AS["answer_sources"]
+    M --> PQ["policy_questions"]
+    DP --> R["Chat read interface"]
+    PA --> R
+    AS --> R
+    PQ --> R
+```
+
+The runtime views (`district_profiles`, `policy_questions`, `policy_answers`, and
+`answer_sources`) are the stable, denormalized read interface for chat. The source
+tables retain upstream detail, sync metadata, citations, enrichment, and governed
+configuration. The presence of a field in the database does not by itself make it
+user-facing: route-specific logic and governed allowlists decide which fields may
+appear in an answer.
 
 **Runtime materialized views (what a chat turn reads):**
 
