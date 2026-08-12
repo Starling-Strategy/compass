@@ -93,6 +93,40 @@ code resolves the phrase to real catalog fields, executes the query, and assembl
 the cited result. The answer stylist can improve wording only within the rules
 described in [Generation: facts first, phrasing second](02-product-and-answer-flow.md#generation-facts-first-phrasing-second).
 
+## A quick route through the documentation
+
+Use the question you are trying to answer to choose your next page. The linked
+index below the diagram is the definitive navigation list; this picture is the
+short orientation for a first-time reader.
+
+```mermaid
+flowchart TD
+    START([👤 What do you need to understand?])
+
+    START --> PRODUCT["🧭 Product behavior<br/>How does a question become an answer?"]
+    START --> DATA["📊 Data and structure<br/>What does Compass know and where is it stored?"]
+    START --> TRUST["✅ Quality and limits<br/>How is trust measured and what remains imperfect?"]
+    START --> TECH["⚙️ Implementation<br/>Where are the code, API, and integrations?"]
+    START --> ORIENT["📖 Orientation and operations<br/>What do terms mean and where are private details?"]
+
+    PRODUCT --> D2["§2 Product & Answer Flow"]
+    DATA --> D3["§3 Data & the Databricks Platform"]
+    DATA --> DS["Compass schema reference"]
+    TRUST --> D4["§4 Quality & Evaluation"]
+    TRUST --> D9["§9 Known Issues & Limitations"]
+    TECH --> D8["§8 Technical Reference"]
+    ORIENT --> DG["Compass glossary"]
+    ORIENT --> D57["Private §§5–7"]
+
+    classDef start fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#111827
+    classDef question fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#111827
+    classDef destination fill:#dcfce7,stroke:#15803d,stroke-width:2px,color:#111827
+
+    class START start
+    class PRODUCT,DATA,TRUST,TECH,ORIENT question
+    class D2,D3,DS,D4,D8,D9,DG,D57 destination
+```
+
 ## Which document should I read?
 
 | If your question is... | Read this next | It covers... |
