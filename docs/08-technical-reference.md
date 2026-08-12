@@ -196,7 +196,7 @@ remain owned by typed contracts and ordinary code.
 
 ## Pathfinder integration
 
-Compass is embedded as a cross-site iframe on the NCTQ District Policy Pathfinder.
+Compass is embedded as a cross-site iframe on the NCTQ District Policy Pathfinder. The implementation-facing [Pathfinder visual and embed specification](../resources/pathfinder-visual-spec.md) records the parent/iframe boundary, current visual baseline, accessibility expectations, and open design decisions.
 The integration has three parts:
 
 1. **Embed mode.** Add `?embed=true` to the frontend URL. The PHP shell sets the
