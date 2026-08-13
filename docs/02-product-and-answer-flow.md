@@ -40,22 +40,22 @@ flowchart TD
     FE --> API[Compass API]
 
     subgraph API_TURN ["One turn inside Compass"]
-        M["Load earlier context<br/>Plain code"] --> P["1. Plan<br/>The planning model creates a typed plan<br/>and chooses what happens next."]
+        M["Load earlier context (plain code)"] --> P["1. Plan: the planning model creates a typed plan and chooses what happens next"]
         P --> ROUTE{Which route?}
 
-        ROUTE -->|Data question| R["2. Resolve the plan<br/>Plain code verifies phrases against<br/>NCTQ's reviewed catalog."]
-        R -.->|Only for an ambiguous name| ADJ["Catalog adjudicator<br/>Chooses only from supplied candidates."]
-        R --> X["3. Fetch the facts<br/>Plain database queries."]
-        X --> RD["4. Assemble the answer<br/>Plain code creates facts, tables,<br/>citations, and downloads."]
+        ROUTE -->|Data question| R["2. Resolve the plan: plain code verifies phrases against NCTQ's reviewed catalog"]
+        R -.->|Only for an ambiguous name| ADJ["Catalog adjudicator: chooses only from supplied candidates"]
+        R --> X["3. Fetch the facts: plain database queries"]
+        X --> RD["4. Assemble the answer: plain code creates facts, tables, citations, and downloads"]
 
-        ROUTE -->|Needs clarification| C["Clarify<br/>The writing model may phrase a follow-up.<br/>A fixed fallback is always available."]
-        ROUTE -->|Direct reply| D["Build direct response<br/>Plain code"]
-        ROUTE -->|Policy or publication| N["Retrieve approved NCTQ material<br/>and render a grounded response."]
+        ROUTE -->|Needs clarification| C["Clarify: the writing model may phrase a follow-up; a fixed fallback is always available"]
+        ROUTE -->|Direct reply| D["Build direct response (plain code)"]
+        ROUTE -->|Policy or publication| N["Retrieve approved NCTQ material and render a grounded response"]
 
-        RD --> STYLE{Eligible for optional<br/>writing polish?}
+        RD --> STYLE{Eligible for optional writing polish?}
         N --> STYLE
         STYLE -->|No| OUT([Response sent])
-        STYLE -->|Yes| S["Answer stylist<br/>May improve wording only;<br/>facts and citations stay locked."]
+        STYLE -->|Yes| S["Answer stylist: may improve wording only; facts and citations stay locked"]
         S --> G{Rewrite passes validation?}
         G -->|Yes| OUT
         G -->|No: use deterministic version| OUT
@@ -65,7 +65,7 @@ flowchart TD
 
     API --> M
     X --- DB[(NCTQ reviewed data)]
-    OUT -.->|Afterward, in the background| Q["Quality evaluation<br/>Models select relevant checks and grade the response.<br/>They never edit or block it."]
+    OUT -.->|Afterward, in the background| Q["Quality evaluation: models select relevant checks and grade the response; they never edit or block it"]
 
     classDef planning fill:#dbeafe,stroke:#2563eb,color:#111827
     classDef writing fill:#f3e8ff,stroke:#9333ea,color:#111827
