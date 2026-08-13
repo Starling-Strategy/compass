@@ -300,12 +300,6 @@ that is enforced and a rule that is merely instructed.
 
 ### Disclosures Compass is required to include
 
-Compass has no general-purpose legal or safety disclaimer, and adding one is a
-deliberate non-choice: a boilerplate line at the bottom of every answer would
-be ignored, and it would compete with the specific, situational disclosures
-below. What Compass requires instead is that the limits of a *particular*
-answer are stated in that answer.
-
 The coverage sentences are **canonical strings, reproduced verbatim**. This is
 the point worth understanding: these are not suggested phrasings. Each one
 marks a distinct coverage state, and rewording one into a friendlier
