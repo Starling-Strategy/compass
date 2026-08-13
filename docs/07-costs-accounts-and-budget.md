@@ -38,7 +38,6 @@ this table exists.
 | Account or service | Administrator | Who pays | Status | Remaining action |
 | --- | --- | --- | --- | --- |
 | Pydantic AI Gateway (production model traffic) | NCTQ | NCTQ, billed through Logfire | Configured | Confirm NCTQ billing and admin access; reconcile the application estimate against the Gateway ledger monthly. |
-| Anthropic | — | No direct account | Not applicable | None. Compass reaches Anthropic models only through the Gateway; there is deliberately no direct provider key (see [§6.5](06-hosting-deployment-security.md#65-runtime-configuration-and-secrets)). |
 | Google AI / Gemini API | — | — | **Not a Compass account** | None for Compass. Gemini is used by the [Metric Calculator](reference/metric-calculator.md) and its document pipeline, which are upstream data-production tools rather than part of Compass. Noted here only so the platform's one non-Anthropic model dependency is not mistaken for a Compass service; it belongs to the Metric Calculator's own ownership record. |
 | Pydantic Logfire | NCTQ | NCTQ | Connected; `nctqai` project queried | Confirm the named NCTQ project administrators and the retention plan. |
 
