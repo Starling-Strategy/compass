@@ -203,42 +203,6 @@ catalog, prices change, or the Gateway applies provider-specific pricing or
 markup. Missing telemetry must be labeled unknown rather than reported as
 zero.
 
-#### Gateway billing
-
-Compass routes production model traffic through the Pydantic AI Gateway. The
-dedicated production Gateway key has no total spending cap, so its amount
-changes as production traffic runs. Logfire's Gateway Spending view and the
-provider or Gateway billing record are the financial authority; the
-`compass.llm_usage` estimate is the operational cross-check.
-
-Keep these sources distinct:
-
-| Source | What it answers | Authority |
-| --- | --- | --- |
-| `compass.llm_usage` | How many tokens and model calls Compass recorded, with an estimated price | Application estimate |
-| Logfire Gateway Spending | What the Gateway attributes to the production key | Gateway usage ledger |
-| Provider or Gateway billing record | What is ultimately charged | Financial authority |
-
-The `nctqai` Logfire project is available at
-[`nctqai`](https://logfire-us.pydantic.dev/murmuration/nctqai). A more
-user-friendly production spend view—showing model, token, cache, trend, and
-estimate-versus-ledger information—should be carried as a follow-up to the
-[NCTQ closeout issue #33](https://github.com/Starling-Strategy/compass/issues/33).
-Until that work is complete, refresh the estimate and Gateway ledger together
-as part of the monthly operating review. See
-[How Compass uses different AI models](02-product-and-answer-flow.md#how-compass-uses-different-ai-models)
-for the model roles and the quality gates required before a cheaper model
-replaces the current one.
-
-Keep API-like services in separate budget lines:
-
-| Cost class | Examples | Budget treatment |
-| --- | --- | --- |
-| Production model usage | Planner, catalog adjudicator, and model-judged criteria | Variable Compass operating cost, reconciled monthly |
-| Evaluation model usage | Scenario sweeps, A/B runs, and disagreement judging | Variable development and quality cost, tagged separately from production traffic |
-| Observability | Pydantic Logfire plan and retention | Fixed or tiered service cost, plus any usage overage |
-| External data or analytics APIs | Airtable, Google Analytics, Urban Institute, WordPress, and other source integrations | Record subscription or usage fees separately, even when currently free or covered by another NCTQ account |
-
 ### Cost drivers and levers
 
 The main Azure drivers are always-on application and environment capacity,

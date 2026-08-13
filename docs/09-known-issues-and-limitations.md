@@ -153,30 +153,28 @@ operations-dashboard pass.
 
 ### Two analytics tools measure the same thing; Google Analytics should be the only one
 
-Site traffic is currently measured twice. Google Analytics 4 and a self-hosted
-Umami instance both count visitors, and the dashboard's unique-visitor tile
-reads whichever is available: GA when it is configured, Umami as a fallback when
-it is not. Two tools, two credential sets, and two client modules exist to
+Site traffic is still measured by two tools. Google Analytics 4 is the
+configured primary source and supplies the dashboard's unique-visitor tile; a
+self-hosted Umami instance remains in the code as a fallback for environments
+where GA is not set up. Two credential sets and two client modules exist to
 produce a single number.
 
-Most of the consolidation has already happened. The GA client was written to
+The substance of the consolidation is already done. The GA client was written to
 mirror Umami's interface exactly, so the tile reads from either source without
-any change to the rendering code, and GA is preferred wherever it is configured.
-GA is also the better instrument for this measurement: it de-duplicates a
-visitor by client ID across all time, while Umami's hash salt resets on the
-first of each calendar month, which is why the Umami path cannot report an
-honest all-time figure and suppresses that number instead. The self-hosted
-Umami version in use also predates user-managed API keys, so its client
-authenticates by logging in and caching a session token — a workaround that
-exists only because the instance is self-hosted.
+any change to the rendering code, and GA takes precedence. GA is also the better
+instrument for this measurement: it de-duplicates a visitor by client ID across
+all time, while Umami's hash salt resets on the first of each calendar month —
+which is why the Umami path cannot report an honest all-time figure and
+suppresses that number instead. The self-hosted Umami version in use also
+predates user-managed API keys, so its client authenticates by logging in and
+caching a session token, a workaround that exists only because the instance is
+self-hosted.
 
-What remains is retirement rather than migration: confirm GA is configured in
-production, then remove the Umami client, its configuration and credentials, and
-the fallback branch, and decommission the instance itself. Standardizing on GA
-also removes the monthly-reset caveat from the operator-facing metric
-definitions in
-[§5](05-administration-and-dashboard.md#key-metrics-and-how-they-are-calculated),
-which currently has to explain a limitation that only applies to the fallback.
+What remains is retirement rather than migration: remove the Umami client, its
+configuration and credentials, and the fallback branch, then decommission the
+instance itself. Nothing depends on it while GA is configured, so the work is
+deletion and cleanup — the risk is in leaving live credentials and an
+unmaintained self-hosted service running, not in switching anything over.
 
 The consolidation argument is not that Umami is worse in general. It is that one
 number should have one source, and a second tool that measures the same thing
