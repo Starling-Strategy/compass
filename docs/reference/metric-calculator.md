@@ -38,10 +38,10 @@ The path is real but indirect — three hops, not a shared pipeline:
 
 ```mermaid
 flowchart LR
-    DOCS["District policy documents"] --> PP["PiedPiper<br/>(prediction engine)"]
-    PP --> MC["Metric Calculator<br/>(analyst review, nctq.ai)"]
-    MC -->|"approved answers"| TCD["TCD / District Policy Pathfinder<br/>(NCTQ's published database)"]
-    TCD -->|"nightly Databricks sync"| CS[("compass schema<br/>navigator_* tables")]
+    DOCS["District policy documents"] --> PP["PiedPiper (prediction engine)"]
+    PP --> MC["Metric Calculator (analyst review, nctq.ai)"]
+    MC -->|"approved answers"| TCD["TCD / District Policy Pathfinder (NCTQ's published database)"]
+    TCD -->|"nightly Databricks sync"| CS[("compass schema: navigator_* tables")]
     CS --> COMPASS["Compass chat"]
 ```
 

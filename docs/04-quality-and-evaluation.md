@@ -108,11 +108,11 @@ The working vocabulary is:
 
 ```mermaid
 flowchart LR
-    SC["Scenario<br/>user goal or behavior"] --> CA["Case<br/>literal prompt and expected shape"]
-    CA --> CR["Criterion<br/>one checkable rule"]
-    CR --> SW["Sweep<br/>replays cases, writes verdicts"]
-    SW --> VE["Verdict<br/>one answer × one criterion, recorded"]
-    VE --> RC["Scorecard<br/>roll-up by dimension, scenario, case, run"]
+    SC["Scenario: user goal or behavior"] --> CA["Case: literal prompt, expected shape"]
+    CA --> CR["Criterion: one checkable rule"]
+    CR --> SW["Sweep: replays cases, writes verdicts"]
+    SW --> VE["Verdict: one answer × one criterion"]
+    VE --> RC["Scorecard: roll-up by dimension, scenario, case, run"]
 ```
 
 This chain — scenario, case, criterion, sweep, verdict, scorecard — is the

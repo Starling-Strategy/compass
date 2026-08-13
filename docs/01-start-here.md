@@ -108,11 +108,11 @@ short orientation for a first-time reader.
 flowchart TD
     START([What do you need to understand?])
 
-    START --> PRODUCT["Product behavior<br/>How does a question become an answer?"]
-    START --> DATA["Data and structure<br/>What does Compass know and where is it stored?"]
-    START --> TRUST["Quality and limits<br/>How is trust measured and what remains imperfect?"]
-    START --> TECH["Implementation<br/>Where are the code, API, and integrations?"]
-    START --> ORIENT["Orientation and operations<br/>What do terms mean and where is the operational handoff?"]
+    START --> PRODUCT["Product behavior: how does a question become an answer?"]
+    START --> DATA["Data and structure: what does Compass know, and where is it stored?"]
+    START --> TRUST["Quality and limits: how is trust measured, what remains imperfect?"]
+    START --> TECH["Implementation: where are the code, API, and integrations?"]
+    START --> ORIENT["Orientation and operations: what do terms mean, where is the handoff?"]
 
     PRODUCT --> D2["§2 Product & Answer Flow"]
     DATA --> D3["§3 Data & the Databricks Platform"]
