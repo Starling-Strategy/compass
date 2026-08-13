@@ -121,29 +121,30 @@ content-hashed so nothing is reprocessed unless it changes. Thousands of PDFs ha
 been through it.
 
 The [Databricks notebook inventory](reference/databricks-notebook-inventory.md)
-records the nine folders and 47 notebooks requested in the client outline, along
-with each notebook's purpose, pipeline order, inputs, outputs, and owner. It is
-based on the July 6, 2026 handoff source and marks workspace names or owners that
-the source did not supply as items to verify against Databricks and Azure Data
-Factory. Runbooks, alerting details, and credentials remain operational concerns;
-this reference contains no secrets. One scope note: the
-**[Metric Calculator](reference/metric-calculator.md)** is a previous, parallel
-data-ingestion project and is not part of Compass; its data is kept in the same
-bronze/silver/gold layers, and reaches Compass only indirectly, through NCTQ's
-published TCD/Pathfinder database — see the linked reference for the full path
-and why it's out of scope for this documentation.
+records all nine folders and 47 notebooks, with each notebook's purpose, pipeline
+order, inputs, outputs, and owner. It is built from the July 6, 2026 handoff
+source, and flags the workspace names and owners that source did not supply as
+items to verify against Databricks and Azure Data Factory. Runbooks, alerting
+details, and credentials remain operational concerns; the inventory contains no
+secrets.
+
+One scope note. **Metric Calculator** is a separate, earlier NCTQ data project,
+not part of Compass. It happens to use the same bronze/silver/gold layer names,
+and its approved answers reach Compass only indirectly, by way of NCTQ's published
+TCD/Pathfinder database. The [Metric Calculator
+reference](reference/metric-calculator.md) explains that path and why the system
+itself is out of scope here.
 
 ## The data dictionary
 
-The `compass` schema divides into runtime views the chat reads, the tables behind
-them, and governance/ledger tables. The authoritative definitions are maintained
-in the source repository's data-sync package (`compass_schema.sql`,
-`compass_views.sql`, and append-only migrations); this is the map:
+The `compass` schema divides into the runtime views the chat reads, the tables
+behind them, and governance and ledger tables. The authoritative definitions are
+maintained in the development repository's data-sync package
+(`compass_schema.sql`, `compass_views.sql`, and append-only migrations).
 
-For the field-level reference, relationships, types, and purposes, see the linked
-[Compass schema reference](reference/compass-schema.md). This section keeps the
-orientation at the system level; the reference is the place to look up an
-individual table or field.
+This section keeps the orientation at the system level. To look up an individual
+table, field, type, or relationship, use the [Compass schema
+reference](reference/compass-schema.md).
 
 ```mermaid
 flowchart LR
@@ -190,9 +191,10 @@ plus the evaluation ledger (scenarios, cases, criteria, verdicts) described in
 
 ## What "current" means
 
-- The current academic year is a single constant in the backend
-  (`2024-25` at the time of writing), enforced by a test that forbids year literals
-  anywhere else in the code.
+- The current academic year is a single constant in the backend (`2024 - 2025` at
+  the time of writing — that spaced form is the canonical value stored in the
+  database), enforced by a test that forbids year literals anywhere else in the
+  code.
 - Answers serve the **latest reviewed value, labeled with its year**. If a district
   was last reviewed in an earlier year, Compass says so, in canonical phrasing:
   *"NCTQ last reviewed [District] for [subject] in [year]; the value then was [X]."*
@@ -222,8 +224,7 @@ Stated here because honesty about coverage is a product feature:
 - FRPL (free/reduced-price lunch) percentages are unavailable from the federal CCD
   source used for NCES context; that field is null pending an alternate source.
 - A small share of covered answers have no fallback citation document.
-- NCES context lags the current academic year by federal release schedules, as noted
-  above.
+- NCES context lags the current academic year, on federal release schedules.
 
 The living list of issues and limitations across the whole product is
 [Known Issues & Limitations](09-known-issues-and-limitations.md).

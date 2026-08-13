@@ -37,7 +37,7 @@ in [How Compass uses different AI models](#how-compass-uses-different-ai-models)
 ```mermaid
 flowchart TD
     U([A user asks a question]) --> FE[Chat window]
-    FE --> API[Compass API]
+    FE --> API[Policy Advisor API]
 
     subgraph API_TURN ["One turn inside Compass"]
         M["Load earlier context (plain code)"] --> P["1. Plan: the planning model creates a typed plan and chooses what happens next"]
@@ -104,7 +104,7 @@ of five routes:
 Three rules keep planning safe:
 
 - **No prose dispatch.** Nothing downstream branches on natural-language strings;
-  routing happens on typed fields. A CI test enforces this with a
+  routing happens on typed fields. A repository test enforces this against a
   shrinking baseline of grandfathered exceptions.
 - **No minted identifiers.** The planner emits *phrases* ("Denver", "starting
   salary"); it cannot supply database IDs, SQL, or citations.
@@ -204,10 +204,10 @@ Validation enforces the contract mechanically:
   correctness.
 
 > **On the punch list:** two related items live in
-> [Known Issues & Limitations](09-known-issues-and-limitations.md): today's final
-> check [catches added facts, not dropped ones](09-known-issues-and-limitations.md#the-final-check-catches-added-facts-not-dropped-ones)
-> (and how sealing mitigates that), and the planned upgrade to
-> [a writer that composes from the full data, behind a fact-coverage gate](09-known-issues-and-limitations.md#a-writer-that-composes-from-the-full-data-behind-a-fact-coverage-gate).
+> [Known Issues & Limitations](09-known-issues-and-limitations.md) — today's final
+> check catches added facts but not dropped ones (and how sealing mitigates that),
+> and the planned upgrade to a writer that composes from the full data behind a
+> fact-coverage gate.
 
 ## Citations
 

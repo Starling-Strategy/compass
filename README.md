@@ -40,12 +40,16 @@ are operational handoff documentation for NCTQ; the rest describe the product it
 | 9 | [Known Issues & Limitations](docs/09-known-issues-and-limitations.md) | What's broken, worked around, or out of scope, honestly stated |
 
 Writing conventions for every section: a plain-language overview first, then a body
-that assumes technical fluency; each fact lives in exactly one doc and is linked from
-the others; diagrams are Mermaid so they render on GitHub and diff in review.
+that assumes technical fluency; each fact lives in exactly one section, and a
+cross-reference points there only when a reader genuinely needs to go; diagrams are
+Mermaid so they render on GitHub and diff in review.
 
-For the cross-system view, start with the [Compass system architecture
-reference](docs/reference/architecture.md). The [Compass schema
-reference](docs/reference/compass-schema.md) is the field-level companion.
+Four reference documents sit under `docs/reference/`: the
+[system architecture](docs/reference/architecture.md) for the cross-system view,
+the [schema reference](docs/reference/compass-schema.md) for field-level detail,
+the [glossary](docs/reference/compass-glossary.md) for shared vocabulary, and the
+[prompt and model inventory](docs/reference/prompt-and-model-inventory.md) for
+model roles and their guardrails.
 
 ## License
 
