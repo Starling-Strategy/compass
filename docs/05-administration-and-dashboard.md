@@ -156,6 +156,72 @@ The scorecard is a review surface, not the place to edit criteria, repair data,
 or rerun production conversations. Evaluation changes and replays belong to the
 Compass evaluation workflow.
 
+### Key metrics and how they are calculated
+
+**Compass > Overview** is the usage surface. Every tile on it is a specific
+calculation over saved conversations, and several of them are easy to misread if
+you do not know the denominator. This section is the definition list; the
+implementation is `dashboard/src/nctqai/services/compass_stats.py` and
+`routes/compass/overview.py`, which remain authoritative.
+
+Two conventions run through the whole page. First, **the unit is usually the
+conversation, not the message** — most rates divide by sessions. Second, **every
+people tile honors the active date-range pill** (7 days, 30 days, all time), so
+two numbers on the same screen always describe the same window.
+
+#### People
+
+Three tiles count people, and they are deliberately not the same number.
+
+| Tile | Calculation | What to watch for |
+| --- | --- | --- |
+| **Unique visitors** | Site-level unique visitors from Umami, for people who viewed Compass on Pathfinder | Umami's de-duplication salt resets on the first of each calendar month, so it only de-duplicates *within* a month. The tile therefore shows no number at all for the all-time range, because a monthly regular would be counted roughly twelve times a year. Use it for 7- and 30-day windows only. |
+| **Chat users** | `COUNT(DISTINCT visitor_id)` over sessions in the window — distinct people who actually started a conversation | This is the honest "how many real users" number: chat-level and de-duplicated with no monthly reset. It counts only visitors carrying a pseudonymous ID minted by the Pathfinder embed, so traffic that reaches the chat outside the embed is not counted. |
+| **Returning users** | Of those identified visitors, how many started **2 or more** conversations in the window | Chat-level, and a subset of Chat users — not a subset of Unique visitors. |
+
+When no visitor is identified in a window, the Chat users and Returning users
+tiles show *"Counting begins at launch"* rather than a bare zero, because a zero
+would read as "nobody uses Compass" when the real meaning is "no IDs were minted
+in this window." The visitor ID itself is pseudonymous and carries no personally
+identifying information; see [§8](08-technical-reference.md#pathfinder-integration).
+
+#### Engagement
+
+| Tile | Calculation |
+| --- | --- |
+| **Sessions** | `COUNT(*)` of conversations in the window. Carries a period-over-period trend caption only when a prior window of equal length exists and had a non-zero count — otherwise no trend is shown rather than a fabricated one. |
+| **Avg user questions** | User messages ÷ sessions, to one decimal. Counts user messages only, not assistant replies. |
+| **Multi-turn rate** | Percentage of sessions with **3 or more** user questions. A 2-or-more figure is also computed but deliberately has no tile, so there is one canonical multi-turn number. |
+| **Artifact coverage** | Share of sessions that produced a table, a CSV export, or a chart. Each tile links into a filtered Conversations view, so the number is auditable by clicking it. |
+
+#### Feedback
+
+Thumbs up, thumbs down, and not rated are all percentages **of sessions**, not
+of assistant messages. A conversation counts as thumbs-down if it contains any
+down-rating, as thumbs-up if it has at least one up-rating and no down-ratings,
+and as unrated otherwise. So the three bars describe conversations and sum to
+the session total. A high "not rated" share is a statement about rating
+adoption, not about answer quality.
+
+#### What conversations covered
+
+Top policy areas, top districts, and top states are each counted **once per
+conversation**, drawn from the metric and district context Compass saved with
+the turn. A conversation that asks about Denver six times contributes one to
+Denver. These are the top three in each category, so they are a read on what
+people ask about, not a complete distribution.
+
+#### Reading these numbers responsibly
+
+- A tile marked **"Under construction"** names a metric that is not live yet.
+  It is not a zero.
+- Usage metrics and quality metrics answer different questions. Nothing on the
+  Overview page is evidence that answers were correct; that is the
+  [scorecard's](#quality-and-scorecard) job, on its own denominators.
+- Site-level analytics (Umami, Google Analytics) and chat-level metrics
+  (everything derived from `compass.*`) will not reconcile to each other, and
+  are not expected to. Do not report a ratio between them.
+
 ### Data Universe
 
 Use **Compass > Data Universe** to inspect what the canonical Compass schema can

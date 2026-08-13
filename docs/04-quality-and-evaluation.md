@@ -172,6 +172,41 @@ the same library at two points on its growth curve. The number changes as
 scenarios are added, retired, split, or deduplicated; it describes the
 library's state at the export timestamp, not any particular release.
 
+### Where the benchmark questions themselves live
+
+The counts above describe the library's size; this is how to read its
+*contents* — the actual test questions Compass is evaluated against.
+
+The library is **data, not a document**. It lives in the evaluation ledger in
+the `compass` schema (`scenarios`, `cases`, `criteria`), which is why this
+documentation set does not carry a frozen list of prompts: a pasted list would
+be a snapshot of one afternoon, and the library changes as cases are added and
+retired. There are three ways to read the current set, in increasing order of
+directness:
+
+| Surface | What it gives you | Access |
+| --- | --- | --- |
+| Dashboard **Compass > Scenarios** | Browsable list of scenarios and their cases, with the literal prompt, expected behavior, and attached criteria | Admin-only, in the staff dashboard |
+| `GET /api/v1/scenario-cases` and `GET /api/v1/scenario-cases/{case_id}` | The same content as JSON, for export or offline analysis | Admin-only API key ([§8](08-technical-reference.md#api-reference)) |
+| The ledger tables directly | Everything, including retired cases and full verdict history | Read-only database access |
+
+A per-dimension count of the active library at the export timestamp — how many
+scenarios exist for Selection, Data Fidelity, Citation, Coverage-State
+Labeling, Filtering, Sorting, Consistency, and Voice & Tone, plus the retired
+dimensions — is in the
+[dated evidence file](reference/2026-08-12-evaluation-results.md#the-scenario-library-over-time).
+Section 2's [worked example](#an-example-end-to-end) above shows one real
+scenario end to end, from its literal prompt through its four kinds of
+criteria, as a template for reading any other entry.
+
+Two honest caveats about the library as a deliverable. It has **no named owner
+or review cadence**, which is tracked as an open item in
+[§9](09-known-issues-and-limitations.md#the-scenario-library-has-no-named-owner-or-review-cadence);
+a library that grew from 326 to 390 entries without a retirement policy will
+contain some duplicate and stale cases. And it is finite: it covers the failure
+modes the team has found so far, which is not the same as covering the
+questions users will ask next.
+
 ## 3. How Compass runs evaluations
 
 There are several ways to evaluate Compass. They answer different questions and

@@ -1,18 +1,121 @@
-# Compass system architecture
+# Compass and NCTQ.ai system architecture
 
-This is the full logical map of Compass: how the Pathfinder entry point, the
-three applications, the request runtime, the `compass` PostgreSQL schema, the
-nightly data platform, model routing, observability, and evaluation fit
-together.
+This page has two maps, at two altitudes.
 
-It is intentionally a **sanitized system view**, not a network diagram or a
+The [**NCTQ.ai platform map**](#the-nctqai-platform-one-level-up) is the wider
+view: every system running under NCTQ.ai, including the ones Compass does not
+use, and which of them produce reviewed policy data versus consume it.
+
+The [**Compass system map**](#the-full-system-map) is the detailed view: how the
+Pathfinder entry point, the three applications, the request runtime, the
+`compass` PostgreSQL schema, the nightly data platform, model routing,
+observability, and evaluation fit together.
+
+Read the platform map first if you are orienting; read the Compass map if you
+are tracing a request.
+
+Both are intentionally **sanitized system views**, not network diagrams or a
 secret inventory. Production hosting and environment details belong in
 [§6 Hosting, Deployment, and Security](../06-hosting-deployment-security.md).
-The smaller, purpose-specific diagrams in §§2-4 cover individual stages; this
-one covers how the pieces connect.
+The smaller, purpose-specific diagrams in §§2-4 cover individual stages; these
+cover how the pieces connect.
+
+## The NCTQ.ai platform, one level up
+
+Compass is one product inside a larger platform, and the platform has pieces
+Compass does not use. This first map is the wider view: everything running under
+NCTQ.ai and how Compass sits inside it. The [Compass system map](#the-full-system-map)
+below then zooms into the boxed region.
+
+The distinction that matters most here is **which systems produce reviewed
+policy data and which consume it**. Compass is strictly a consumer. The Metric
+Calculator and the document pipeline are producers, upstream of Compass and not
+part of its answer path — they help turn district documents into reviewed data,
+which reaches Compass only after it has been published to NCTQ's TCD/Pathfinder
+database and pulled through the nightly sync.
+
+Read it left to right in three stages: reviewed data is **produced** (1), carried
+through the **shared platform** (2), and **consumed** by Compass and the staff
+tools (3).
+
+```mermaid
+flowchart LR
+    subgraph PRODUCE["1 · Data production — upstream of Compass"]
+        DOCPIPE["Document pipeline: PDF text extraction, classification, summaries, embeddings"]
+        GEM["Google Gemini — Metric Calculator side, offline only"]
+        MC2["Metric Calculator: analyst review of AI-suggested policy answers"]
+        TCD2["NCTQ TCD / Pathfinder database — the published system of record"]
+        DOCPIPE -.-> GEM
+        DOCPIPE --> MC2
+        MC2 -->|"validated metric data"| TCD2
+    end
+
+    subgraph PLATFORM["2 · Shared data platform"]
+        DBX2["Azure Databricks and Data Factory — nightly bronze, silver, gold refresh"]
+        PG2[("PostgreSQL — compass schema and nctqai schema")]
+        DBX2 -->|"validated nightly load"| PG2
+    end
+
+    subgraph CONSUME["3 · Consumption — Compass and staff tools"]
+        CHAT["Compass chat embedded in the nctq.org Pathfinder"]
+        FE2["Compass Frontend"]
+        API2["Policy Advisor API"]
+        DASH2["NCTQ Dashboard: Compass monitoring, Documents, Journal, identity"]
+        CHAT --> FE2
+        FE2 --> API2
+    end
+
+    subgraph SERVICES["Supporting services"]
+        GW2["Pydantic AI Gateway — model routing"]
+        OBS["Logfire traces and Azure Log Analytics"]
+        AN["Umami and Google Analytics — site traffic"]
+    end
+
+    TCD2 --> DBX2
+    PG2 <--> API2
+    PG2 --> DASH2
+    DASH2 -->|"staff flags"| API2
+    API2 -.-> GW2
+    API2 -.-> OBS
+    DASH2 -.-> AN
+    MC2 -.->|"same deployed application, different responsibility"| DASH2
+
+    classDef produce fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#78350f
+    classDef platform fill:#dcfce7,stroke:#15803d,stroke-width:2px,color:#14532d
+    classDef consume fill:#ede9fe,stroke:#6d28d9,stroke-width:2px,color:#3b0764
+    classDef services fill:#e0f2fe,stroke:#0369a1,stroke-width:2px,color:#0c4a6e
+
+    class DOCPIPE,GEM,MC2,TCD2 produce
+    class DBX2,PG2 platform
+    class CHAT,FE2,API2,DASH2 consume
+    class GW2,OBS,AN services
+```
+
+Reading it as three deployed applications and their neighbors:
+
+| Platform piece | Deployed as | Relationship to Compass |
+| --- | --- | --- |
+| Compass Frontend | Its own Container App | Part of Compass |
+| Policy Advisor API | Its own Container App | Part of Compass — the engine |
+| NCTQ Dashboard | One Container App serving several sections | The Compass monitoring sections are part of Compass's operating story; Metric Calculator, Documents, and Journal are adjacent staff tools in the same application |
+| Document pipeline | Batch process in the dashboard codebase | Upstream producer, on the Metric Calculator side. Uses Google Gemini for enrichment and embeddings — the platform's only non-Anthropic model dependency, entirely offline, and not a Compass service |
+| Metric Calculator | Dashboard section under `/mc/*` | Upstream producer, **not part of Compass**. See the [Metric Calculator reference](metric-calculator.md) |
+| TCD / Pathfinder database | NCTQ system of record | The boundary between production and consumption: Compass reads only what has been published here |
+| Databricks and Data Factory | Azure, in `NCTQ_AI_Data` | Shared; carries reviewed data into the `compass` schema nightly |
+| PostgreSQL | Azure VM, in `NCTQ_PA` | Shared; holds both the `compass` and `nctqai` schemas, which are separate data domains |
+| Pydantic AI Gateway, Logfire, Umami, Google Analytics | External services | Shared; see the [ownership inventory](../07-costs-accounts-and-budget.md#ownership-and-payer-inventory) |
+
+Two boundaries in that table are easy to lose and worth stating outright. The
+dashboard is **one application with several sections**, not several
+applications — so "the Metric Calculator is not part of Compass" is a statement
+about responsibility, not about deployment. And the single PostgreSQL instance
+holds **two separate schemas**: `compass` for policy and conversation data,
+`nctqai` for staff identity. Sharing a database server does not make those one
+data domain, and the dashboard's own login accounts are not Compass API users.
 
 ## The full system map
 
+This is Compass itself, in detail — the boxed region of the platform map above.
 Read the solid arrows as the main request or data path. Dashed arrows show an
 optional model call, asynchronous evaluation, or telemetry; they do not supply
 the answer's facts directly. The colors are a visual aid only; the labels and

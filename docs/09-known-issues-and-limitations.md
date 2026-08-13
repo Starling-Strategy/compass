@@ -15,6 +15,52 @@ This section covers:
   only from NCTQ's reviewed data, it does not browse the web, and it does not offer
   opinions beyond NCTQ's published positions.
 
+## Where Compass tends to get things wrong
+
+The rest of this page is organized by *system*: which component has a gap and
+who owns it. This section reorders the same honesty by *symptom* — the failure
+patterns a reader is most likely to actually encounter, worst first. The
+evidence is the dimension scoring in
+[§4 section 4](04-quality-and-evaluation.md#dated-results-2026-08-12-export)
+and the pinned sweeps behind it.
+
+The pattern in the ranking is worth naming up front: **Compass is much better at
+handling the data correctly than at deciding what the question asked for.** The
+mechanical dimensions score highest (Sorting 99%, Citation 92%) and the
+interpretive ones lowest (Selection 47–65%, Data Fidelity 62%). Grounding
+protections mean a wrong answer is usually the *wrong right data* — real values
+for a set of districts, metrics, or years that is not quite what was asked —
+rather than an invented number.
+
+| Failure pattern | What it looks like to a user | Evidence | Tracked in |
+| --- | --- | --- | --- |
+| **Choosing the wrong set** — the weakest dimension by a wide margin. Compass picks districts, metrics, peers, or years that don't match the question. | The answer is well-formed and cited but about a slightly different question: a peer set you didn't mean, a metric adjacent to the one you asked for, the wrong year. | Selection: 47% on the strictest holistic lens, 65% on structured checks the same day, 93% on the broadest earlier measurement — against a 95% target. | [Five dimensions below target](#five-dimensions-sit-below-their-configured-targets-on-the-strictest-lens) |
+| **Values or labels that don't match the reviewed source** as the grader reads them. | A number, denominator, count, or label that a careful reviewer would question against the source data. | Data Fidelity: 62% against a 99% target. | [Five dimensions below target](#five-dimensions-sit-below-their-configured-targets-on-the-strictest-lens) |
+| **Blurring the five coverage states.** Treating "not reviewed," "issue not addressed," "not applicable," and "out of universe" as interchangeable ways of saying no. | The answer says data is unavailable but assigns the wrong reason — which changes what the absence actually means. | Coverage-State Labeling: 68% against a 98% target. | [Five dimensions below target](#five-dimensions-sit-below-their-configured-targets-on-the-strictest-lens); the canonical strings are in [§2](02-product-and-answer-flow.md#guardrails-what-compass-must-not-say-and-what-it-must-always-say) |
+| **Dropping a constraint from the question.** A filter stated in the prompt doesn't make it into the result. | You asked for districts in the South above a threshold; one half of that got applied. | Filtering: 73% against a 95% target. | [Five dimensions below target](#five-dimensions-sit-below-their-configured-targets-on-the-strictest-lens) |
+| **Surfaces disagreeing with each other.** The lead sentence, table, citation block, follow-up, and CSV are five views of one result and can drift apart. | The prose says one thing, the table another; the download doesn't match what was on screen. | Consistency: 89% against a 95% target. | [§4 recurring lessons](04-quality-and-evaluation.md#recurring-lessons) |
+| **A generic "please rephrase"** on a question that contained enough to answer. | A dead end instead of a grounded next step, discarding intent you already supplied. | Three waves of fixes in July 2026 closed most of these; a residual set of prompt shapes remains. | [An answerable question can still receive a generic clarification](#an-answerable-question-can-still-receive-a-generic-clarification) |
+| **A question straddling two query shapes** lands worse than the data would support. | An awkwardly shaped answer, or a clarifying question where a direct answer was possible. | Architectural: the planner commits to one shape before exploring the data. | [The planner picks a query shape before it sees the data](#the-planner-picks-a-query-shape-before-it-sees-the-data) |
+| **Nuance thinned out of polished prose.** Facts that live only in the lead sentence — not in a sealed table or caveat — can be lost in a rewrite. | An answer that is true but less complete than the deterministic version would have been. | Architectural: the final check catches added facts, not dropped ones. | [The final check catches added facts, not dropped ones](#the-final-check-catches-added-facts-not-dropped-ones) |
+| **A very long conversation degrading.** | Slower responses, then a hard failure, in an unusually long thread. | No compaction policy is implemented yet. | [A very long conversation can outgrow its working memory](#a-very-long-conversation-can-outgrow-its-working-memory) |
+| **A model-provider outage taking the turn down** even though the data layer is healthy. | An error on a question Compass could otherwise answer. | Observed in production during a provider outage. | [A model-provider outage can interrupt Compass](#a-model-provider-outage-can-interrupt-compass) |
+| **Language that is too technical or too vague about the review year.** | Internal vocabulary, or a value presented without making its year clear. | Several post-launch reports; some no longer reproduce after later fixes. | [Some voice and copy concerns need a fresh replay](#some-voice-and-copy-concerns-need-a-fresh-replay-before-a-fix-is-chosen) |
+
+Three caveats keep this table honest rather than alarming:
+
+1. **These are grader verdicts, not audited user harm.** The percentages come
+   from the strictest available lens, and the same cases read materially better
+   under structured checks. Selection's spread — 47%, 65%, and 93% depending on
+   the instrument — is the clearest illustration. Where the numbers disagree,
+   this documentation publishes the harsher reading.
+2. **The instrument was tightening while the product was improving**, so a low
+   score partly reflects a grader that got better at finding problems. That
+   comparability problem is [the program's weakest property](#run-to-run-comparability-is-the-programs-weakest-property).
+3. **What is *not* on this list matters too.** Grounding failures — an invented
+   district, a fabricated citation, a number with no source row — are absent
+   because they are prevented structurally rather than graded down. See
+   [§2](02-product-and-answer-flow.md#retrieval-phrases-become-verified-entities).
+
 ## Known limitations
 
 ### The final check catches added facts, not dropped ones

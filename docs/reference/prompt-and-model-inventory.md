@@ -94,23 +94,115 @@ rubric, and evidence alongside the verdict.
 `outcome="error"` verdict with evidence. `not_applicable` is recorded as an
 excluded result. There is no silent alternate-model judgment.
 
-## Supporting instruction surfaces
+## Complete instruction-asset inventory
 
-These are part of the prompt system but are not separate model roles. All live
-under
-[`backend/src/compass_backend/instructions/`](../../backend/src/compass_backend/instructions/):
+This is the exhaustive list of every instruction asset that shapes a Compass
+model call — the answer to "show us all the system prompts." Each row links to
+the current, final version of that file. Nothing model-facing is omitted: if a
+model reads it, it is in this table.
 
-- `model_instructions/` — stable, always-on instructions for model-facing agents
-  and toolsets.
-- `planner_guidance/` — small, on-demand planner snippets. Python owns their
-  selection and injects only those matching the current typed context.
-- `model_instructions/catalog_toolset.md` — the planner's advisory catalog-recall
-  tool. It returns candidate cards only; execution still resolves and verifies
-  the final catalog entities.
-- `answer_style_guides/` — user-facing style guidance for rewriting sealed answer
-  briefs. It owns no data truth, coverage state, citation, or renderer decision.
-- `README.md` — how the assets are loaded and which responsibilities stay in
-  Python.
+The files are not reproduced inline on purpose. A pasted copy of a prompt is
+stale the moment the file changes, and a reader comparing a pasted excerpt
+against a running system has no way to know which one is current. The links are
+the deliverable; the section below explains how to read their version history.
+
+### Always-on model instructions
+
+Loaded on every call for that role.
+
+| File | Role it instructs | What it governs |
+| --- | --- | --- |
+| [`model_instructions/planner.md`](../../backend/src/compass_backend/instructions/model_instructions/planner.md) | Planner | The planner's contract: route selection, typed-plan field rules, filter and limit encoding, metric and lane handling, follow-up behavior, and worked examples. The largest asset in the set. |
+| [`model_instructions/catalog_toolset.md`](../../backend/src/compass_backend/instructions/model_instructions/catalog_toolset.md) | Planner (tool description) | How the planner's advisory catalog-recall tool behaves and why its results are candidates, not authority. |
+| [`model_instructions/catalog_adjudicator.md`](../../backend/src/compass_backend/instructions/model_instructions/catalog_adjudicator.md) | Catalog adjudicator | Choosing among a supplied candidate set when a phrase is genuinely ambiguous. |
+| [`model_instructions/clarify_stylist.md`](../../backend/src/compass_backend/instructions/model_instructions/clarify_stylist.md) | Clarify stylist | Phrasing one grounded clarifying question from a typed brief. |
+| [`model_instructions/criterion_classifier.md`](../../backend/src/compass_backend/instructions/model_instructions/criterion_classifier.md) | Criterion classifier | Selecting which evaluation criteria apply to a delivered response. |
+| [`model_instructions/judge.md`](../../backend/src/compass_backend/instructions/model_instructions/judge.md) | Quality judges | Grading one response against one rubric and returning a three-state verdict. |
+| [`answer_style_guides/default.md`](../../backend/src/compass_backend/instructions/answer_style_guides/default.md) | Answer stylist | Voice, answer shape, coverage strings, NCTQ-context policy, jargon substitutions, and the hard rules. The source for [§2's guardrails](../02-product-and-answer-flow.md#guardrails-what-compass-must-not-say-and-what-it-must-always-say). |
+
+### On-demand planner guidance
+
+Small topic snippets in [`planner_guidance/`](../../backend/src/compass_backend/instructions/planner_guidance/),
+selected deterministically by [`instruction_snippets.py`](../../backend/src/compass_backend/planning/instruction_snippets.py)
+on word-boundary trigger phrases, blocked phrases, prior-route requirements, and
+priority — **capped at three per question**, so no single turn sees the whole
+set. Each is injected with an explicit warning that it carries no execution,
+catalog, or citation authority, and the selection is persisted with the turn.
+
+These are the accumulated lessons about NCTQ's specific content: each one exists
+because a real question shape was answered worse than the data supported.
+
+| Snippet | When it applies |
+| --- | --- |
+| [`anchor-value-filter.md`](../../backend/src/compass_backend/instructions/planner_guidance/anchor-value-filter.md) | "Same value as [anchor district]" — an equality filter, not a peer request |
+| [`compensation-salary-exemplar.md`](../../backend/src/compass_backend/instructions/planner_guidance/compensation-salary-exemplar.md) | Bare subjective superlatives about teacher pay ("best compensation") |
+| [`coverage-state-language.md`](../../backend/src/compass_backend/instructions/planner_guidance/coverage-state-language.md) | The user asks why data is missing, older, unranked, or partly covered |
+| [`data-inventory.md`](../../backend/src/compass_backend/instructions/planner_guidance/data-inventory.md) | "What data do you have about X" — a directory request, not a query |
+| [`differentiated-pay-inventory.md`](../../backend/src/compass_backend/instructions/planner_guidance/differentiated-pay-inventory.md) | "Differentiated pay" asked without naming which type |
+| [`district-specific-absence.md`](../../backend/src/compass_backend/instructions/planner_guidance/district-specific-absence.md) | A metric is inapplicable because of state law or bargaining status — phrase it per district, not per state |
+| [`follow-up-reference.md`](../../backend/src/compass_backend/instructions/planner_guidance/follow-up-reference.md) | "Those districts", "name them", "the ones from before" |
+| [`health-benefit-exemplar.md`](../../backend/src/compass_backend/instructions/planner_guidance/health-benefit-exemplar.md) | Subjective superlatives about health benefits |
+| [`parental-leave-beyond-birthing.md`](../../backend/src/compass_backend/instructions/planner_guidance/parental-leave-beyond-birthing.md) | Parental leave asked about non-birthing, adoptive, or foster lanes |
+| [`peer-policy-comparison.md`](../../backend/src/compass_backend/instructions/planner_guidance/peer-policy-comparison.md) | An anchor district plus peers plus a governed policy topic |
+| [`peer-salary-comparison.md`](../../backend/src/compass_backend/instructions/planner_guidance/peer-salary-comparison.md) | Maximum teacher salary across peers of one anchor district |
+| [`policy-guidance-advisory-followup.md`](../../backend/src/compass_backend/instructions/planner_guidance/policy-guidance-advisory-followup.md) | After a guidance turn: "should we prioritize pay or benefits?" |
+| [`policy-guidance-followups.md`](../../backend/src/compass_backend/instructions/planner_guidance/policy-guidance-followups.md) | After a guidance turn: details, sources, contracts, or narrowing by region |
+| [`profile-sort-metric-display.md`](../../backend/src/compass_backend/instructions/planner_guidance/profile-sort-metric-display.md) | Rank by a profile field (enrollment, FRPL) but display a policy metric |
+| [`profile-sort-salary-display.md`](../../backend/src/compass_backend/instructions/planner_guidance/profile-sort-salary-display.md) | The salary-specific case of the same pattern |
+| [`ranking-and-sorting.md`](../../backend/src/compass_backend/instructions/planner_guidance/ranking-and-sorting.md) | Any ranking, sorting, top/bottom, or ordered request |
+| [`salary-schedule-lookup.md`](../../backend/src/compass_backend/instructions/planner_guidance/salary-schedule-lookup.md) | "What's [district]'s salary schedule" — an overview, not one metric |
+| [`sick-leave-ranking.md`](../../backend/src/compass_backend/instructions/planner_guidance/sick-leave-ranking.md) | Ranking paid sick/leave days scoped to Texas, where the sick/personal distinction matters |
+| [`similarity-discovery.md`](../../backend/src/compass_backend/instructions/planner_guidance/similarity-discovery.md) | "Who are [district]'s peers?" |
+| [`teacher-compensation-salary.md`](../../backend/src/compass_backend/instructions/planner_guidance/teacher-compensation-salary.md) | Salary requests involving degree lanes, thresholds, or multi-lane rankings |
+| [`teacher-evaluation-observations.md`](../../backend/src/compass_backend/instructions/planner_guidance/teacher-evaluation-observations.md) | Observation counts asked without specifying the observation lane |
+
+### Authoring standards (read by maintainers, not by models)
+
+| File | Purpose |
+| --- | --- |
+| [`README.md`](../../backend/src/compass_backend/instructions/README.md) | Loader behavior and which responsibilities stay in Python |
+| [`AGENTS.md`](../../backend/src/compass_backend/instructions/AGENTS.md) | Working rules for changing an instruction asset |
+| [`HOUSE_STYLE.md`](../../backend/src/compass_backend/instructions/HOUSE_STYLE.md) | House style the instruction files themselves follow, enforced by lint tests |
+| [`_prompt-and-prose-guidance.md`](../../backend/src/compass_backend/instructions/_prompt-and-prose-guidance.md) | The ownership rule: which truths belong in code rather than prompt prose |
+| [`answer_style_guides/README.md`](../../backend/src/compass_backend/instructions/answer_style_guides/README.md) | How style guides are selected and scoped |
+
+### Non-prompt content the model may read
+
+Distinct from instructions: NCTQ's own policy positions, rationales, and
+exemplars are reviewed *content*, parsed and rendered deterministically rather
+than interpreted as instructions. They live in
+[`backend/content/nctq-policy/`](../../backend/content/nctq-policy/README.md),
+one file per topic. See the limitation in
+[§9](../09-known-issues-and-limitations.md#nctq-policy-guidance-is-a-managed-markdown-stopgap).
+
+## Version history
+
+There is no separate prompt changelog, and that is the design: **the git history
+of these files *is* the prompt version history.** Every change to an
+instruction asset went through the same review as a code change, with an author,
+a date, a message, and a diff.
+
+To read the history of any file above:
+
+```bash
+# Every change to one instruction file, newest first.
+git log --follow -p -- backend/src/compass_backend/instructions/model_instructions/planner.md
+
+# What changed across all instruction assets in a date range.
+git log --since=2026-05-01 --stat -- backend/src/compass_backend/instructions/
+
+# The exact version of a prompt that was live at a given commit.
+git show <commit>:backend/src/compass_backend/instructions/answer_style_guides/default.md
+```
+
+Because [PROVENANCE.md](../../PROVENANCE.md) pins the commit each production
+image was built from, that last command is also how to recover the precise
+prompt text that produced a specific historical answer.
+
+For the narrative history — the earlier single-agent and multi-agent designs,
+why each was replaced, and preserved extracts of the retired prompts — see
+[Prompt and instruction history](../research/compass-prompt-history/README.md)
+and its dated [snapshots](../research/compass-prompt-history/).
 
 ## How to read and update this inventory
 

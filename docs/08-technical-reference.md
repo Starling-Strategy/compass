@@ -16,6 +16,40 @@ is in the manifests and lockfiles: `backend/pyproject.toml`, `backend/uv.lock`,
 `dashboard/requirements-dashboard.txt`, `frontend/composer.json` and
 `composer.lock`, and `frontend/package.json` and `package-lock.json`.
 
+### The MIT License in plain English
+
+The full legal text is [`LICENSE`](../LICENSE) and it governs; this is an
+orientation, not a substitute. MIT is one of the shortest and most permissive
+open-source licenses in common use. What it means in practice:
+
+**What anyone may do with Compass's code.** Read it, run it, copy it, modify it,
+build something else out of it, and distribute or sell that result — including
+commercially, and including as part of closed-source software. No permission
+request, no fee, no obligation to contribute changes back.
+
+**The one condition.** Keep the copyright notice and the license text with any
+substantial copy of the code. That is the whole obligation.
+
+**What NCTQ does not promise.** The software is provided "as is," with no
+warranty and no liability. If someone runs a fork of Compass and it produces a
+wrong answer, that is on them.
+
+**What the license does *not* cover.** Three things worth being explicit about,
+because open-sourcing code is not the same as open-sourcing a product:
+
+- **NCTQ's data and content.** The reviewed policy data, source documents, and
+  NCTQ's published positions are not licensed by this file. A fork gets the
+  engine, not the answers.
+- **The NCTQ name and marks.** MIT grants no trademark rights. A fork may not
+  present itself as NCTQ or as Compass.
+- **Third-party dependencies.** Every project in the tables below carries its
+  own license and its own attribution requirements. Compass's MIT license does
+  not override them, and it is not a blanket grant covering the whole
+  dependency tree. Before redistributing a built image, review the upstream
+  licenses — the manifests and lockfiles named above are the complete list, and
+  the browser bundles vendored under `frontend/public/assets/vendor/` retain
+  their upstream headers precisely so that attribution trail stays intact.
+
 Each project name links to its official home. Those upstream projects have their
 own licenses and attribution requirements; follow them before redistributing a
 build. This repository's MIT license does not replace those obligations.
@@ -46,7 +80,7 @@ build. This repository's MIT license does not replace those obligations.
 | [MonsterUI](https://monsterui.answer.ai/) | Dashboard UI components and styling primitives | [`requirements-dashboard.txt`](../dashboard/requirements-dashboard.txt) |
 | [Psycopg](https://www.psycopg.org/) | PostgreSQL access for dashboard/reporting paths | `dashboard/requirements-dashboard.txt` |
 | [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz) | Fuzzy matching where a district phrase needs tolerant normalization | [`compass_backend/catalog/`](../backend/src/compass_backend/catalog/) |
-| [Typer](https://typer.tiangolo.com/) | Command-line entry points for evaluation and data-fidelity checks | [`backend/scripts/`](../backend/scripts/) |
+| [Typer](https://typer.tiangolo.com/) | Declares the `pa-eval` and `data-fidelity` command-line entry points; the CLI modules themselves are development tooling, outside this snapshot | `backend/pyproject.toml` |
 | [pytest](https://pytest.org/) | Automated tests across the backend, sync, and evaluation surfaces | [`compass_backend/tests/`](../backend/src/compass_backend/tests/) |
 | [uv](https://docs.astral.sh/uv/) | Python dependency resolution, lockfile installation, and local tooling | [`backend/uv.lock`](../backend/uv.lock) |
 | [Pydantic Logfire](https://logfire.pydantic.dev/) | Instrumentation and tracing for the API, database, HTTP, and agent paths | [`compass_backend/observability.py`](../backend/src/compass_backend/observability.py) |
@@ -154,9 +188,14 @@ This page does not reproduce system prompts. Three places carry the detail:
   [`backend/src/compass_backend/instructions/`](../backend/src/compass_backend/instructions/),
   whose `README.md` explains the ownership rules and loader behavior.
 - The [prompt and model inventory](reference/prompt-and-model-inventory.md) — the
-  role-by-role mapping of models, instruction files, guardrails, and fallbacks.
+  role-by-role mapping of models, instruction files, guardrails, and fallbacks,
+  plus an index of every model-facing asset and how to read its version history.
 - The [prompt and instruction history](research/compass-prompt-history/README.md) —
   the design changes and preserved historical snapshots.
+
+The behavioral guardrails themselves — what Compass declines to say and what it
+must always disclose — live with the answer flow in
+[Product & Answer Flow](02-product-and-answer-flow.md).
 
 Because these files are versioned with the code, their git history is the prompt
 version history. A prompt change should therefore be reviewed with the same care as

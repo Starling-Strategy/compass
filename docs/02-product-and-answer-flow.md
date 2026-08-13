@@ -275,6 +275,77 @@ instruction files consistent. Because the files are in git, their version histor
 > [Prompt and instruction history](research/compass-prompt-history/README.md) for
 > the full evolution, preserved prompt extracts, and the lessons from each redesign.
 
+## Guardrails: what Compass must not say, and what it must always say
+
+The rules above are architectural. This section collects the explicit
+behavioral guardrails in one place: the subjects Compass declines, the claims it
+is forbidden to make, and the disclosures it is required to include. Each rule
+below lives in a versioned instruction file, a validator, or both — the
+right-hand column says which, because that is the difference between a rule
+that is enforced and a rule that is merely instructed.
+
+### Subjects and requests Compass declines
+
+| Guardrail | How it holds |
+| --- | --- |
+| **No outside sources.** Compass does not browse the web or call a source API during a turn. It answers only from the `compass` schema and approved local content. | Enforced in code: no web-search or browsing tool exists in the backend. |
+| **No answers outside the reviewed universe.** Concepts NCTQ has not reviewed (teacher induction, for example) are registered as out-of-universe aliases and refused honestly rather than answered loosely. | Enforced in code: the catalog cannot resolve them, and nothing runs without an ID. |
+| **No NCTQ opinion beyond NCTQ's published positions.** Compass does not generate policy recommendations, editorialize, or infer a stance NCTQ has not published. | Instructed and bounded: NCTQ positions come only from the approved content library, on their own route; the stylist may use only the sealed snippets it is handed. |
+| **No implied position where none exists.** The stylist may not imply NCTQ has a stance on a topic the supplied snippet does not cover, and may not paraphrase NCTQ findings that are not in a snippet. | Instructed (style guide hard rules), with the snippet set itself capped and supplied by code. |
+| **No invented entities.** No district, metric, value, citation, source marker, publication, or exemplar that is not in the sealed artifact. | Enforced: numeric-token provenance and citation-marker integrity checks reject the rewrite; the publication manifest validator rejects any title or URL outside the fetched set. |
+| **No new arithmetic.** The stylist quotes values exactly as they appear and may not round, abbreviate, or compute a new number — to highlight a gap it quotes both endpoints rather than the difference. | Enforced for added or altered numbers by the numeric-token check; instructed for the "quote both endpoints" phrasing. |
+| **No internal vocabulary in user-facing text.** Metric slugs, "in-scope cells", "issue-not-addressed" as a label, validator and route names, artifact IDs, schemas, and trace references are banned from answer prose. | Instructed: an explicit substitution table in the style guide. |
+| **No overclaiming coverage.** An answer may not imply complete coverage when the artifact says coverage is partial, not reviewed, prior-year, not applicable, out of universe, or unsupported. | Instructed, with the underlying caveat lines sealed as immutable so a rewrite cannot delete them. |
+| **No denying an attached artifact.** When a chart or CSV export is attached, the answer may not tell the user Compass cannot produce one. | Instructed, driven by the artifact list the renderer supplies. |
+
+### Disclosures Compass is required to include
+
+Compass has no general-purpose legal or safety disclaimer, and adding one is a
+deliberate non-choice: a boilerplate line at the bottom of every answer would
+be ignored, and it would compete with the specific, situational disclosures
+below. What Compass requires instead is that the limits of a *particular*
+answer are stated in that answer.
+
+The coverage sentences are **canonical strings, reproduced verbatim**. This is
+the point worth understanding: these are not suggested phrasings. Each one
+marks a distinct coverage state, and rewording one into a friendlier
+generality ("no data on file", "couldn't find data") destroys the distinction
+the reviewed data actually makes. The stylist is required to carry them through
+unchanged.
+
+| Required disclosure | The rule |
+| --- | --- |
+| Issue not addressed in the reviewed documents | Exactly *"Issue not addressed in the documents reviewed."* |
+| Topic does not apply to a district | Exactly *"Not applicable for [District]"* |
+| Latest review is from a prior year | Exactly *"NCTQ last reviewed [District] for [subject] in [year]; the value then was [X]"* — the year is never dropped |
+| Districts awaiting review | Exactly *"[N] districts haven't been reviewed for [year] yet"* — it counts districts, never data points |
+| District outside the covered universe | Exactly *"[District, State] is not in the District Policy Pathfinder."* |
+| NCTQ has no stance on the topic | The framing *"NCTQ does not currently have a policy stance on this topic"*, rather than *"I couldn't find NCTQ content"* |
+
+Four more required disclosures are structural rather than verbatim:
+
+- **Coverage comes before the data, not after.** When part of a request cannot
+  be answered, the gap is stated in the opening prose, above the table — not
+  buried beneath it.
+- **The limitation is about the data, not the user.** A gap is described as
+  missing reviewed data, never as a malformed question.
+- **Every displayed value carries its source.** Data cells carry citation
+  markers, the CSV export carries the same citation columns, and a cited NCTQ
+  position must include its source URL as a link.
+- **Years are labeled, always.** Policy values are labeled with their review
+  year, and NCES context carries its own federal data vintage. When a salary
+  lane is not specified and the catalog applies the reviewed BA default, the
+  renderer discloses that choice.
+
+The authoritative text for all of it is
+[`answer_style_guides/default.md`](../backend/src/compass_backend/instructions/answer_style_guides/default.md)
+(hard rules, coverage strings, NCTQ-context policy, jargon substitutions) and
+[`model_instructions/planner.md`](../backend/src/compass_backend/instructions/model_instructions/planner.md)
+(routing and refusal behavior). The mechanical enforcement lives in
+[`answer_layer/validation.py`](../backend/src/compass_backend/answer_layer/validation.py).
+Voice and tone standards, which are guidance rather than guardrails, are
+[below](#voice-and-tone).
+
 ## How Compass uses different AI models
 
 Compass uses different AI models for different jobs inside a single turn. The model
