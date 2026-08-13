@@ -2,9 +2,13 @@
 
 **How Compass knows whether an answer is grounded, accurate, and useful — and how a failure becomes a fix.**
 
-> **Draft for review.** This is a first pass at the quality model. It deliberately
-> does not state a current scenario count or a current overall accuracy result;
-> those should come from a fresh, dated ledger export rather than an old note.
+> **A living reference, not a live dashboard.** This section describes the
+> quality model itself. Where it states a scenario count or a result, the
+> number is dated to the
+> [2026-08-12 ledger export](reference/2026-08-12-evaluation-results.md) —
+> the companion document holding every sweep ID, denominator, and method note
+> behind the figures here. A future refresh replaces that dated file and
+> updates this page together with it.
 
 ## The short version
 
@@ -102,6 +106,52 @@ The working vocabulary is:
   dimension, scenario, case, and run. A roll-up is a useful signal, not a claim
   that every untested question is safe.
 
+```mermaid
+flowchart LR
+    SC["Scenario: user goal or behavior"] --> CA["Case: literal prompt, expected shape"]
+    CA --> CR["Criterion: one checkable rule"]
+    CR --> SW["Sweep: replays cases, writes verdicts"]
+    SW --> VE["Verdict: one answer × one criterion"]
+    VE --> RC["Scorecard: roll-up by dimension, scenario, case, run"]
+```
+
+This chain — scenario, case, criterion, sweep, verdict, scorecard — is the
+evaluation ledger's spine. Every dated figure in this document traces back to
+it: a headline number names the sweep it came from, not just a percentage.
+
+### An example, end to end
+
+One real scenario from the library makes the vocabulary concrete.
+
+**The scenario:** `REGR-ANSWERABILITY-LADDER-COMPOUND-SORT-RESUME` (dimension:
+Sort Accuracy). A user asks for *"the 10 largest districts, ordered by
+mascot."* Mascot is not a field Compass can rank by. The expected behavior is
+written into the scenario: Compass must not dead-end with a canned "I need a
+district group and a metric" rescue. It should answer the answerable part and
+offer its real rankable fields (enrollment, free/reduced-price-lunch
+percentage) as clickable options — and when the user clicks one, resume the
+ranking deterministically rather than re-planning from scratch.
+
+**The case** is the runnable version: the literal prompt above, the expected
+route (a grounded clarification, then an execution), and the follow-up click.
+
+**The criteria** are the individual checkable rules attached to it. Different
+rules need different kinds of checker, and the library uses four:
+
+| How it's checked | What that means | A real criterion of this type |
+| --- | --- | --- |
+| **Deterministic code** | A program inspects the typed answer artifact. Same input, same verdict, every time. | `respects_user_limit`: when the user says "top 10," the response contains exactly 10 data rows — not more, not fewer. |
+| **AI judge** | A model reads the conversation against one written rule. Strong at semantics; needs calibration and human spot-checks. | `preserves_prior_context`: when the user asks to re-sort an established set, Compass re-sorts *that* set, not a fresh national ranking. |
+| **Telemetry assertion** | Checks the system's own instrumentation — did the pieces actually run? | `execution_dispatched_for_execute_route`: the executor emitted a real execution span for the turn, so the answer came from a planned query rather than a shortcut. |
+| **Holistic scenario fit** | One broad AI judgment: "did this response materially meet the case's expected behavior?" The strictest and noisiest lens — useful as a net, never the only measure. | `SCENARIO_FIT_001`, applied across the library. |
+
+**The verdicts:** when a sweep replays this case — often three trials per
+case, because the system is not perfectly deterministic — every criterion ×
+trial pair writes one recorded verdict: pass, fail, or error, with the
+judge's reasoning attached. Nothing is overwritten; a later sweep adds rows
+rather than replacing them. That is why this document can quote results from
+May and June side by side and say exactly which run each number came from.
+
 The intended source of truth is the append-only evaluation ledger: scenarios,
 cases, criteria, verdicts, and sweep runs. A spreadsheet or dashboard can be a
 review surface, but it should not become a second, conflicting definition of
@@ -116,10 +166,11 @@ data, product contract, or expected behavior changes, the case should be
 reviewed and versioned rather than silently rewritten to make a new result look
 better.
 
-The current count is intentionally omitted from this draft. The number changes
-as scenarios are added, retired, split, or deduplicated, and the documentation
-should report it only alongside the date, active/inactive definition, and ledger
-query that produced it.
+As of the [2026-08-12 ledger export](reference/2026-08-12-evaluation-results.md#the-scenario-library-over-time),
+390 of 391 scenarios are active — up from 326 at the June 9 internal audit,
+the same library at two points on its growth curve. The number changes as
+scenarios are added, retired, split, or deduplicated; it describes the
+library's state at the export timestamp, not any particular release.
 
 ## 3. How Compass runs evaluations
 
@@ -215,9 +266,43 @@ than one universal bar:
 | Consistency | 95% |
 
 These are configuration targets, reviewed on a dated basis; they are not a claim
-about current performance. The final documentation should pair any published
-result with the exact sweep date, code/model configuration, case set, criterion
-set, and denominator. Without those, a percentage is too easy to misread.
+about current performance. Any published result must pair with the exact sweep
+date, code/model configuration, case set, criterion set, and denominator.
+Without those, a percentage is too easy to misread.
+
+### Dated results (2026-08-12 export)
+
+Across 2026-05-17 through 2026-07-07, the evaluation ledger recorded 471,489
+automated criterion verdicts over 413 sweep runs. The table below scores each
+dimension's single most-comprehensive completed sweep as of the export, using
+the scorecard's own math — full sweep IDs, denominators, and method in the
+[dated evidence file](reference/2026-08-12-evaluation-results.md#per-dimension-results-pinned-sweeps).
+
+| Dimension | Result | Target | Evaluable trials | Sweep finished |
+| --- | ---: | ---: | ---: | --- |
+| Sort | 99% | 98% | 919 | 2026-06-22 |
+| Citation | 92% | 98% | 1,606 | 2026-06-15 |
+| Consistency | 89% | 95% | 1,467 | 2026-05-26 |
+| Filtering | 73% | 95% | 599 | 2026-06-22 |
+| Coverage-state labeling | 68% | 98% | 823 | 2026-06-22 |
+| Data fidelity | 62% | 99% | 1,236 | 2026-06-22 |
+| Selection | 47% | 95% | 184 | 2026-06-22 |
+
+No row blends runs with different build or grader fingerprints; the seven
+sweeps span 2026-05-26 to 2026-06-22, and that span — not a single date — is
+these results' "as of." Two dimensions clear their configured target; five do
+not, Selection and Data Fidelity by the widest margin. That is the honest
+current reading, not a rounded-up summary.
+
+One number deserves its own caveat. The Selection row's 47% comes from a sweep
+that ran only the holistic scenario-fit judge — the strictest single lens in
+the library. A sibling sweep on the *same day, same 97 cases, same build*
+using the structured checks read 65%, and a week earlier the broadest
+Selection measurement in the ledger — all four checker types, three trials
+per case, 4,954 evaluable trials — read 93%. None of those is "the" score;
+each is one instrument's reading. Section 5 explains why the measurement
+moved as much as the product did, and why the strictest reading is the one
+published here.
 
 The scorecard also needs qualitative judgment. A high aggregate can hide one
 high-risk failure mode, a stale case set, or an evaluator that is grading the
@@ -229,8 +314,46 @@ asks both “what failed?” and “was this a fair, current test?”
 
 The team has struggled to apply one consistent evaluation approach over time.
 That history is important: it is why the definitions above matter more than a
-single headline number. Several recurring lessons have emerged from dated audit
-and replay work:
+single headline number.
+
+### The hardest problem was measuring consistently
+
+Across the ledger's 413 sweeps there are 122 distinct criterion-set
+fingerprints and 111 distinct product builds. In plain terms: the grader and
+the product were both changing, nearly continuously, at the same time. That
+was a deliberate choice — the team was learning what Compass actually
+produced and encoding each lesson as a new or stricter criterion — but it has
+a real cost: almost no two sweeps are a controlled comparison, and a score
+that moved between two dates may reflect the product, the criteria, or both.
+
+Two dated trajectories show what that looks like
+([full tables](reference/2026-08-12-evaluation-results.md#score-trajectories-and-measurement-consistency)).
+Selection's comprehensive sweeps read 54% → 100% within hours on May 22 (a
+grading-era fix, not a product transformation), 98% on June 9 under newly
+structured checker types, 93% on June 15 when the strict holistic judge was
+added to the mix, and then 65% and 47% on June 22 — the same 97 cases on the
+same build, measured through two different lenses. Sort is the contrast:
+after a May 28 trough at 49%, it converged to 99% and held there across four
+June sweeps while its case set grew from 34 to 39. Where the instrument was
+held steady, the improvement is visible and durable; where the instrument
+kept changing, the trend line is honest only sweep by sweep.
+
+Two things stayed true through the churn. First, the direction of the
+instrument was one-way: criteria were added and tightened (32 created in May,
+34 in June, 34 in July), never quietly loosened to make a number look better.
+Second, where behavior was pinned with a fixed regression case, it stayed
+fixed on that case: the worked example in section 6 passes its regression
+criteria on every recorded verdict after its fix date, including in the
+currently pinned sweep. (The same criteria do record failures when the
+evaluation classifier applies them to *other* cases they were never scoped
+to — a known instrument issue, tracked in
+[§9](09-known-issues-and-limitations.md#evaluation-program).) The program got
+better at finding problems faster than the product could make them disappear,
+which is the right direction for the ledger to be wrong in.
+
+### Recurring lessons
+
+Several recurring lessons have emerged from dated audit and replay work:
 
 - **A judge can be stricter than the product contract.** Some criteria treated a
   useful answer as a failure because they expected wording, precision, or a source
@@ -250,9 +373,49 @@ and replay work:
   same result. Agreement across them is not guaranteed by checking one surface.
 
 These are lessons from the evaluation process, not a current score or a claim
-that every historical failure remains unresolved. A future results page should
-link each current pattern to its supporting run and to the regression cases that
-protect against recurrence.
+that every historical failure remains unresolved.
+
+### Three failure-to-fix stories
+
+The judgment calls behind these stories are the credibility, not the scores.
+Dates and identifiers for each are in the
+[dated evidence file](reference/2026-08-12-evaluation-results.md#how-the-evaluation-program-got-more-stringent-apriljune-2026).
+
+**Story 1 — the criterion precision review found a recall gap, not a false
+alarm.** On 2026-06-21, a review of every high-volume evaluation criterion
+asked a narrow question: when a criterion fails, is the failure real? Across
+the board, most were — the criteria were not the problem. But the same review
+surfaced the opposite risk: of 10 cases where a refusal or canned rescue
+actually happened, the holistic judge had passed 7 of them. The evaluator
+wasn't crying wolf; it was missing wolves. That distinction — calibrate a few
+over-strict criteria, but build a new check for the blind spot rather than
+loosen anything — is why a deterministic
+`answerability_rescue_fallback_is_failure` check exists today, and why the
+dimension scores above can now see problems an earlier, more permissive
+evaluator could not.
+
+**Story 2 — the answerability-ladder campaign closed dead ends the stricter
+evaluator had just made visible.** Between 2026-07-03 and 07-05, three waves
+of work replaced dead-end refusals with grounded next steps: a non-rankable
+sort now offers a clickable menu of fields that can be ranked instead of a
+canned "can't do that"; a peer-salary comparison that used to bottom out in a
+rescue now resolves to a real, answerable comparison; an unsupported request
+gets a specific, honest "no" rather than a generic one. Each fix shipped with
+its own regression criterion, evaluated at three replay trials per case
+against the cases it was meant to fix.
+
+**Story 3 — the footnote precedence fix, and the 22 flips it deliberately did
+not make.** On 2026-07-06, an audit compared two ways to prefer a citation's
+footnote over its source document. The simpler rule — any footnote with
+enough letters and digits beats the document — would have changed 415 rows,
+and 8 of those were wrong: a stray non-citational note would have displaced
+5 to 11 real linked documents each. The shipped rule instead requires a
+footnote to contain a legal-authority marker (a statute symbol, "case law," a
+reporter citation, and similar) before it can outrank a document. That
+version changed exactly 393 rows, all on the five bargaining and strike
+metrics, and left 22 weaker footnotes as a last resort rather than promoting
+them. The 22 that were not changed are as much the result as the 393 that
+were.
 
 ## 6. From a failure to a fix
 
@@ -275,6 +438,22 @@ The intended closure loop is:
 An aggregate score alone does not close a bug. Closure needs a regression case and
 evidence that the relevant dimension improved without breaking another one.
 
+### A worked example
+
+Scenario `REGR-M1-SCHOOL-DAYS-DC-ANCHOR` (a Filter Accuracy case about a
+school-days anchor comparison) has one case. On 2026-06-16, that case's
+`answerability_rescue_fallback_is_failure` criterion — the check built for
+the recall gap in Story 1 above — recorded a failing verdict: the case had
+fallen into a canned rescue instead of a grounded answer. Four days later, on
+2026-06-20, a second, case-specific regression criterion was added to the
+ledger to pin the corrected behavior going forward. Both criteria have passed
+on every recorded verdict for this case since — including in the sweep now
+pinned as Filtering's headline result above, finished 2026-06-22. That same
+sweep also shows this case failing an observability check (a missing trace
+ID) — left visible rather than smoothed over, because a fixed case is not the
+same claim as a fully instrumented one. Every identifier in this chain is in
+the [evidence bundle](reference/2026-08-12-evaluation-results.md#worked-example-evidence-bundle).
+
 ## 7. What this system does and does not prove
 
 The quality system can provide strong evidence that:
@@ -295,17 +474,14 @@ is: the system has defined failure modes, tests them with saved evidence, protec
 known grounding boundaries at answer time, and turns newly discovered failures
 into tests and fixes.
 
-## Open points for review
+## Where the open issues live
 
-Before this section is treated as final, we should confirm:
-
-- the current active scenario/case inventory and the date and query used to count
-  it;
-- which dated evaluation run should be published as the most recent result;
-- whether the configured dimension targets are still the intended launch bars;
-- the owner and review cadence for retiring, splitting, or updating scenarios;
-- how staff feedback and dashboard flags should be linked to the evaluation
-  ledger; and
-- whether any future answer-time judge should become a blocking gate. The current
-  documented behavior is that background quality judging is post-response and
-  diagnostic.
+The evaluation program's known issues and open questions — run-to-run
+comparability, criteria over-application, the below-target dimensions, judge
+recall limits, library governance, and the rest — are tracked with the other
+product limitations in
+[§9 Known Issues & Limitations](09-known-issues-and-limitations.md#evaluation-program),
+each with its evidence and next step. Two former open questions are settled
+by the dated export and no longer tracked: the active scenario inventory
+(section 2 above) and which dated runs are published as the most recent
+results (section 4 above).

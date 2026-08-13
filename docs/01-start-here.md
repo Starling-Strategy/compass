@@ -108,11 +108,11 @@ short orientation for a first-time reader.
 flowchart TD
     START([What do you need to understand?])
 
-    START --> PRODUCT["Product behavior<br/>How does a question become an answer?"]
-    START --> DATA["Data and structure<br/>What does Compass know and where is it stored?"]
-    START --> TRUST["Quality and limits<br/>How is trust measured and what remains imperfect?"]
-    START --> TECH["Implementation<br/>Where are the code, API, and integrations?"]
-    START --> ORIENT["Orientation and operations<br/>What do terms mean and where are private details?"]
+    START --> PRODUCT["Product behavior: how does a question become an answer?"]
+    START --> DATA["Data and structure: what does Compass know, and where is it stored?"]
+    START --> TRUST["Quality and limits: how is trust measured, what remains imperfect?"]
+    START --> TECH["Implementation: where are the code, API, and integrations?"]
+    START --> ORIENT["Orientation and operations: what do terms mean, where is the handoff?"]
 
     PRODUCT --> D2["§2 Product & Answer Flow"]
     DATA --> D3["§3 Data & the Databricks Platform"]
@@ -122,7 +122,9 @@ flowchart TD
     TECH --> ARCH["System architecture reference"]
     TECH --> D8["§8 Technical Reference"]
     ORIENT --> DG["Compass glossary"]
-    ORIENT --> D57["Private §§5–7"]
+    ORIENT --> D5["§5 Administration and Dashboard"]
+    ORIENT --> D6["§6 Hosting, Deployment & Security"]
+    ORIENT --> D7["§7 Costs, Accounts & Budget"]
 
     classDef start fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#111827
     classDef question fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#111827
@@ -130,7 +132,7 @@ flowchart TD
 
     class START start
     class PRODUCT,DATA,TRUST,TECH,ORIENT question
-    class D2,D3,DS,D4,ARCH,D8,D9,DG,D57 destination
+    class D2,D3,DS,D4,ARCH,D8,D9,DG,D5,D6,D7 destination
 ```
 
 ## Which document should I read?
@@ -243,10 +245,13 @@ before §8.
 
 ### Where are administration, hosting, security, account-ownership, and budget questions answered?
 
-Those subjects belong to private sections 5–7. The public set identifies their
-scope, but access details, deployment identifiers, secrets, account ownership,
-and cost assumptions should live in the private operational docs and their
-source systems.
+[§5 Administration and Dashboard](05-administration-and-dashboard.md), [§6
+Hosting, Deployment, and Security](06-hosting-deployment-security.md), and [§7
+Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) cover those
+subjects as operational handoff documentation for NCTQ. They describe scope,
+process, and ownership; live credentials, deployment identifiers, secrets, and
+account access still live only in the approved secret manager and source
+systems, not in this repository.
 
 ## Glossary
 
@@ -255,11 +260,3 @@ the documentation set. It starts with the terms in the client's outline, then ad
 the names readers need to follow the answer pipeline and quality loop. If a term
 has a precise database meaning, the glossary links to the schema reference rather
 than trying to duplicate every column definition here.
-
-## A note on document status
-
-The numbered docs are a living reference set. A page marked "Draft for review"
-should be read as the current design and implementation explanation, not as a
-promise that every operational runbook or live metric has been finalized. Live
-counts, credentials, deployment state, account ownership, and budget figures
-belong in the systems or private operating documents that own them.

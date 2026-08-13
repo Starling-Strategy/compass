@@ -54,9 +54,12 @@ Every difference between this copy and the source commits, in full:
    and `dashboard/src/document_pipeline/` (design docs and one SQL comment).
    No runtime code was modified.
 4. **CI/deployment config omitted** from all three apps
-   (`azure-pipelines.yml`, `infra/`): pipeline and infrastructure identifiers
-   are documented in the privately delivered operations docs (sections 5–7),
-   not in this public repository.
+   (`azure-pipelines.yml`, `infra/`): these files build no part of the
+   production images and are not vendored here. The operational deployment
+   model they support — release flow, environments, and security
+   boundaries — is documented in
+   [docs/06-hosting-deployment-security.md](docs/06-hosting-deployment-security.md),
+   without embedding credentials or live pipeline identifiers.
 
 Everything else is byte-identical to the source commits — including code
 comments that reference the development environment and test fixtures that use

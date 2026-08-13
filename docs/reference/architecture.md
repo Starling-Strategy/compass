@@ -23,16 +23,16 @@ the text below carry the meaning. The detailed stage diagrams remain in §§2–
 ```mermaid
 flowchart LR
     subgraph ENTRY["Users and entry points"]
-        PF["District Policy Pathfinder<br/>NCTQ website"]
+        PF["District Policy Pathfinder (NCTQ website)"]
         READER["Public reader"]
         STAFF["NCTQ staff and reviewers"]
         READER --> PF
     end
 
-    subgraph APPS["Applications<br/>production: Azure Container Apps"]
-        FE["Compass frontend<br/>PHP + Apache<br/>iframe shell and SSE proxy"]
-        API["Policy Advisor API<br/>FastAPI<br/>chat orchestration"]
-        DASH["NCTQ.ai dashboard<br/>FastHTML<br/>monitoring and review"]
+    subgraph APPS["Applications — production: Azure Container Apps"]
+        FE["Compass frontend: PHP + Apache, iframe shell and SSE proxy"]
+        API["Policy Advisor API: FastAPI, chat orchestration"]
+        DASH["NCTQ.ai dashboard: FastHTML, monitoring and review"]
     end
 
     PF -->|"embeds"| FE
@@ -41,7 +41,7 @@ flowchart LR
     API -->|"streamed answer"| FE
 
     subgraph DATA["Canonical data store"]
-        STORE[("PostgreSQL<br/>compass schema<br/>runtime views, context, and ledger")]
+        STORE[("PostgreSQL, compass schema: runtime views, context, and ledger")]
     end
 
     API <-->|"read facts and persist context"| STORE
@@ -49,9 +49,9 @@ flowchart LR
     DASH -->|"submit staff flag"| API
 
     subgraph REFRESH["Azure data refresh platform"]
-        SOURCES["Reviewed source systems<br/>TCD, NCES/Urban, Airtable<br/>policy documents, managed content"]
-        ADF["Azure Data Factory<br/>schedules and orchestrates"]
-        DBX["Azure Databricks<br/>bronze to silver to gold<br/>validation before push"]
+        SOURCES["Reviewed source systems: TCD, NCES/Urban, Airtable, policy documents, managed content"]
+        ADF["Azure Data Factory: schedules and orchestrates"]
+        DBX["Azure Databricks: bronze to silver to gold, validation before push"]
         SOURCES --> DBX
         ADF --> DBX
     end
@@ -59,15 +59,15 @@ flowchart LR
     DBX -->|"validated controlled load"| STORE
 
     subgraph SUPPORT["Model routing and observability"]
-        GW["Pydantic AI Gateway<br/>planner, stylist, adjudicator,<br/>classifier, and judge roles"]
-        LOG["Pydantic Logfire<br/>API, database, HTTP, and agent traces"]
+        GW["Pydantic AI Gateway: planner, stylist, adjudicator, classifier, and judge roles"]
+        LOG["Pydantic Logfire: API, database, HTTP, and agent traces"]
     end
 
     API -.->|"bounded model tasks"| GW
     API -.->|"telemetry"| LOG
 
     subgraph LOOP["Evaluation and feedback"]
-        EVAL["Answer-time validation,<br/>background judging, saved cases,<br/>scorecard, and staff feedback"]
+        EVAL["Answer-time validation, background judging, saved cases, scorecard, and staff feedback"]
     end
 
     API -.->|"after response"| EVAL
@@ -207,7 +207,7 @@ production application hosting on Azure Container Apps, a shared production
 PostgreSQL environment, and a separate Coolify-based staging path. It also
 contains the release, security, backup, and incident procedures that should not be
 duplicated here. See [§6 Hosting, Deployment, and Security](../06-hosting-deployment-security.md)
-and [§7 Accounts and Service Ownership](../07-costs-accounts-and-budget.md).
+and [§7 Costs, Accounts, and Budget](../07-costs-accounts-and-budget.md).
 
 ## Related references
 
