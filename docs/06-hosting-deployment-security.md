@@ -326,28 +326,3 @@ Escalate immediately when an incident may involve credential exposure,
 unauthorized access, loss or corruption of production data, TLS failure, or
 material unavailability. Credential rotation, database changes, and public
 communications require the designated platform owner.
-
-## 6.11 Open operational questions
-
-- Is this `compass` repository now the sole source of all three production
-  applications, or do the separate GitHub and Azure DevOps mirrors named in the
-  handoff remain active deployment authorities?
-- What are the currently approved production deploy branches and pipeline
-  triggers for each application?
-- Does Azure Container Apps still use single active revision mode for all three
-  applications, and what is the retention policy for inactive revisions?
-- Which database roles and grants are assigned to each production application,
-  especially the Dashboard's read-only Compass surface and write-capable Metric
-  Calculator?
-- Are database connections configured to require TLS in both staging and
-  production? The supplied sources establish HTTPS ingress but do not document
-  the current PostgreSQL TLS enforcement setting.
-- Which Azure monitor alerts, notification routes, recovery objectives, and
-  incident owner are currently approved? The supplied sources describe logging
-  but do not establish a complete alert policy.
-- What automation, if any, gates a release? This repository carries no CI
-  configuration — it is deliberately omitted, since those files build no part of
-  the production images. The development repository's own guidance has been
-  inconsistent about whether a GitHub Actions test-and-lint workflow acts as a
-  gate. Confirm the current automation in the development repository before
-  relying on it. In all cases, local validation remains mandatory.
