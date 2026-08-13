@@ -103,7 +103,8 @@ the navigation list for the whole set.
 | If your question is... | Read this next | It covers... |
 | --- | --- | --- |
 | What happens from a user question to a final answer? | [§2 Product & Answer Flow](02-product-and-answer-flow.md) | Planning, retrieval, execution, citations, answer structure, prompts, models, and voice |
-| Where is the complete system architecture? | [System architecture reference](reference/architecture.md) | Pathfinder, frontend, API, Dashboard, PostgreSQL, runtime context, data refresh, models, Logfire, and evaluation |
+| Where is the complete system architecture? | [System architecture reference](reference/architecture.md) | Two maps: the NCTQ.ai platform, including the systems outside Compass, and Compass itself in detail |
+| Which models run, under which instructions, with which guardrails? | [Prompt and model inventory](reference/prompt-and-model-inventory.md) | Model roles and fallbacks, an index of every instruction asset, and how to read a prompt's version history |
 | What data can Compass answer from, and what does "current" mean? | [§3 Data & the Databricks Platform](03-data-and-databricks.md) | Sources, coverage, nightly sync, bronze/silver/gold stages, data freshness, and known data gaps |
 | How are tables, fields, relationships, and views organized? | [Compass schema reference](reference/compass-schema.md) | The `compass` PostgreSQL views, tables, columns, relationships, and sync ledgers |
 | How do we know whether Compass is working? | [§4 Quality & Evaluation](04-quality-and-evaluation.md) | Quality dimensions, scenarios, cases, criteria, verdicts, sweeps, scorecards, and feedback |
@@ -113,7 +114,7 @@ the navigation list for the whole set.
 | Is Metric Calculator part of Compass? How does its data reach Compass? | [Metric Calculator reference](reference/metric-calculator.md) | An adjacent NCTQ system, not part of Compass, and the indirect path its approved data takes to reach Compass |
 | How does NCTQ staff monitor Compass, and who gets access? | [§5 Administration and Dashboard](05-administration-and-dashboard.md) | Dashboard purpose, sign-in and roles, API keys, review workflows, and failure ownership |
 | How is Compass released, secured, observed, and recovered? | [§6 Hosting, Deployment, and Security](06-hosting-deployment-security.md) | Azure production, Coolify staging, release checklist, security boundaries, rollback, and incident response |
-| Who owns each external account, and what does Compass cost to run? | [§7 Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) | Ownership checklist, handoff rules, the measured Azure baseline, and model-spend planning |
+| Who owns and who pays for each external account, and what does Compass cost to run? | [§7 Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) | Account-by-account administrator and payer, the credential register, handoff rules, the measured Azure baseline, and model-spend planning |
 
 Sections 5-7 are operational handoff documentation for NCTQ rather than
 prerequisites for understanding the product.
@@ -185,7 +186,23 @@ exposes a gap.
 
 They are markdown files in this repository, under
 [`backend/src/compass_backend/instructions/`](../backend/src/compass_backend/instructions/).
-Because they're versioned with the code, their git history is the prompt history.
+The [prompt and model inventory](reference/prompt-and-model-inventory.md) indexes
+every one of them, including the on-demand planner-guidance snippets. Because
+they're versioned with the code, their git history is the prompt history.
+
+### What is Compass forbidden to say, and what must it always disclose?
+
+Both lists are in [§2 Product & Answer Flow](02-product-and-answer-flow.md): the
+subjects and claims Compass declines, and the disclosures it must include —
+among them the coverage sentences it reproduces verbatim, because each one marks
+a distinct coverage state. Every rule is marked as mechanically enforced or
+instruction-only.
+
+### Where does Compass tend to get things wrong?
+
+[§9 Known Issues & Limitations](09-known-issues-and-limitations.md) opens with
+those patterns, ordered by how likely a reader is to hit each one, with the
+evaluation evidence behind them.
 
 ### What software made Compass possible?
 

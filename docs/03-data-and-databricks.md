@@ -115,10 +115,14 @@ recording exactly what was inserted, updated, and deleted, and sends the data te
 plain-English report with the full SQL log attached.
 
 A separate document pipeline processes the policy PDFs behind citations: text
-extraction, classification, and AI-generated summaries (the pipeline's one use
-of a non-Anthropic model, Google Gemini, entirely offline). Every document is
-content-hashed so nothing is reprocessed unless it changes. Thousands of PDFs have
-been through it.
+extraction, classification, AI-generated summaries, and batch embeddings. It
+uses Google Gemini for the enrichment and embedding steps, entirely offline and
+never on the chat path. That pipeline belongs to the
+[Metric Calculator](reference/metric-calculator.md) side of the platform rather
+than to Compass, which is why Gemini is not a Compass service: every model call
+Compass itself makes goes to Anthropic through the Pydantic AI Gateway. Every
+document is content-hashed so nothing is reprocessed unless it changes.
+Thousands of PDFs have been through it.
 
 The [Databricks notebook inventory](reference/databricks-notebook-inventory.md)
 records all nine folders and 47 notebooks, with each notebook's purpose, pipeline
