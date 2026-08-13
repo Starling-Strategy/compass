@@ -32,7 +32,6 @@ this table exists.
 | Account or service | Administrator | Who pays | Status | Remaining action |
 | --- | --- | --- | --- | --- |
 | GitHub repository `Starling-Strategy/compass` | NCTQ custody | **Confirm** (GitHub plan) | To be set up by NCTQ | Establish NCTQ organization ownership or administrator custody. Starling can retain support access as agreed. |
-| Per-application source repositories named in [PROVENANCE.md](../PROVENANCE.md) | Starling (current) | **Confirm** (GitHub plan) | Active as deploy sources | Resolve alongside the open provenance question in [§6.3](06-hosting-deployment-security.md#source-provenance-that-needs-confirmation): confirm which repository is the canonical production source, then place that one under NCTQ custody. |
 
 ### AI models and observability
 
