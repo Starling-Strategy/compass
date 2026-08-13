@@ -57,21 +57,26 @@ prepared.
 
 ## Improvements under way
 
-### The LLM gateway does not yet provide user-friendly spend and billing controls
+### LLM spend is split between the application estimate and Gateway billing
 
 Compass currently routes its LLM calls through the
-[Pydantic AI Gateway](https://gateway.pydantic.dev/). It provides the model-routing
-boundary we need, but it does not yet give project operators a simple way to set
-budgets, allocate spend, review billing, or manage account ownership. That makes
-cost governance harder as usage grows and ties this operational work to a
-gateway-specific account.
+[Pydantic AI Gateway](https://gateway.pydantic.dev/). The Gateway provides a
+native spending view, while Compass also records per-call token usage and
+model-price estimates in `compass.llm_usage`. Those sources answer related but
+different questions: the application ledger explains token consumption and
+estimated cost, while the Gateway or provider billing record is authoritative
+for what is charged.
 
-The planned improvement is to replace the Pydantic AI Gateway with a more
-user-friendly, provider-agnostic option that has clearer spend and billing
-controls, such as OpenRouter or an Azure-managed gateway. The replacement should
-preserve Compass's model-role routing while making budgets, billing visibility,
-and ownership easier to manage. Owner: TBD. Review: before production billing
-setup.
+The remaining limitation is operator experience. There is not yet one simple
+Compass-facing view that combines production model calls, input/output/cache
+tokens, estimated cost, trends, spending limits, and reconciliation to the
+Gateway ledger. A more user-friendly production spend dashboard is tracked in
+[NCTQ closeout issue #33](https://github.com/Starling-Strategy/compass/issues/33).
+The issue already tracks the Gateway handoff and documentation work; the
+operator-friendly dashboard can be added as a follow-up there.
+Until that work is complete, operators should review the application estimate
+and Gateway Spending view together. Owner: TBD. Review: during the next
+operations-dashboard pass.
 
 ### The planner picks a query shape before it sees the data
 

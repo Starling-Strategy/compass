@@ -10,8 +10,8 @@ account and what setup or transfer remains.
 | --- | --- | --- | --- |
 | Microsoft Azure Sponsorship subscription | NCTQ | In place | Confirm the primary and backup NCTQ administrators during handoff. |
 | NCTQ Airtable | NCTQ | In place | Confirm the operational base owner and backup owner. |
-| Pydantic AI Gateway | NCTQ | To be set up by NCTQ | NCTQ should create the organization account and retain primary and backup administrator access. |
-| Pydantic Logfire | NCTQ | To be set up by NCTQ | NCTQ should create the workspace and retain primary and backup administrator access. |
+| Pydantic AI Gateway | NCTQ | Configured and billing in Logfire | Confirm NCTQ billing/admin access and reconcile the application estimate with the Gateway ledger monthly. |
+| Pydantic Logfire | NCTQ | Connected; `nctqai` project queried | Confirm the named NCTQ project administrators and retention plan. |
 | GitHub repository `Starling-Strategy/compass` | NCTQ custody | To be set up by NCTQ | Establish NCTQ organization ownership or administrator custody. Starling can retain support access as agreed. |
 | Azure DevOps organization `nctqai` | NCTQ, with Starling support | In place | Confirm the named NCTQ administrators and pipeline service-connection owners. |
 | Google Analytics | NCTQ | Transfer pending | Transfer the property from Dillon to NCTQ and confirm the NCTQ property owner, administrator, and service-account custodian. |
@@ -67,12 +67,52 @@ model, while bounded adjudication and applicable quality checks use cheaper
 models. Offline model comparisons and evaluation sweeps also consume Gateway
 budget even though they are not end-user traffic.
 
-No April to June 2026 Anthropic or Pydantic AI invoice total was provided with
-the handoff sources. Do not estimate one from Azure charges or present model
-pricing tables as an invoice. For a refresh, reconcile the Gateway or provider
-invoice with Logfire request spans. Prefer the per-request
-`usage.pydantic_ai_gateway.cost_estimate` field for observed usage, while noting
-that provider invoices remain the billing authority. See
+#### Usage records and cost estimates
+
+Compass records usage for captured model calls associated with chat sessions
+and messages in `compass.llm_usage`. A usage row can include the model, phase,
+input tokens, output tokens, cache-read tokens, cache-write tokens, request
+count, source (`chat` or `eval`), and pricing status. This gives us a durable
+way to estimate production and evaluation usage from the conversations already
+stored by the application.
+
+The estimate should sum the recorded token categories and apply the model price
+that was in effect for each call. The application path uses `genai-prices` and
+preserves rows that cannot be priced, rather than silently treating them as
+free. Group estimates by date, environment, model, and source so production
+conversations are not mixed with staging, evaluation, or A/B traffic. Keep
+cache-read and cache-write tokens separate from fresh input and output because
+they have different pricing treatment.
+
+This is an application-level estimate, not a Gateway invoice. It can be
+incomplete when a call has no usage record, a model is absent from the pricing
+catalog, prices change, or the Gateway applies provider-specific pricing or
+markup. Missing telemetry must be labeled unknown rather than reported as
+zero.
+
+#### Gateway billing
+
+Compass routes production model traffic through the Pydantic AI Gateway. The
+dedicated production Gateway key has no total spending cap, so its amount
+changes as production traffic runs. Logfire's Gateway Spending view and the
+provider or Gateway billing record are the financial authority; the
+`compass.llm_usage` estimate is the operational cross-check.
+
+Keep these sources distinct:
+
+| Source | What it answers | Authority |
+| --- | --- | --- |
+| `compass.llm_usage` | How many tokens and model calls Compass recorded, with an estimated price | Application estimate |
+| Logfire Gateway Spending | What the Gateway attributes to the production key | Gateway usage ledger |
+| Provider or Gateway billing record | What is ultimately charged | Financial authority |
+
+The `nctqai` Logfire project is available at
+[`nctqai`](https://logfire-us.pydantic.dev/murmuration/nctqai). A more
+user-friendly production spend view—showing model, token, cache, trend, and
+estimate-versus-ledger information—should be carried as a follow-up to the
+[NCTQ closeout issue #33](https://github.com/Starling-Strategy/compass/issues/33).
+Until that work is complete, refresh the estimate and Gateway ledger together
+as part of the monthly operating review. See
 [How Compass uses different AI models](02-product-and-answer-flow.md#how-compass-uses-different-ai-models)
 for the model roles and the quality gates required before a cheaper model
 replaces the current one.
