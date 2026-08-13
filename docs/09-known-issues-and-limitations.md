@@ -120,3 +120,85 @@ does the protecting (see
 
 Same principle as the planner entry: freedom expands only where verification
 already covers it.
+
+## Evaluation program
+
+The evaluation program's own known issues and open questions, moved here from
+[§4](04-quality-and-evaluation.md) so all open items live on one punch list.
+Evidence for each is in the
+[2026-08-12 evaluation results](reference/2026-08-12-evaluation-results.md).
+Owner: unassigned — that gap is itself an item below. Review: at the next
+ledger export.
+
+### Run-to-run comparability is the program's weakest property
+
+The grader and the product changed together for most of the ledger's history:
+122 distinct criterion-set fingerprints and 111 distinct product builds
+across 413 sweeps. Most score movements therefore cannot be attributed
+cleanly to the product or the criteria — the two-lens pair and the
+trajectories in the evidence file are the concrete demonstrations. The fix is
+procedural, not clever: freeze the criterion set, run one full
+seven-dimension sweep on a single build, and declare that the baseline board.
+Every later change then gets the three-way replay from
+[§4 section 3](04-quality-and-evaluation.md#3-how-compass-runs-evaluations)
+(old code / old judge, old code / new judge, new code / new judge) so
+evaluator drift and product change are estimated separately instead of argued
+about.
+
+### Criteria fire on cases they were never scoped to
+
+Regression criteria written for one scenario are sometimes attached by the
+evaluation classifier to unrelated cases, where they record failures that are
+noise, not signal — visible in the ledger as post-fix "failures" of criteria
+whose home cases pass cleanly. Scoping guards have landed for specific
+criteria; the general fix (a criterion declares its applicable scenarios and
+the classifier honors that declaration) is not yet systematic.
+
+### Five dimensions sit below their configured targets on the strictest lens
+
+Selection (47% on the holistic judge, 65% on structured checks) and Data
+Fidelity (62%) carry the largest gaps as of the 2026-06-22 pinned sweeps. The
+failing criteria are themselves the worklist: each firing criterion names a
+case, a rule, and a recorded reason. Separately, the targets themselves
+(95–99%) should be re-confirmed or revised now that a stricter instrument
+exists — a target set against a gentler grader is not automatically the right
+bar for a harsher one.
+
+### The judges' pass side is largely unaudited
+
+The 2026-06-21 review verified the fail side (most recorded failures are
+real) and found one recall hole — passed refusals — which now has a dedicated
+deterministic check. But "a passing verdict means the answer was good" has
+only been spot-checked, never systematically audited. A periodic human sample
+of passing verdicts, not just failing ones, is the missing habit.
+
+### Observability gaps show up inside otherwise-fixed cases
+
+The worked example in [§4 section 6](04-quality-and-evaluation.md#6-from-a-failure-to-a-fix)
+passes its behavior criteria but still fails its trace-ID check in the same
+sweep: correct but unobservable. These trace-missing verdicts are tracked as
+their own axis rather than folded into product failures, and they need an
+infrastructure fix, not a product one.
+
+### The scenario library has no named owner or review cadence
+
+The library grew from 326 active scenarios (June 9 audit) to 390 (August 12
+export) without an owner, review cadence, or retirement policy. Duplicate,
+stale, or mis-scoped cases degrade every number downstream. Someone has to
+own the benchmark the way someone owns the data pipeline.
+
+### Staff feedback is not yet wired into the evaluation ledger
+
+Staff can flag live conversations from the Dashboard, and those flags are
+leads for investigation — but there is no defined path from a flag to a saved
+scenario, case, and criterion. Until that link exists, field observations
+depend on someone manually carrying them into the library, and some will be
+lost.
+
+### Whether an answer-time judge should ever block a response is undecided
+
+Background quality judging is diagnostic by design: it records verdicts after
+the response ships and does not edit or block it. Whether any future judge
+should become a pre-send gate is an open product decision, deliberately not
+made yet — a blocking gate raises latency, adds a new failure mode, and
+requires far higher judge precision than a diagnostic one.
