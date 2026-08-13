@@ -151,6 +151,38 @@ Until that work is complete, operators should review the application estimate
 and Gateway Spending view together. Owner: TBD. Review: during the next
 operations-dashboard pass.
 
+### Two analytics tools measure the same thing; Google Analytics should be the only one
+
+Site traffic is currently measured twice. Google Analytics 4 and a self-hosted
+Umami instance both count visitors, and the dashboard's unique-visitor tile
+reads whichever is available: GA when it is configured, Umami as a fallback when
+it is not. Two tools, two credential sets, and two client modules exist to
+produce a single number.
+
+Most of the consolidation has already happened. The GA client was written to
+mirror Umami's interface exactly, so the tile reads from either source without
+any change to the rendering code, and GA is preferred wherever it is configured.
+GA is also the better instrument for this measurement: it de-duplicates a
+visitor by client ID across all time, while Umami's hash salt resets on the
+first of each calendar month, which is why the Umami path cannot report an
+honest all-time figure and suppresses that number instead. The self-hosted
+Umami version in use also predates user-managed API keys, so its client
+authenticates by logging in and caching a session token — a workaround that
+exists only because the instance is self-hosted.
+
+What remains is retirement rather than migration: confirm GA is configured in
+production, then remove the Umami client, its configuration and credentials, and
+the fallback branch, and decommission the instance itself. Standardizing on GA
+also removes the monthly-reset caveat from the operator-facing metric
+definitions in
+[§5](05-administration-and-dashboard.md#key-metrics-and-how-they-are-calculated),
+which currently has to explain a limitation that only applies to the fallback.
+
+The consolidation argument is not that Umami is worse in general. It is that one
+number should have one source, and a second tool that measures the same thing
+less precisely costs credentials, hosting, code, and reader attention without
+buying anything. Owner: Dashboard. Review: 2026-09-15.
+
 ### An answerable question can still receive a generic clarification
 
 Compass has a deliberate recovery ladder: when it cannot answer directly, it

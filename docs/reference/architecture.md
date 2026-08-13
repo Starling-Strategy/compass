@@ -68,7 +68,7 @@ flowchart LR
     subgraph SERVICES["Supporting services"]
         GW2["Pydantic AI Gateway — model routing"]
         OBS["Logfire traces and Azure Log Analytics"]
-        AN["Umami and Google Analytics — site traffic"]
+        AN["Google Analytics — site traffic"]
     end
 
     TCD2 --> DBX2
@@ -103,7 +103,7 @@ Reading it as three deployed applications and their neighbors:
 | TCD / Pathfinder database | NCTQ system of record | The boundary between production and consumption: Compass reads only what has been published here |
 | Databricks and Data Factory | Azure, in `NCTQ_AI_Data` | Shared; carries reviewed data into the `compass` schema nightly |
 | PostgreSQL | Azure VM, in `NCTQ_PA` | Shared; holds both the `compass` and `nctqai` schemas, which are separate data domains |
-| Pydantic AI Gateway, Logfire, Umami, Google Analytics | External services | Shared; see the [ownership inventory](../07-costs-accounts-and-budget.md#ownership-and-payer-inventory) |
+| Pydantic AI Gateway, Logfire, Google Analytics | External services | Shared; see the [ownership inventory](../07-costs-accounts-and-budget.md#ownership-and-payer-inventory) |
 
 Two boundaries in that table are easy to lose and worth stating outright. The
 dashboard is **one application with several sections**, not several

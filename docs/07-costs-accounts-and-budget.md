@@ -55,8 +55,7 @@ this table exists.
 
 | Account or service | Administrator | Who pays | Status | Remaining action |
 | --- | --- | --- | --- | --- |
-| Google Analytics | NCTQ | NCTQ | In place | No transfer action required; NCTQ controls the property. |
-| Umami analytics at `umami.nctq.ai` | **Confirm** | **Confirm** (self-hosted; hosting cost follows the host) | In use by the dashboard | Confirm where this instance runs and who administers it. The dashboard reads it for the site-level unique-visitor tile described in [§5](05-administration-and-dashboard.md#key-metrics-and-how-they-are-calculated). |
+| Google Analytics | NCTQ | NCTQ | In place | No transfer action required; NCTQ controls the property. It is the intended single analytics source; retiring the second tool is tracked in [§9](09-known-issues-and-limitations.md#two-analytics-tools-measure-the-same-thing-google-analytics-should-be-the-only-one). |
 | Transactional email for dashboard login codes | NCTQ | NCTQ (inside `NCTQ_AI_Data`) | In place | Confirm the sending domain, the `noreply@nctq.ai` sender configuration, and the credential owner. |
 
 ### Credential register
@@ -81,7 +80,7 @@ The credential families in use, as a checklist for building that register:
 | Compass API keys, minted per consumer | Frontend, dashboard server-side calls, scripts, eval harness | `FASTAPI_API_TOKEN`, `FASTAPI_ADMIN_API_TOKEN`; stored as hashes in `compass.api_keys` |
 | Dashboard session and cookie signing material | Dashboard | See [`dashboard/src/nctqai/config.py`](../dashboard/src/nctqai/config.py) |
 | Email delivery credential for login codes | Dashboard | SMTP settings in the dashboard config |
-| Analytics credentials | Dashboard | Umami service account; Google Analytics service-account material |
+| Analytics credentials | Dashboard | Google Analytics service-account material. The Umami instance's credentials are still live until that tool is retired ([§9](09-known-issues-and-limitations.md#two-analytics-tools-measure-the-same-thing-google-analytics-should-be-the-only-one)); revoke them as part of decommissioning |
 | Azure and Azure DevOps access | Operators, release pipelines | Azure RBAC and pipeline service connections, not environment variables |
 | Databricks workspace and source-system credentials | Databricks notebooks | Databricks secret scopes |
 | Cloudflare DNS access | Operators | Cloudflare account roles, not environment variables |
@@ -156,9 +155,9 @@ virtual machine, and the shared data platform and email group.
 - **Staging.** Staging runs outside Azure and is not in these figures. It is a
   development environment, not part of the production service path
   ([§6](06-hosting-deployment-security.md#62-applications-and-environments)).
-- **Services billed elsewhere.** Logfire, Umami hosting, Airtable, Google
-  Analytics, Cloudflare, and GitHub are separate lines, each in the ownership
-  inventory above.
+- **Services billed elsewhere.** Logfire, Airtable, Google Analytics,
+  Cloudflare, and GitHub are separate lines, each in the ownership inventory
+  above.
 
 Refresh cadence: re-measure the Azure baseline and the Gateway ledger together
 at the monthly operating review, and re-derive the annualized figures whenever

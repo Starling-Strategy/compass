@@ -175,7 +175,7 @@ Three tiles count people, and they are deliberately not the same number.
 
 | Tile | Calculation | What to watch for |
 | --- | --- | --- |
-| **Unique visitors** | Site-level unique visitors from Umami, for people who viewed Compass on Pathfinder | Umami's de-duplication salt resets on the first of each calendar month, so it only de-duplicates *within* a month. The tile therefore shows no number at all for the all-time range, because a monthly regular would be counted roughly twelve times a year. Use it for 7- and 30-day windows only. |
+| **Unique visitors** | Site-level unique visitors, for people who viewed Compass on Pathfinder. Read from Google Analytics where it is configured, which de-duplicates by client ID across all time and so answers every window | A self-hosted Umami instance is still the fallback where GA is not configured, and it de-duplicates only *within* a calendar month — its salt resets on the first. On that path the tile shows no number for the all-time range, because a monthly regular would be counted roughly twelve times a year. Retiring the second tool is tracked in [§9](09-known-issues-and-limitations.md#two-analytics-tools-measure-the-same-thing-google-analytics-should-be-the-only-one). |
 | **Chat users** | `COUNT(DISTINCT visitor_id)` over sessions in the window — distinct people who actually started a conversation | This is the honest "how many real users" number: chat-level and de-duplicated with no monthly reset. It counts only visitors carrying a pseudonymous ID minted by the Pathfinder embed, so traffic that reaches the chat outside the embed is not counted. |
 | **Returning users** | Of those identified visitors, how many started **2 or more** conversations in the window | Chat-level, and a subset of Chat users — not a subset of Unique visitors. |
 
@@ -218,7 +218,7 @@ people ask about, not a complete distribution.
 - Usage metrics and quality metrics answer different questions. Nothing on the
   Overview page is evidence that answers were correct; that is the
   [scorecard's](#quality-and-scorecard) job, on its own denominators.
-- Site-level analytics (Umami, Google Analytics) and chat-level metrics
+- Site-level web analytics and chat-level metrics
   (everything derived from `compass.*`) will not reconcile to each other, and
   are not expected to. Do not report a ratio between them.
 
