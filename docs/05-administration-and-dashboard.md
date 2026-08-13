@@ -1,6 +1,6 @@
 # 5. Administration and Dashboard
 
-The NCTQ.ai Dashboard is the private staff workspace for monitoring Compass,
+The NCTQ Dashboard is the private staff workspace for monitoring Compass,
 reviewing saved conversations and quality results, and administering human
 access. It is separate from the public Compass chat. Most Compass pages report
 what has already happened; they do not rerun a conversation or change the data
@@ -16,18 +16,17 @@ Use the Dashboard to answer three operational questions:
    review?
 3. Who should have access to the staff workspace?
 
-The Dashboard runs from `dashboard/src/nctqai/`. Its Compass monitoring pages
-are under `/compass/*`. The [quality and evaluation guide](04-quality-and-evaluation.md#human-review-feedback-and-data-checks)
-defines the review evidence, and [Start Here](01-start-here.md#how-the-parts-fit-together)
-shows where the Dashboard fits in the platform.
+The Dashboard runs from `dashboard/src/nctqai/`, and its Compass monitoring pages
+are under `/compass/*`.
 
 This is an internal operations surface. It is not the public chatbot, an
 authoring interface for Compass answers, or the source of truth for role and
 authentication rules.
 
-For release controls and environment boundaries, see [Hosting, Deployment, and
-Security](06-hosting-deployment-security.md). For account ownership, service
-handoff, and budget refreshes, see [Costs, Accounts, and Budget](07-costs-accounts-and-budget.md).
+Two neighboring sections cover what this one leaves out: [§6 Hosting, Deployment,
+and Security](06-hosting-deployment-security.md) for release controls and
+environment boundaries, and [§7 Costs, Accounts, and
+Budget](07-costs-accounts-and-budget.md) for account ownership and spending.
 
 ## Data boundaries
 
@@ -40,10 +39,8 @@ The Dashboard has four operational boundaries:
 | Dashboard identity | Human users, OTP codes, and browser sessions live in `nctqai.*`. They are separate from Compass API users and keys. |
 | Metric Calculator | `/mc/*` is a separate review workflow. It can write validated metric data and is not part of the Compass observability boundary. |
 
-The saved turn snapshot is the audit artifact for conversation replay. Operators
-should not interpret the Dashboard view as a fresh model judgment. For the full
-answer path and the separate evaluation path, see [Product and Answer Flow](02-product-and-answer-flow.md#the-pipeline)
-and [Quality and Evaluation](04-quality-and-evaluation.md#3-how-compass-runs-evaluations).
+The saved turn snapshot is the audit artifact for conversation replay. A Dashboard
+view shows what was recorded at the time, not a fresh model judgment.
 
 ## Human access: email OTP and roles
 
@@ -65,16 +62,15 @@ The runtime authority for roles and section access is
 | `power_user` | Viewer and analyst areas, supervisory Metric Calculator actions, and the Compass monitoring surfaces. |
 | `admin` | All sections, user administration, and admin-only Compass evaluation and operations pages. |
 
-The current code opens Compass Overview, Conversations, Flagged Issues, and Data
-Universe to all four roles. This includes the Flagged Issues status and
-dimension controls: those actions use the same all-roles Compass section gate.
-Scenarios, Scorecard, Operations, trace tools, and user administration remain
-admin-only. Page navigation is not a security boundary; route guards enforce
-access.
+All four roles reach the Compass monitoring surface: Overview, Conversations and
+conversation detail, Data Universe, and Flagged Issues. That includes the Flagged
+Issues status and dimension controls, which sit behind the same all-roles Compass
+section gate. Admin-only, by contrast: Scenarios, Scorecard, Operations, trace
+tools, and user administration.
 
-The role model and route guards in the dashboard source are authoritative. If
-this prose differs from `dashboard/src/nctqai/models/auth.py` or the route
-guards, follow the code.
+Page navigation is not a security boundary — route guards enforce access. The role
+map and route guards in the dashboard source are authoritative; where this prose
+differs from them, follow the code.
 
 ### Add, change, or deactivate a user
 
@@ -153,9 +149,8 @@ The admin-only **Scorecard** reads the verdict ledger and groups evaluation
 results by quality dimension, case, sweep, and trial. A `pass`, `fail`, or
 `error` outcome has a specific meaning in the ledger. Do not combine product
 failures, judge or harness errors, missing traces, and skipped checks into one
-failure count. The
-[Quality and Evaluation](04-quality-and-evaluation.md) describes the evidence
-expected before a change ships.
+failure count. [§4 Quality & Evaluation](04-quality-and-evaluation.md) describes
+the evidence expected before a change ships.
 
 The scorecard is a review surface, not the place to edit criteria, repair data,
 or rerun production conversations. Evaluation changes and replays belong to the
@@ -244,23 +239,10 @@ owns source acquisition, transformation, and loading. The Dashboard can reveal
 the resulting coverage but does not replace that pipeline. Shared deployment or
 database infrastructure does not make these responsibilities interchangeable.
 
-## Decision: Compass monitoring access
-
-The dashboard follows the current role and route implementation: **all four
-roles** (`viewer`, `analyst`, `power_user`, and `admin`) can access the Compass
-monitoring surface — Overview, Conversations and conversation detail, Data
-Universe, and Flagged Issues. All four roles can also use the Flagged Issues
-status and dimension controls.
-
-The restricted set is separate: Scenarios, Scorecard, Operations, trace tools,
-and user administration are admin-only. The shared role map and route guards in
-the dashboard source remain the operational authority for any future change.
-
 ## What this document does not contain
 
-This document intentionally contains no live URLs that are not already governed
-elsewhere, personal access roster, email addresses, passwords, API-key values,
-connection strings, secret-store locations, or production mutation commands.
-Use the approved credential, database, deployment, and incident runbooks for
-those details. Share safe key identifiers and stable record IDs only when an
-operator needs them to investigate.
+No personal access roster, email addresses, passwords, API-key values, connection
+strings, secret-store locations, production mutation commands, or live URLs that
+are not already governed elsewhere. Use the approved credential, database,
+deployment, and incident runbooks for those details. Share safe key identifiers
+and stable record IDs only when an operator needs them to investigate.

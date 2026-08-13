@@ -8,17 +8,15 @@ together.
 It is intentionally a **sanitized system view**, not a network diagram or a
 secret inventory. Production hosting and environment details belong in
 [§6 Hosting, Deployment, and Security](../06-hosting-deployment-security.md).
-The diagram complements the smaller, purpose-specific diagrams in [§2 Product
-& Answer Flow](../02-product-and-answer-flow.md), [§3 Data & the Databricks
-Platform](../03-data-and-databricks.md), and the [schema
-reference](compass-schema.md).
+The smaller, purpose-specific diagrams in §§2-4 cover individual stages; this
+one covers how the pieces connect.
 
 ## The full system map
 
 Read the solid arrows as the main request or data path. Dashed arrows show an
 optional model call, asynchronous evaluation, or telemetry; they do not supply
 the answer's facts directly. The colors are a visual aid only; the labels and
-the text below carry the meaning. The detailed stage diagrams remain in §§2–4.
+the text below carry the meaning.
 
 ```mermaid
 flowchart LR
@@ -30,9 +28,9 @@ flowchart LR
     end
 
     subgraph APPS["Applications — production: Azure Container Apps"]
-        FE["Compass frontend: PHP + Apache, iframe shell and SSE proxy"]
+        FE["Compass Frontend: PHP + Apache, iframe shell and SSE proxy"]
         API["Policy Advisor API: FastAPI, chat orchestration"]
-        DASH["NCTQ.ai dashboard: FastHTML, monitoring and review"]
+        DASH["NCTQ Dashboard: FastHTML, monitoring and review"]
     end
 
     PF -->|"embeds"| FE
@@ -92,7 +90,7 @@ flowchart LR
 ### Text equivalent
 
 1. A public reader reaches the chat through the NCTQ District Policy Pathfinder.
-   The Pathfinder hosts the Compass frontend in an iframe. NCTQ staff use the
+   The Pathfinder hosts the Compass Frontend in an iframe. NCTQ staff use the
    separate Dashboard.
 2. The PHP/Apache frontend sends chat and feedback requests to the FastAPI
    Policy Advisor API and receives a streamed or non-streamed response.
@@ -122,9 +120,9 @@ flowchart LR
 | Component | Responsibility in the system | Detailed reference |
 | --- | --- | --- |
 | District Policy Pathfinder | NCTQ website entry point that hosts the public chat iframe and participates in the visitor-ID/prompt messaging contract | [Pathfinder integration in §8](../08-technical-reference.md#pathfinder-integration) |
-| Compass frontend | PHP/Apache chat shell, embed mode, browser rendering, and server-side SSE/API proxy | [Application layout in §8](../08-technical-reference.md#application-layout-and-runtime-shape) |
+| Compass Frontend | PHP/Apache chat shell, embed mode, browser rendering, and server-side SSE/API proxy | [Application layout in §8](../08-technical-reference.md#application-layout-and-runtime-shape) |
 | Policy Advisor API | FastAPI boundary for authentication, session load, planning, catalog resolution, deterministic execution, rendering, persistence, and streaming | [Product & Answer Flow](../02-product-and-answer-flow.md) |
-| NCTQ.ai Dashboard | Staff-only monitoring, conversation review, data-universe views, quality views, and flag submission | [Administration and Dashboard](../05-administration-and-dashboard.md) |
+| NCTQ Dashboard | Staff-only monitoring, conversation review, data-universe views, quality views, and flag submission | [Administration and Dashboard](../05-administration-and-dashboard.md) |
 | PostgreSQL and `compass` schema | Canonical store for answer data, runtime views, conversation records, feedback, reports, and evaluation evidence | [Compass schema reference](compass-schema.md) |
 | Runtime read views | Stable read interface used by chat execution: `district_profiles`, `policy_questions`, `policy_answers`, and `answer_sources` | [Runtime materialized views](compass-schema.md#runtime-materialized-views) |
 | Conversation context tables | `chat_sessions` and `chat_messages`, including the persisted turn snapshot carried in assistant-message JSON; feedback and reports provide review context | [Dashboard data boundaries](../05-administration-and-dashboard.md#data-boundaries) |
@@ -133,10 +131,10 @@ flowchart LR
 | Pydantic Logfire | Captures traces and spans used to diagnose a turn across API, database, HTTP, and agent boundaries | [Logging and observability](../06-hosting-deployment-security.md#67-logging-and-observability) |
 | Evaluation and feedback loop | Combines answer-time validation, post-response judging, saved-case sweeps, scorecards, and staff flags; current judging is diagnostic, not a pre-send gate | [Quality & Evaluation](../04-quality-and-evaluation.md) |
 
-The gateway role names and current default model assignments are maintained in
-[§2's model table](../02-product-and-answer-flow.md#how-compass-uses-different-ai-models).
-They are linked rather than copied here because model selection is configuration
-that can change independently of the system boundaries in this map.
+Default model assignments are deliberately not copied into this map: model
+selection is configuration that changes independently of the system boundaries
+shown here. The current assignments live in the [prompt and model
+inventory](prompt-and-model-inventory.md).
 
 ## Data and trust boundaries
 
@@ -196,27 +194,13 @@ The loop has three related but separate paths:
 
 This distinction prevents a clean data-pipeline run, a passing judge, or a useful
 Dashboard chart from being mistaken for proof that every future question will be
-answered correctly. See [§4 Quality & Evaluation](../04-quality-and-evaluation.md)
-for the evidence model and [§9 Known Issues & Limitations](../09-known-issues-and-limitations.md)
-for known gaps.
+answered correctly. [§4 Quality & Evaluation](../04-quality-and-evaluation.md) has
+the evidence model.
 
 ## Deployment scope
 
-The diagram is intentionally logical. The current operational handoff describes
-production application hosting on Azure Container Apps, a shared production
-PostgreSQL environment, and a separate Coolify-based staging path. It also
-contains the release, security, backup, and incident procedures that should not be
-duplicated here. See [§6 Hosting, Deployment, and Security](../06-hosting-deployment-security.md)
-and [§7 Costs, Accounts, and Budget](../07-costs-accounts-and-budget.md).
-
-## Related references
-
-- [Start Here](../01-start-here.md) — orientation and documentation navigation.
-- [Product & Answer Flow](../02-product-and-answer-flow.md) — one turn in detail.
-- [Data & the Databricks Platform](../03-data-and-databricks.md) — source roles,
-  refresh stages, and data freshness.
-- [Quality & Evaluation](../04-quality-and-evaluation.md) — dimensions, cases,
-  verdicts, sweeps, and feedback.
-- [Technical Reference](../08-technical-reference.md) — APIs, configuration,
-  integrations, prompts, and open-source acknowledgements.
-- [Compass glossary](compass-glossary.md) — shared terminology.
+The diagram is intentionally logical. Production application hosting runs on Azure
+Container Apps against a shared production PostgreSQL environment, with a separate
+Coolify-based staging path. The release, security, backup, and incident procedures
+live in [§6 Hosting, Deployment, and
+Security](../06-hosting-deployment-security.md) rather than here.

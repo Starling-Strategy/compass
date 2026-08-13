@@ -17,10 +17,10 @@ Use this order when sources disagree:
 4. The attached handoff documents, which describe the Azure estate and its
    historical deployment lanes.
 
-This section documents the operating model. It does not replace the application
-specific runbooks, database migration procedure, or incident records. Commands
-use placeholders and must be filled from the approved password manager and
-cloud inventory at execution time.
+This section documents the operating model. It does not replace the
+application-specific runbooks, the database migration procedure, or incident
+records. Commands use placeholders and must be filled from the approved password
+manager and cloud inventory at execution time.
 
 Human access and Dashboard administration are covered in [Administration and
 Dashboard](05-administration-and-dashboard.md). Account ownership, service
@@ -70,12 +70,12 @@ shared dependencies.
 
 ### Source provenance that needs confirmation
 
-The intended clean `compass` repository contains all three active
-codebases listed above. Dillon's Azure handoff describes three separate GitHub
-deploy repositories, three production deploy branches, and matching Azure
-DevOps repositories. These statements can both be true if the separate
-repositories are deployment mirrors or legacy packaging lanes, but the supplied
-material does not prove that relationship.
+This `compass` repository contains all three active codebases listed above. The
+Azure handoff document describes three separate GitHub deploy repositories, three
+production deploy branches, and matching Azure DevOps repositories. Both
+statements can be true if the separate repositories are deployment mirrors or
+legacy packaging lanes, but the supplied material does not prove that
+relationship.
 
 Before the next production release, the platform owner must confirm:
 
@@ -139,8 +139,8 @@ credential process at execution time.
 - [ ] Confirm the issue, reviewed change, release owner, and exact Git SHA.
 - [ ] Confirm the worktree contains current `origin/main` and no unreviewed
       local changes are entering the release.
-- [ ] Run the smallest complete local validation for every changed boundary.
-      Use `./scripts/check.sh` for the full repository check when appropriate.
+- [ ] Run the smallest complete local validation for every changed boundary, and
+      the development repository's full check script when the change is broad.
 - [ ] For user-visible Compass behavior, run the required B-spine case replay
       and scorecard validation.
 - [ ] For frontend, SSE, citation, export, or dashboard interaction changes,
@@ -329,9 +329,9 @@ communications require the designated platform owner.
 
 ## 6.11 Open operational questions
 
-- Is the clean `compass` repository now the sole source of all three
-  production applications, or do the separate GitHub and Azure DevOps mirrors
-  in the handoff remain active deployment authorities?
+- Is this `compass` repository now the sole source of all three production
+  applications, or do the separate GitHub and Azure DevOps mirrors named in the
+  handoff remain active deployment authorities?
 - What are the currently approved production deploy branches and pipeline
   triggers for each application?
 - Does Azure Container Apps still use single active revision mode for all three
@@ -345,7 +345,9 @@ communications require the designated platform owner.
 - Which Azure monitor alerts, notification routes, recovery objectives, and
   incident owner are currently approved? The supplied sources describe logging
   but do not establish a complete alert policy.
-- The root repository guidance says there is no CI gate, while
-  `docs/ops/sweep-cadence.md` describes a GitHub Actions test and lint workflow.
-  Confirm the current repository automation before relying on either statement
-  as a release gate. In all cases, local validation remains mandatory.
+- What automation, if any, gates a release? This repository carries no CI
+  configuration — it is deliberately omitted, since those files build no part of
+  the production images. The development repository's own guidance has been
+  inconsistent about whether a GitHub Actions test-and-lint workflow acts as a
+  gate. Confirm the current automation in the development repository before
+  relying on it. In all cases, local validation remains mandatory.
