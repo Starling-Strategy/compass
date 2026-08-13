@@ -57,6 +57,22 @@ prepared.
 
 ## Improvements under way
 
+### The LLM gateway does not yet provide user-friendly spend and billing controls
+
+Compass currently routes its LLM calls through the
+[Pydantic AI Gateway](https://gateway.pydantic.dev/). It provides the model-routing
+boundary we need, but it does not yet give project operators a simple way to set
+budgets, allocate spend, review billing, or manage account ownership. That makes
+cost governance harder as usage grows and ties this operational work to a
+gateway-specific account.
+
+The planned improvement is to replace the Pydantic AI Gateway with a more
+user-friendly, provider-agnostic option that has clearer spend and billing
+controls, such as OpenRouter or an Azure-managed gateway. The replacement should
+preserve Compass's model-role routing while making budgets, billing visibility,
+and ownership easier to manage. Owner: TBD. Review: before production billing
+setup.
+
 ### The planner picks a query shape before it sees the data
 
 When Compass plans an answer, the planner must commit up front to one of a fixed
