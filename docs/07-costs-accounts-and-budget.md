@@ -14,7 +14,7 @@ account and what setup or transfer remains.
 | Pydantic Logfire | NCTQ | To be set up by NCTQ | NCTQ should create the workspace and retain primary and backup administrator access. |
 | GitHub repository `Starling-Strategy/compass` | NCTQ custody | To be set up by NCTQ | Establish NCTQ organization ownership or administrator custody. Starling can retain support access as agreed. |
 | Azure DevOps organization `nctqai` | NCTQ, with Starling support | In place | Confirm the named NCTQ administrators and pipeline service-connection owners. |
-| Google Analytics | NCTQ | Transfer pending | Transfer the property from Dillon to NCTQ and confirm the NCTQ property owner, administrator, and service-account custodian. |
+| Google Analytics | NCTQ | In place | No transfer action is required; NCTQ controls the property. |
 
 ## Handoff rules
 
