@@ -23,7 +23,7 @@ No credentials, tokens, connection strings, or secret values belong in this file
 | Main Compass destination | Production PostgreSQL, `compass` schema |
 | Shared data model | Bronze = source copy; Silver = cleaned and enriched; Gold = application-ready; Production = PostgreSQL |
 | Failure behavior | Failed scheduled steps stop dependent work and send email/Slack alerts to the data team |
-| Operational owner | NCTQ data team; the source names Dillon Silzer as a nightly-report recipient, not as every notebook's owner |
+| Operational owner | NCTQ data team; the source names a member of the NCTQ data team as the nightly-report recipient, not as every notebook's owner |
 
 ## Folder and pipeline map
 
@@ -113,7 +113,7 @@ The source numbers these as README, setup, 1–8, 10, and 11; number 9 is not li
 | **Name not supplied — NCES link and allowlist** | Link NCTQ districts to NCES and restrict fields | Nightly extractor 7, parallel | TCD districts + NCES data → links and field allowlist | NCTQ data team; named owner not supplied |
 | **Name not supplied — enrollment authority** | Apply the NYC enrollment rollup | Nightly extractor 8, parallel | NYC/NCES records + authority rules → enrollment-authority values | NCTQ data team; named owner not supplied |
 | **Name not supplied — validation** | Check row counts, required columns, uniqueness, and schema shape | Nightly after extractors; blocks push on failure | Compass outputs + last-known-good counts → validation gate | NCTQ data team; named owner not supplied |
-| **Name not supplied — push to production** | Merge tables, clean stale rows, refresh views, audit, and report | Nightly after validation | Validated Compass outputs → production `compass` schema, views, audits, email/Slack report | NCTQ data team; report recipient named as Dillon Silzer |
+| **Name not supplied — push to production** | Merge tables, clean stale rows, refresh views, audit, and report | Nightly after validation | Validated Compass outputs → production `compass` schema, views, audits, email/Slack report | NCTQ data team; report recipient named as a member of the NCTQ data team |
 
 ### `nctq_web_db` — 3 notebooks
 
@@ -166,6 +166,6 @@ Before treating this as a live runbook, reconcile it against the workspace:
 - [ ] Replace “owner not supplied” with accountable ownership where desired.
 - [ ] Verify schedules, outputs, alert recipients, and current counts.
 
-**Source:** [NCTQ Databricks Work Summary](https://docs.google.com/document/d/1IeuZSbZ1KjPXjZY5wV4vzJLBhjSn6OrJ/edit),
-July 6, 2026; supplemented by the confidential *Databricks Data Platform:
+**Source:** the internal NCTQ Databricks Work Summary,
+July 6, 2026; supplemented by an internal *Databricks Data Platform:
 Deep-Dive* handoff.

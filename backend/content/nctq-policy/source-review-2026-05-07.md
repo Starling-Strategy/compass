@@ -4,9 +4,9 @@ This review compares the Markdown stopgap in `content/nctq-policy` with the thre
 
 ## Source Documents
 
-- District Policy Stances: https://docs.google.com/document/d/13RvhrLNmEDjAZaOFzjXzmZm0WEbSonh42jTQOTG1onU/edit?tab=t.0
-- Research rationales for Starling: https://docs.google.com/document/d/182nNO91oGow4yiOVL-z5-hni9ZBrl-fmgt-0zE37Ylg/edit?tab=t.0
-- Exemplary Policies: https://docs.google.com/document/d/1ADYojeXd1qZjleFIdpaRLtz_R6E6iNPJkUytTXb2TEQ/edit?tab=t.fwwto1ul62ol
+- District Policy Stances (NCTQ internal Google Doc)
+- Research rationales (NCTQ internal Google Doc)
+- Exemplary Policies (NCTQ internal Google Doc)
 
 ## What Was Updated
 

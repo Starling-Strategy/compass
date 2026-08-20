@@ -14,9 +14,9 @@ Generated from the staging database on 2026-05-07:
 
 Reviewed against the three Google Drive source documents on 2026-05-07:
 
-- District Policy Stances: https://docs.google.com/document/d/13RvhrLNmEDjAZaOFzjXzmZm0WEbSonh42jTQOTG1onU/edit?tab=t.0
-- Research rationales for Starling: https://docs.google.com/document/d/182nNO91oGow4yiOVL-z5-hni9ZBrl-fmgt-0zE37Ylg/edit?tab=t.0
-- Exemplary Policies: https://docs.google.com/document/d/1ADYojeXd1qZjleFIdpaRLtz_R6E6iNPJkUytTXb2TEQ/edit?tab=t.fwwto1ul62ol
+- District Policy Stances (NCTQ internal Google Doc)
+- Research rationales (NCTQ internal Google Doc)
+- Exemplary Policies (NCTQ internal Google Doc)
 
 This content is already wired into the Compass runtime. The backend loads it at
 startup through a strict, deterministic parser; invalid content stops the app
