@@ -3,7 +3,7 @@
 All functions are pure: take data in, return data out. No AI calls, no DB calls.
 Default config: 15 runs (k=2..16), INA threshold=9.
 
-Nathan's PiedPiper equivalent: PredictionPipeline._aggregate_predictions()
+PiedPiper equivalent: PredictionPipeline._aggregate_predictions()
 Same core logic: modal vote with INA consensus override. We add entropy
 tracking and citation quality aggregation.
 """

@@ -2,7 +2,7 @@
 
 All settings read from PREDICTOR_* environment variables.
 
-Nathan's PiedPiper equivalent: PredictionConfig dataclass + os.getenv() calls.
+PiedPiper equivalent: PredictionConfig dataclass + os.getenv() calls.
 We use Pydantic Settings with PREDICTOR_ prefix for validation and env binding.
 """
 from pydantic import AliasChoices, Field, model_validator
