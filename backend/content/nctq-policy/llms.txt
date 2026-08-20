@@ -4,12 +4,6 @@
 
 Compass should use these files as structured source content, not as general background reading. Select the topic and requested layer before injecting content into an answer.
 
-## Source Documents
-
-- District Policy Stances (NCTQ internal Google Doc)
-- Research rationales (NCTQ internal Google Doc)
-- Exemplary Policies (NCTQ internal Google Doc)
-
 ## Topics
 
 - [Benefits](topics/benefits.md)

@@ -82,8 +82,9 @@ Every difference between this copy and the source commits, in full:
    administrator's personal email in `001_auth_tables.sql` (now a commented
    template), a contractor's address in six test modules, a client
    stakeholder's first name across the prediction pipeline (renamed to "the
-   silence rule"), a staff name in the Databricks inventory, four internal
-   Google Doc URLs, and a Vespa tenant name. Test and evaluation behavior is
+   silence rule"), a staff name in the Databricks inventory, links to and
+   titles of internal source documents (now referred to generically), and a
+   Vespa tenant name. Test and evaluation behavior is
    unchanged; the one renamed identifier, `silence_rule_violations`, is written
    but never read.
 

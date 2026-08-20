@@ -2,7 +2,7 @@
 
 This is the operational inventory requested in the client outline: **47 notebooks
 across nine folders** supporting the NCTQ data platform and Compass. It is based on
-the *NCTQ Databricks Work Summary* dated **July 6, 2026**.
+internal NCTQ Databricks platform documentation dated **July 6, 2026**.
 
 This is a source-based handoff, not a live Databricks or Azure Data Factory export.
 The source does not provide the exact workspace filename for each of the 13 TCD
@@ -166,6 +166,4 @@ Before treating this as a live runbook, reconcile it against the workspace:
 - [ ] Replace “owner not supplied” with accountable ownership where desired.
 - [ ] Verify schedules, outputs, alert recipients, and current counts.
 
-**Source:** the internal NCTQ Databricks Work Summary,
-July 6, 2026; supplemented by an internal *Databricks Data Platform:
-Deep-Dive* handoff.
+**Source:** internal NCTQ Databricks platform documentation, July 6, 2026.

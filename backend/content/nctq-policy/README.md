@@ -12,11 +12,8 @@ Generated from the staging database on 2026-05-07:
 - `compass.topic_aliases`
 - `compass.nctq_topic_briefs`
 
-Reviewed against the three Google Drive source documents on 2026-05-07:
-
-- District Policy Stances (NCTQ internal Google Doc)
-- Research rationales (NCTQ internal Google Doc)
-- Exemplary Policies (NCTQ internal Google Doc)
+Reviewed on 2026-05-07 against NCTQ's internal source documents for policy
+stances, research rationales, and exemplary policies.
 
 This content is already wired into the Compass runtime. The backend loads it at
 startup through a strict, deterministic parser; invalid content stops the app
@@ -54,7 +51,7 @@ Until those URLs land, the runtime renderer (`src/compass_backend/rendering/poli
 
 ## What Remains
 
-The research-rationale Google Doc is substantially richer than the compact
+The research-rationale source document is substantially richer than the compact
 DB-derived rationale summaries in these topic files. Do not treat the rationale
 layer as fully migrated until the full source document has been split into
 topic/subtopic sections with source references.
