@@ -78,7 +78,7 @@ def test_create_report_success_payload(monkeypatch):
     result = create_report(
         session_id=_SESSION,
         outcome="fail",
-        reviewer="macon@starlingstrategy.com",
+        reviewer="reviewer@example.org",
         comments="check turn 2",
     )
     assert result.ok is True
@@ -86,7 +86,7 @@ def test_create_report_success_payload(monkeypatch):
     payload = _FakeClient.captured["json"]
     assert payload["session_id"] == _SESSION
     assert payload["outcome"] == "fail"
-    assert payload["reviewer"] == "macon@starlingstrategy.com"
+    assert payload["reviewer"] == "reviewer@example.org"
     assert payload["comments"] == "check turn 2"
     assert _FakeClient.captured["url"].endswith("/api/v1/debug/report")
 
@@ -209,8 +209,8 @@ def test_flag_control_is_wired_into_build_detail(monkeypatch):
 
 
 class _FakeUser:
-    email = "macon@starlingstrategy.com"
-    name = "Macon"
+    email = "reviewer@example.org"
+    name = "Test Reviewer"
     role = "power_user"
 
     def can_access(self, _section: str) -> bool:
@@ -286,7 +286,7 @@ def test_flag_route_proxies_to_create_report_and_renders_ok(monkeypatch):
 
     assert calls["session_id"] == _SESSION
     assert calls["outcome"] == "partial"
-    assert calls["reviewer"] == "macon@starlingstrategy.com"
+    assert calls["reviewer"] == "reviewer@example.org"
     assert calls["comments"] == "look here"  # trimmed
     assert calls["dimension"] == "citation-accuracy"
     assert "Flagged for review" in html

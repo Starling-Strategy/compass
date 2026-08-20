@@ -11,6 +11,9 @@ Production deploys from a dedicated deploy branch in each application's source
 repository. The snapshots below are those deploy branches at the commits
 current as of 2026-08-12:
 
+The source repositories below are **private**; the links are recorded for
+internal traceability and will not resolve for public readers.
+
 | App | Directory | Source repository | Deploy branch | Commit | Committed |
 | --- | --- | --- | --- | --- | --- |
 | Policy Advisor API | `backend/` | Starling-Strategy/policy-advisor | `nctq-azure-push` | `7d44341644d88a7fe6434c1567a9c3c0c3ef2327` | 2026-07-01 |
@@ -28,9 +31,10 @@ The rule: each directory contains what that application's Docker image is
 built from, plus the Dockerfile itself — nothing more.
 
 - **`backend/`** — the files `Dockerfile.api` copies into the image:
-  `src/compass_backend/`, `static/`, `content/`, `scripts/entrypoint.sh`,
+  `src/compass_backend/`, `content/`, `scripts/entrypoint.sh`,
   `pyproject.toml`, `uv.lock` (byte-identical, since they pin dependency
-  resolution), plus a replacement `README.md` (see deviations).
+  resolution), plus a replacement `README.md` (see deviations). The image also
+  carried `static/`, which has since been removed (deviation 5).
 - **`frontend/`** — the image is built from the whole repository minus its
   `.dockerignore` exclusions; this copy applies the same rule (so `tests/`,
   `infra/`, and CI config are out, exactly as they are absent from the image).
@@ -60,6 +64,29 @@ Every difference between this copy and the source commits, in full:
    boundaries — is documented in
    [docs/06-hosting-deployment-security.md](docs/06-hosting-deployment-security.md),
    without embedding credentials or live pipeline identifiers.
+
+5. **`backend/static/` removed.** The source repo's `static/index.html` was a
+   legacy Azure AD admin console that no route served — nothing under
+   `src/compass_backend/` mounts a static directory — but the Dockerfile copied
+   it into the image. It embedded real Entra tenant, client, and API-scope
+   identifiers in client-side JavaScript. The file and its `COPY` line are both
+   gone. No runtime behavior changed, because nothing served it.
+
+6. **Internal engineering docs removed** from the dashboard copy
+   (`src/document_pipeline/docs/`, 12 files). Design and planning artifacts
+   swept in by the "vendor `src/` in full" rule; no code imports or links to
+   them. They contained a production database endpoint, an internal analytics
+   host, and quotes from a client call.
+
+7. **Identities and internal links redacted** for public release: a seeded
+   administrator's personal email in `001_auth_tables.sql` (now a commented
+   template), a contractor's address in six test modules, a client
+   stakeholder's first name across the prediction pipeline (renamed to "the
+   silence rule"), a staff name in the Databricks inventory, links to and
+   titles of internal source documents (now referred to generically), and a
+   Vespa tenant name. Test and evaluation behavior is
+   unchanged; the one renamed identifier, `silence_rule_violations`, is written
+   but never read.
 
 Everything else is byte-identical to the source commits — including code
 comments that reference the development environment and test fixtures that use

@@ -1,6 +1,6 @@
 # Source index: full prompt versions
 
-Compass is a curated production snapshot. The historical prompt sources below live in the original [`Starling-Strategy/policy-advisor`](https://github.com/Starling-Strategy/policy-advisor) repository. Each link opens the complete source at its recorded commit.
+Compass is a curated production snapshot. The historical prompt sources below live in the original `Starling-Strategy/policy-advisor` repository, which is **private** — the commit links are recorded for internal traceability and will not resolve for public readers. The prompts that matter are extracted in full into the snapshots linked from this page.
 
 ## Selected historical extracts copied here
 

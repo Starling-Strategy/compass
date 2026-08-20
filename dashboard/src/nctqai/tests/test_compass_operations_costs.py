@@ -87,7 +87,7 @@ def test_recent_api_keys_returns_safe_key_ids(monkeypatch) -> None:
             {
                 "key_id": "pa_dev_c36eed70",
                 "name": "compass-admin",
-                "owner_email": "macon@starlingstrategy.com",
+                "owner_email": "reviewer@example.org",
                 "last_used_at": datetime(2026, 7, 7, 14, 0, tzinfo=UTC),
                 "request_count": 12,
             }
@@ -106,7 +106,7 @@ def test_recent_api_keys_returns_safe_key_ids(monkeypatch) -> None:
         ApiKeyUsageSummary(
             key_id="pa_dev_c36eed70",
             name="compass-admin",
-            owner_email="macon@starlingstrategy.com",
+            owner_email="reviewer@example.org",
             last_used_at=datetime(2026, 7, 7, 14, 0, tzinfo=UTC),
             request_count=12,
         )
@@ -138,7 +138,7 @@ def test_costs_section_leads_with_budget_context_and_key_id() -> None:
         ApiKeyUsageSummary(
             key_id="pa_dev_c36eed70",
             name="compass-admin",
-            owner_email="macon@starlingstrategy.com",
+            owner_email="reviewer@example.org",
             last_used_at=datetime(2026, 7, 7, 14, 0, tzinfo=UTC),
             request_count=12,
         )
@@ -165,7 +165,7 @@ def test_api_key_section_explains_configured_key_scope() -> None:
                 ApiKeyUsageSummary(
                     key_id="pa_dev_c36eed70",
                     name="compass-admin",
-                    owner_email="macon@starlingstrategy.com",
+                    owner_email="reviewer@example.org",
                     last_used_at=datetime(2026, 7, 7, 14, 0, tzinfo=UTC),
                     request_count=12,
                 )

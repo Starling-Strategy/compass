@@ -6,7 +6,7 @@ and feeds to Vespa Cloud.
 Usage:
     # Deploy schema + index district 37
     PYTHONPATH=src python src/document_pipeline/run_vespa_index.py \\
-        --district 37 --tenant starling --vespa-token <token>
+        --district 37 --tenant <tenant> --vespa-token <token>
 
     # Backfill only missing documents (queries Vespa for existing doc_ids)
     PYTHONPATH=src python src/document_pipeline/run_vespa_index.py \\

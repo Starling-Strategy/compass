@@ -2,11 +2,11 @@
 -- Add dashboard view for latest-row-wins display on suggested_answers.
 --
 -- Backward-compatible: keeps original PK (district_id, ay_id, q_id) so
--- Nathan's ON CONFLICT upsert code still works. Our branch does plain
+-- the PiedPiper ON CONFLICT upsert code still works. Our branch does plain
 -- INSERT (always sets run_id), so history accumulates from our runs.
--- Nathan's ON CONFLICT overwrites the single row per question as before.
+-- the PiedPiper ON CONFLICT overwrites the single row per question as before.
 --
--- When Nathan's branch adopts plain INSERT too, a follow-up migration
+-- When the PiedPiper branch adopts plain INSERT too, a follow-up migration
 -- can change the PK to (district_id, ay_id, q_id, run_id).
 
 BEGIN;

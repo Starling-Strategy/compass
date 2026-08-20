@@ -1,6 +1,6 @@
 """Single prediction via google-genai structured output.
 
-Nathan's PiedPiper equivalent: PredictionPipeline._predict_single()
+PiedPiper equivalent: PredictionPipeline._predict_single()
 Uses google-genai v1.65+ response_schema (accepts Pydantic models) and
 response_mime_type="application/json" for structured output without
 PydanticAI's extra prompt scaffolding.
