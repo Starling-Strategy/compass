@@ -10,8 +10,8 @@ const input = document.getElementById("input");
 // prompt so it fits the narrow input (NCTQ mobile-QA review, 2026-06-22).
 const PLACEHOLDER = {
   landing: {
-    desktop: "Ask anything about district teacher contracts",
-    mobile: "Ask Compass",
+    desktop: "Ask your question here",
+    mobile: "Ask your question here",
   },
   followup: {
     desktop: "Ask a followup question",

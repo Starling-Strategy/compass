@@ -13,7 +13,7 @@
       <button class="md:max-w-[300px] sampleQuestionCard cursor-pointer text-left">
         <div class="h-[6px] w-[94px] bg-[#1D6CD0] mb-4"></div>
         <p class="text-sample font-regular sampleQuestionsItem">
-          Show me the 5 districts that offer the most planning time
+          Show me the 5 districts that offer the most elementary teacher planning time
         </p>
       </button>
 

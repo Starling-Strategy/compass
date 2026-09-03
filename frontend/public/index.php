@@ -147,14 +147,14 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
 
       <!-- Headline -->
       <section class="text-center max-w-prompt mx-auto space-y-md mb-xl" id="headline">
-        <h3 class="font-serif font-regular text-headline-sm md:text-headline">
-          <span class="text-text-accent">Hello.</span><br />
-          What can I help you with?
-        </h3>
-        <p class="text-base text-white max-w-[656px] mx-auto">
-          Compass answers questions about teacher policies in NCTQ's covered
-          districts using 2024-2025 academic year data. Ask about specific
-          districts, compare peers, or reference NCTQ research.
+        <h1 class="font-serif font-regular text-headline-sm md:text-headline">
+          <span class="text-text-accent">Meet Compass</span><br />
+          <span class="text-white">your AI-powered teacher policy research assistant</span>
+        </h1>
+        <p class="text-sm text-white max-w-[656px] mx-auto">
+          Ask Compass for trends or guidance on teacher policy challenges, dig into a
+          specific district, or compare peers. Compass tracks 100+ data points across
+          more than 130 districts. Need guidance? Watch a demo.
         </p>
       </section>
 
@@ -178,8 +178,8 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
           <input
             type="text"
             id="input"
-            placeholder="Ask anything about district teacher contracts"
-            aria-label="Ask anything about district teacher contracts"
+            placeholder="Ask your question here"
+            aria-label="Ask your question here"
             class="flex-1 min-w-0 bg-transparent text-body placeholder-on-dark-subtle focus:outline-none"
             autocomplete="off"
             maxlength="<?php echo $maxMessageChars; ?>" />
