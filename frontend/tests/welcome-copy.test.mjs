@@ -19,7 +19,7 @@ test("landing page presents Ashley's approved Compass welcome copy", async () =>
     /Ask Compass for trends or guidance on teacher policy challenges, dig into a specific district, or compare peers\./,
   );
   assert.match(page, /Compass tracks 100\+ data points across more than 130 districts\./);
-  assert.match(page, /Need guidance\? Watch a demo\./);
+  assert.doesNotMatch(page, /Need guidance\? Watch a demo\./);
 });
 
 test("landing prompt uses the approved placeholder and first starter question", async () => {
