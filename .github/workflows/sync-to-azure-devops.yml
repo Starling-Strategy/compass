@@ -53,16 +53,19 @@ jobs:
           - app: backend
             folder: backend
             ado_repo: compass-api
+            pipeline_id: 2
             protect: 'azure-pipelines.yml Dockerfile.api'
             changed: ${{ needs.detect.outputs.backend }}
           - app: frontend
             folder: frontend
             ado_repo: compass-fe
+            pipeline_id: 1
             protect: 'azure-pipelines.yml infra'
             changed: ${{ needs.detect.outputs.frontend }}
           - app: dashboard
             folder: dashboard
             ado_repo: compass-dashboard
+            pipeline_id: 3
             protect: 'azure-pipelines.yml'
             changed: ${{ needs.detect.outputs.dashboard }}
     steps:
@@ -118,4 +121,20 @@ jobs:
         run: |
           cd ado
           git push "https://pat:${PAT}@dev.azure.com/nctqai/${{ matrix.ado_repo }}/_git/${{ matrix.ado_repo }}" HEAD:main
-          echo "Pushed. The ADO pipeline auto-triggers on main and will build + deploy."
+          echo "Pushed ${{ matrix.ado_repo }} main."
+
+      - name: Queue the Azure DevOps build
+        if: matrix.changed == 'true' && env.PUSH == '1'
+        env:
+          PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        run: |
+          # Explicitly queue the pipeline. The ADO CI auto-trigger is unreliable,
+          # so we queue directly (PAT has build execute scope) for a deterministic build.
+          auth=$(printf ":%s" "$PAT" | base64 -w0)
+          curl -sf -X POST \
+            "https://dev.azure.com/nctqai/${{ matrix.ado_repo }}/_apis/build/builds?api-version=7.1" \
+            -H "Authorization: Basic $auth" \
+            -H "Content-Type: application/json" \
+            -d "{\"definition\":{\"id\":${{ matrix.pipeline_id }}},\"sourceBranch\":\"refs/heads/main\"}" \
+            -o /dev/null
+          echo "Queued build for ${{ matrix.ado_repo }} (pipeline ${{ matrix.pipeline_id }})."
