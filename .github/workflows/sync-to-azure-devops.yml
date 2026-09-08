@@ -1,0 +1,121 @@
+# .github/workflows/sync-to-azure-devops.yml  (lives in the compass repo)
+#
+# On push to main, sync each changed app folder into its Azure DevOps repo.
+# Non-destructive: replaces app code but PRESERVES the deploy scaffolding that
+# lives only in ADO (azure-pipelines.yml, Dockerfile.api, infra/). The ADO
+# pipelines auto-trigger on push to main and build + deploy to the Container App.
+#
+# Prereq: repo secret AZURE_DEVOPS_PAT (Code Read&Write) — the same PAT the old
+# mirror workflows use. Swap to OIDC later to drop the rotation.
+#
+# NOTE: uses CURRENT ADO names. After the compass-* rename, update the three
+# `ado_repo` values below (git-URL segment only).
+
+name: Sync to Azure DevOps
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'dashboard/**'
+
+concurrency:
+  group: sync-ado-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.f.outputs.backend }}
+      frontend: ${{ steps.f.outputs.frontend }}
+      dashboard: ${{ steps.f.outputs.dashboard }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - id: f
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:   'backend/**'
+            frontend:  'frontend/**'
+            dashboard: 'dashboard/**'
+
+  sync:
+    needs: detect
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: backend
+            folder: backend
+            ado_repo: nctq-pa-api        # -> compass-api after rename
+            protect: 'azure-pipelines.yml Dockerfile.api'
+            changed: ${{ needs.detect.outputs.backend }}
+          - app: frontend
+            folder: frontend
+            ado_repo: nctq-ai-pa-fe      # -> compass-fe after rename
+            protect: 'azure-pipelines.yml infra'
+            changed: ${{ needs.detect.outputs.frontend }}
+          - app: dashboard
+            folder: dashboard
+            ado_repo: nctq-ai-piper      # -> compass-dashboard after rename
+            protect: 'azure-pipelines.yml'
+            changed: ${{ needs.detect.outputs.dashboard }}
+    steps:
+      - name: Skip if this app did not change
+        if: matrix.changed != 'true'
+        run: echo "No changes in ${{ matrix.folder }}/, skipping." && exit 0
+
+      - name: Checkout compass
+        if: matrix.changed == 'true'
+        uses: actions/checkout@v4
+
+      - name: Clone the Azure DevOps repo
+        if: matrix.changed == 'true'
+        env:
+          PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        run: |
+          git clone "https://pat:${PAT}@dev.azure.com/nctqai/${{ matrix.ado_repo }}/_git/${{ matrix.ado_repo }}" ado
+          echo "ADO main before: $(git -C ado rev-parse --short HEAD)"
+
+      - name: Non-destructive sync (preserve scaffolding)
+        if: matrix.changed == 'true'
+        run: |
+          cd ado
+          # remove tracked app files, keep the protected scaffolding
+          keep_re="$(echo '${{ matrix.protect }}' | tr ' ' '|')"
+          git ls-files -z | grep -zvE "^(${keep_re})(/|$)" | xargs -0 --no-run-if-empty git rm -q -f
+          # copy the compass folder's contents in (Linux runner = LF, clean diff)
+          cp -a "../${{ matrix.folder }}/." .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No effective change after sync; nothing to push."; echo "PUSH=0" >> "$GITHUB_ENV"; exit 0
+          fi
+          git config user.name  "compass-sync[bot]"
+          git config user.email "compass-sync@users.noreply.github.com"
+          git commit -q -m "Sync ${{ matrix.folder }} from compass@${GITHUB_SHA::7}"
+          echo "=== diff pushed to ADO ${{ matrix.ado_repo }}: ==="
+          git show --stat HEAD | tail -30
+          echo "PUSH=1" >> "$GITHUB_ENV"
+
+      - name: Guard — protected files still present
+        if: matrix.changed == 'true' && env.PUSH == '1'
+        run: |
+          cd ado
+          for f in ${{ matrix.protect }}; do
+            test -e "$f" || { echo "PROTECTED FILE MISSING: $f"; exit 1; }
+          done
+          echo "Scaffolding intact: ${{ matrix.protect }}"
+
+      - name: Push to Azure DevOps main
+        if: matrix.changed == 'true' && env.PUSH == '1'
+        env:
+          PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        run: |
+          cd ado
+          git push "https://pat:${PAT}@dev.azure.com/nctqai/${{ matrix.ado_repo }}/_git/${{ matrix.ado_repo }}" HEAD:main
+          echo "Pushed. The ADO pipeline auto-triggers on main and will build + deploy."
