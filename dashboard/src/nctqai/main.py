@@ -147,5 +147,3 @@ except Exception:
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     serve()
-
-# deployment automation validation 2026-09-08T20:27Z (no-op comment)

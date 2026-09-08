@@ -52,17 +52,17 @@ jobs:
         include:
           - app: backend
             folder: backend
-            ado_repo: nctq-pa-api        # -> compass-api after rename
+            ado_repo: compass-api
             protect: 'azure-pipelines.yml Dockerfile.api'
             changed: ${{ needs.detect.outputs.backend }}
           - app: frontend
             folder: frontend
-            ado_repo: nctq-ai-pa-fe      # -> compass-fe after rename
+            ado_repo: compass-fe
             protect: 'azure-pipelines.yml infra'
             changed: ${{ needs.detect.outputs.frontend }}
           - app: dashboard
             folder: dashboard
-            ado_repo: nctq-ai-piper      # -> compass-dashboard after rename
+            ado_repo: compass-dashboard
             protect: 'azure-pipelines.yml'
             changed: ${{ needs.detect.outputs.dashboard }}
     steps:
