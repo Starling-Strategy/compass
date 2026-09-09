@@ -16,10 +16,20 @@ documentation set.
 | [`frontend/`](frontend/) | The public chat web app (PHP / Apache) |
 | [`dashboard/`](dashboard/) | The internal review-and-analytics dashboard (Python / FastHTML) |
 
-Each directory is a self-contained application with its own Dockerfile — the
-same image build that runs in production. Exactly which production commits the
-code was taken from, and every curation decision made in the copy, is recorded
-in [PROVENANCE.md](PROVENANCE.md).
+Each directory has its own Dockerfile. Azure DevOps also retains deployment
+scaffolding; do not assume every local Dockerfile is the live pipeline build.
+[PROVENANCE.md](PROVENANCE.md) records the historical code import, not current
+deployment status.
+
+## Contributing and deployment
+
+Start with [AGENTS.md](AGENTS.md) for setup, build/test commands, code conventions,
+security boundaries, and PR approval rules. The single current release runbook is
+[Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md): it
+explains the GitHub `main` → Azure DevOps mirror/queue → Azure production path
+and separates verified release evidence from unverified staging history.
+Merging to `main` requires explicit user approval. Root/docs-only changes do not
+trigger application sync; tests or docs inside application folders do.
 
 ## Documentation
 
@@ -34,7 +44,7 @@ are operational handoff documentation for NCTQ; the rest describe the product it
 | 3 | [Data & the Databricks Platform](docs/03-data-and-databricks.md) | What data Compass covers, where it comes from, the schema, how it stays current |
 | 4 | [Quality & Evaluation](docs/04-quality-and-evaluation.md) | The quality dimensions, the scenario library, how accuracy is measured |
 | 5 | [Administration and Dashboard](docs/05-administration-and-dashboard.md) | The staff Dashboard's purpose, audience, and how NCTQ monitors conversations and quality results |
-| 6 | [Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md) | Azure production, Coolify staging, and local environments; release, security, observability, and recovery |
+| 6 | [Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md) | Current Azure release runbook; local development, historical/unverified Coolify staging, security, and recovery |
 | 7 | [Costs, Accounts, and Budget](docs/07-costs-accounts-and-budget.md) | External account ownership checklist plus Azure and model cost/budget planning |
 | 8 | [Technical Reference](docs/08-technical-reference.md) | Licensing, stack, API endpoints, configuration, Pathfinder embed |
 | 9 | [Known Issues & Limitations](docs/09-known-issues-and-limitations.md) | What's broken, worked around, or out of scope, honestly stated |

@@ -1,169 +1,162 @@
 # 6. Hosting, Deployment, and Security
 
-Compass runs as three applications that share data but have separate operational
-roles. Production runs on Microsoft Azure. Staging runs on Coolify and is a
-separate deployment path. Local development runs the same application code on a
-developer machine against approved configuration. This section explains how to
-release, verify, secure, observe, and recover the system without including
-credentials, private hostnames, or personal data.
+Compass runs as three applications on Azure production. This is the single
+current release and recovery runbook. Local development uses approved runtime
+configuration; the older Coolify staging model is historical/unverified, not a
+confirmed release prerequisite. No cloud configuration changed in this docs update.
 
 ## 6.1 Authority and scope
 
-Use this order when sources disagree:
+- **Authoritative application source:** this GitHub repository, its settings,
+  manifests, and [sync workflow](../.github/workflows/sync-to-azure-devops.yml).
+  The mapping below was reviewed at
+  `13788f5bb3fdf68db7ffd82b2036042fadc709bf`.
+- **Current operational authority:** this runbook; [AGENTS.md](../AGENTS.md)
+  covers engineering commands and approval boundaries, not a second release recipe.
+- **Projection/derived:** application files copied into Azure DevOps repositories.
+  Make feature changes in GitHub, not directly in those mirrored files.
+- **Separate deployment authority:** protected ADO pipeline/infra scaffolding and
+  Azure runtime configuration. Inspect their current versions with authenticated
+  access before changes; they are not all present in this checkout.
+- **Historical:** [PROVENANCE.md](../PROVENANCE.md), earlier handoff inventory,
+  and pre-consolidation branch/mirror instructions. They do not establish current
+  live state or prove that older repositories have been retired.
 
-1. Current application code and settings models.
-2. Repository `AGENTS.md` files and active operator skills.
-3. Current operational notes in this repository.
-4. The attached handoff documents, which describe the Azure estate and its
-   historical deployment lanes.
-
-This section documents the operating model. It does not replace the
-application-specific runbooks, the database migration procedure, or incident
-records. Commands use placeholders and must be filled from the approved password
-manager and cloud inventory at execution time.
-
-Human access and Dashboard administration are covered in [Administration and
-Dashboard](05-administration-and-dashboard.md). Account ownership, service
-handoff, and spending are covered in [Costs, Accounts, and Budget](07-costs-accounts-and-budget.md).
+[Administration and Dashboard](05-administration-and-dashboard.md) covers staff
+access; [Costs, Accounts, and Budget](07-costs-accounts-and-budget.md) covers
+account ownership. Keep credentials and private diagnostics out of release records.
 
 ## 6.2 Applications and environments
 
-The platform has three deployable applications:
+| Application | Source | Local/container port | Production runtime |
+| --- | --- | --- | --- |
+| Policy Advisor API | `backend/src/compass_backend/` | `8000` | Azure Container Apps |
+| Compass Frontend | `frontend/` | Local `3000`; container `80` | Azure Container Apps |
+| NCTQ Dashboard | `dashboard/src/nctqai/` | `5001` | Azure Container Apps |
 
-| Application | Active source | Role | Local default | Production host |
-| --- | --- | --- | --- | --- |
-| Policy Advisor API | `backend/src/compass_backend/` | FastAPI chat engine, deterministic data execution, session persistence, and post-response quality verdicts | Port `8000` | Azure Container Apps |
-| Compass Frontend | `frontend/` | PHP and Apache chat interface and server-side proxy to the API | Port `3000`; container port `80` | Azure Container Apps |
-| NCTQ Dashboard | `dashboard/src/nctqai/` | FastHTML staff dashboard, Metric Calculator, and Compass observability surfaces | Port `5001` | Azure Container Apps |
+Local setup and image builds are in [AGENTS.md](../AGENTS.md). Runtime startup
+needs approved database, model, and authentication configuration. Do not use
+production writes as a local test strategy.
 
-### Deployment matrix
+**Historical/unverified staging:** earlier guidance described manual Coolify
+builds of a `staging` branch on a private-tailnet host and a separate PostgreSQL
+database. This review did not verify that branch, app identifiers, network access,
+migration lane, or scheduled tasks. Do not execute those older instructions as a
+current procedure. If staging is needed, have its owner confirm the target,
+source SHA, credentials, database posture, and authorized deploy/verification path.
+Staging and Azure production are distinct lanes; one does not prove the other.
 
-| Environment | Purpose | Source or branch posture | Runtime | Database posture | Release method |
-| --- | --- | --- | --- | --- | --- |
-| Local | Development, focused tests, and browser replay | Feature branch based on current `main` | Local processes or containers | Use staging only when approved and reachable. Use `PG_*` settings and `PG_SCHEMA=compass` | Start each service locally. No cloud release |
-| Staging | Integration validation, deploy-shape checks, and reviewer links | Coolify builds the repository `staging` branch | Coolify on a private tailnet host | Staging PostgreSQL. Agent and MCP inspection is read-only | Apply pending staging migrations first, move reviewed code to `staging`, then manually trigger only the affected Coolify applications |
-| Production | Public and staff service | Reviewed production release lane sourced from approved GitHub code | Azure Container Apps in Central US | Shared production PostgreSQL in the `compass` schema. Human and agent inspection is read-only | Mirror the approved production source to Azure DevOps, queue the application pipeline, publish to ACR, and verify the new Container Apps revision |
+## 6.3 Production source and pipeline mapping
 
-Staging is not a smaller Azure production deployment. It is Coolify-only, does
-not rebuild automatically on a push, and can be reached for deployment only from
-the private network. Keep detailed Coolify identifiers, tokens, and host details
-in the staging deployment skill and approved credential store, not in this
-handoff.
+The workflow pushes affected application contents to `main` in the following
+ADO project/repository pairs in organization `https://dev.azure.com/nctqai`:
 
-## 6.3 Production Azure estate
+| GitHub path filter | ADO project/repository | Pipeline ID | Protected ADO scaffolding |
+| --- | --- | --- | --- |
+| `backend/**` | `compass-api` | `2` | `azure-pipelines.yml`, `Dockerfile.api` |
+| `frontend/**` | `compass-fe` | `1` | `azure-pipelines.yml`, `infra/` |
+| `dashboard/**` | `compass-dashboard` | `3` | `azure-pipelines.yml` |
 
-The handoff inventory places production in the Microsoft Azure Sponsorship
-subscription in Central US. Confirm subscription and region in Azure before any
-change. The major resource groups are:
+A push to GitHub `main` triggers this workflow only for those paths. Tests and
+Markdown inside those folders count. Root files and `docs/**` do not. A
+workflow-only change does not trigger or exercise this path. PR/feature-branch
+pushes do not deploy through this workflow. There is no manual-dispatch trigger.
 
-| Resource group | Major services | Operational purpose |
-| --- | --- | --- |
-| `NCTQ_AI_PA_API` | Policy Advisor API Container App, Container Apps environment, Azure Container Registry, virtual network, NAT gateway, Log Analytics | Runs and observes the chat API |
-| `NCTQ_AI_PA_FE` | Compass Frontend Container App, Container Apps environment, Azure Container Registry, managed TLS certificates, virtual network, NAT gateway, Log Analytics | Serves the public chat interface and proxies API calls |
-| `NCTQ_AI_Piper` | NCTQ Dashboard Container App, Container Apps environment, Azure Container Registry, managed TLS certificate, virtual network, NAT gateway, Log Analytics | Serves authenticated staff tools and operational views |
-| `NCTQ_PA` | Production PostgreSQL virtual machine | Hosts the shared production database |
-| `NCTQ_AI_Data` | Azure Databricks, Azure Data Factory, and the email service used for login codes | Prepares source data and supports dashboard authentication |
+Sync removes tracked application files except the protected names, copies the
+GitHub folder contents, commits an effective diff, checks protected paths still
+exist, and pushes ADO `main`. Do not add colliding scaffold filenames to an app
+folder: copying could overwrite them; the guard checks presence, not integrity.
+When there is no effective diff, push and queue are skipped.
 
-Each application has an isolated Container App, managed environment, registry,
-networking, and logging lane. The database and data preparation services are
-shared dependencies.
+The executable queue step explicitly POSTs to the ADO Build API for the mapped
+pipeline and `refs/heads/main`; it does not rely on the unreliable CI auto-trigger.
+The workflow header's older auto-trigger/rename comments are not the contract.
+`AZURE_DEVOPS_PAT` needs code read/write and build execution access. Never print it.
+The queue response is discarded by the workflow, so a green queue step does not
+supply an independently verified build ID or result.
 
-### Source provenance that needs confirmation
+Earlier inventory lists Central US, subscription Microsoft Azure Sponsorship,
+and resource groups `NCTQ_AI_PA_API`, `NCTQ_AI_PA_FE`, `NCTQ_AI_Piper`, `NCTQ_PA`
+(database), and `NCTQ_AI_Data` (data/email services). Treat these as **handoff
+inventory to reconfirm**, not live-discovered targets. Confirm app, subscription,
+registry, resource group, revision mode, and traffic before any operator action.
+No claim is made here that older GitHub mirrors or deploy branches are retired.
 
-This `compass` repository contains all three active codebases listed above. The
-Azure handoff document describes three separate GitHub deploy repositories, three
-production deploy branches, and matching Azure DevOps repositories. Both
-statements can be true if the separate repositories are deployment mirrors or
-legacy packaging lanes, but the supplied material does not prove that
-relationship.
+## 6.4 Production release and failure triage
 
-Before the next production release, the platform owner must confirm:
-
-- which GitHub commit is the canonical source for each production image;
-- whether the per-application repositories remain active mirrors or are legacy;
-- which production deploy branch and Azure DevOps repository each pipeline
-  currently watches;
-- whether production settings are still carried as deploy-branch differences or
-  now live entirely in Container Apps configuration.
-
-Do not consolidate or retire a production lane based only on this document.
-
-## 6.4 Production release flow
-
-The expected production path is separate for each application:
-
-```text
-approved GitHub source
-  -> approved production deployment lane
-  -> Azure DevOps repository and pipeline
-  -> application-specific Azure Container Registry
-  -> new Azure Container Apps revision
-  -> revision, log, health, and user-flow verification
+```mermaid
+flowchart LR
+    G[Approved GitHub main app change] --> S[Sync affected ADO mirror]
+    S --> Q[Explicit pipeline queue]
+    Q --> B[ADO build and registry image]
+    B --> R[Container Apps revision and traffic]
+    R --> V[Live health and affected user flow]
 ```
 
-Azure DevOps builds an immutable container image and tags it with a traceable
-build identifier. The pipeline pushes that image to the application's Azure
-Container Registry. Azure Container Apps creates a revision from the image and
-runtime configuration. A successful image build does not prove that the new
-revision started or received traffic.
+Plain-text equivalent: approved GitHub `main` app change → ADO mirror sync →
+explicit queue → build/image → revision/traffic → live verification.
+Only sync and queue run in the GitHub workflow; inspect downstream evidence
+separately. A source SHA, mirror commit, build ID, image digest/tag, and revision
+are different identifiers, not interchangeable proof.
 
-Representative command shapes:
+### Before merge
+
+1. Identify the exact reviewed SHA, affected application paths, release owner,
+   expected behavior, dependencies, and known-good revision.
+2. Run focused tests and browser checks for affected boundaries. Answer/planner
+   changes need approved scenario and scorecard evidence. Resolve missing tooling
+   rather than invoking inherited scripts absent from this curated checkout.
+3. Review any schema/configuration dependencies with the platform owner. This
+   runbook does not authorize migrations or production SQL writes.
+4. Obtain **explicit user approval to merge to `main`**. Approval to create a PR
+   is not merge approval. If several app folders change, their lanes can run in
+   parallel; coordinate the change before merging rather than assuming serial deploys.
+
+### Verify each gate and stop at the first failure
+
+| Gate | Evidence to record | Failure triage |
+| --- | --- | --- |
+| Trigger/detect | Merge SHA, workflow run URL, affected folder outputs | Check branch and path filters first. Docs-only or workflow-only absence is expected; do not manufacture an app change to force a release. |
+| Mirror sync/push | App lane, ADO commit, scaffold guard, effective diff | Inspect clone/auth, sync diff, protected paths, and push conflict. Do not force-push, delete scaffolding, or retire a mirror to bypass failure. |
+| Queue accepted | Successful explicit queue step for the mapped pipeline | Check build-execute permission and API error. Sync success alone is insufficient. Inspect existing ADO runs before any separately authorized retry to avoid duplicate builds. |
+| Build/image | Authenticated ADO build ID, source commit, result, image identifier | Read the failing pipeline stage and its actual Dockerfile/context. Do not change registry, NAT, identity, or secrets speculatively. |
+| Revision/traffic | Expected image, healthy revision, startup logs, assigned traffic | Inspect configuration, dependency/schema errors, and revision mode. A green image build or an older healthy revision is not acceptance. |
+| Live behavior | Health/readiness plus actual affected flow at the intended URL | Check served assets, browser errors, API proxy/SSE, and dependencies. HTTP 200 or DOM presence alone does not prove interaction or media playback. |
+
+The normal workflow already queues the build; do not add a routine manual queue.
+After authenticated Azure access and exact target discovery, these are read-only
+inspection command shapes (replace placeholders; do not paste credentials):
 
 ```bash
-# Queue the confirmed application pipeline.
-az pipelines run \
-  --org <azure-devops-organization-url> \
-  --project <project> \
-  --id <pipeline-id> \
-  --branch <mirrored-branch>
-
-# Inspect revisions, then inspect the selected revision's startup logs.
-az containerapp revision list \
-  --name <app> \
-  --resource-group <resource-group> \
-  --output table
-
-az containerapp logs show \
-  --name <app> \
-  --resource-group <resource-group> \
-  --revision <revision> \
-  --tail 40
+az containerapp revision list --name <app> --resource-group <resource-group> --output table
+az containerapp logs show --name <app> --resource-group <resource-group> --revision <revision> --tail 40
 ```
 
-Do not copy a short-lived access token into a command history, document, ticket,
-or log. Obtain deployment authentication through the approved Azure login and
-credential process at execution time.
+Record every gate, including unavailable evidence, operator and time. Keep the
+known-good revision while observing the rollout. If access is unavailable, state
+which gate is unverified and request the operator's evidence; do not report a
+fully verified Azure deployment from GitHub success alone.
 
-### Release checklist
+### Latest recorded frontend proof — 2026-09-09
 
-- [ ] Confirm the issue, reviewed change, release owner, and exact Git SHA.
-- [ ] Confirm the worktree contains current `origin/main` and no unreviewed
-      local changes are entering the release.
-- [ ] Run the smallest complete local validation for every changed boundary, and
-      the development repository's full check script when the change is broad.
-- [ ] For user-visible Compass behavior, run the required B-spine case replay
-      and scorecard validation.
-- [ ] For frontend, SSE, citation, export, or dashboard interaction changes,
-      replay the affected flow in a browser.
-- [ ] Validate locally against staging, then deploy and verify staging when a
-      deploy-shape check or external review URL is required.
-- [ ] Identify and apply required schema migrations before application code.
-      Never deploy code that expects a database object which is not present.
-- [ ] Confirm the production source mapping, Azure subscription, resource group,
-      pipeline, registry, Container App, image tag, and current good revision.
-- [ ] Queue one application lane at a time unless the release plan explicitly
-      coordinates several applications.
-- [ ] Confirm the Azure DevOps build succeeded and the expected image exists in
-      the correct registry.
-- [ ] Confirm the newest Container Apps revision is running and has active
-      traffic. Do not infer this from a green build.
-- [ ] Read startup logs for missing settings, dependency errors, and schema
-      warnings.
-- [ ] Run the application's health check and a focused user-flow smoke test.
-- [ ] Record the Git SHA, pipeline build, image tag, revision, verification
-      result, operator, and time in the approved release record.
-- [ ] Keep the previous known-good revision available until verification and the
-      observation window complete.
+[PR #75 verification](https://github.com/Starling-Strategy/compass/pull/75#issuecomment-5605332401)
+records merge SHA `13788f5bb3fdf68db7ffd82b2036042fadc709bf` and successful
+[GitHub run 34376572257](https://github.com/Starling-Strategy/compass/actions/runs/34376572257).
+Only frontend synced/pushed and queued `compass-fe` pipeline `1`; backend and
+Dashboard sync/push/queue steps were skipped. The recorded frontend mirror
+transition was `a5dacde` → `f80a148`.
+
+At [production Compass](https://compass.nctq.ai), that verification observed the
+welcome video link, actual progressing video playback, close/Escape cleanup,
+focus restoration, keyboard activation, and desktop/mobile layouts without
+horizontal overflow. Client approval was reported by Macon. This is dated
+release evidence, not a new live check performed by this documentation update.
+
+**Evidence limit:** the Azure DevOps CLI had no authenticated credentials in the
+verification environment. Downstream Azure build ID/result and deployed revision
+were not independently inspected. Confirmed GitHub sync/queue plus actual live
+frontend behavior is not independent Azure control-plane verification, not
+API/Dashboard end-to-end testing, and not proof that old mirrors were retired.
 
 ## 6.5 Runtime configuration and secrets
 
@@ -218,7 +211,7 @@ conversations and verdicts, and the Metric Calculator has a controlled write
 workflow. Those writes must occur through application code and scoped runtime
 identities, not ad hoc operator SQL.
 
-The attached platform overview says all three applications read and write the
+The historical platform overview says all three applications read and write the
 shared database. Current repository guidance is narrower: the Dashboard's
 Compass observability surface reads `compass.*`, while its Metric Calculator
 writes validated metric data. Confirm the deployed database roles and grants,
@@ -226,8 +219,8 @@ then update the infrastructure inventory if they do not match this boundary.
 
 ## 6.7 Logging and observability
 
-All three production application lanes send container and platform logs to
-Azure Log Analytics. Use those logs for revision startup, crashes, ingress,
+The handoff inventory places container and platform logs for all three lanes in
+Azure Log Analytics; confirm the current diagnostic settings. Use those logs for revision startup, crashes, ingress,
 resource pressure, and platform events. The API and Dashboard also use Pydantic
 Logfire for application traces when configured.
 
@@ -239,9 +232,10 @@ failure must remain observable, but non-blocking telemetry should not prevent an
 otherwise healthy chat response.
 
 Post-response quality evaluation writes live and sweep verdicts to
-`compass.verdicts`. The Quality Scorecard reads this ledger. Nightly sweeps are
-a staging Coolify scheduled task, not a production Azure release step. Keep
-live user-turn verdicts separate from sweep retention and never prune them by a
+`compass.verdicts`. The Quality Scorecard reads this ledger. Earlier guidance
+placed nightly sweeps in a staging Coolify scheduled task; that schedule was not
+verified in this review and is not a production release step. Keep live user-turn
+verdicts separate from sweep retention and never prune them by a
 blanket creation-date rule.
 
 Logs and traces can contain operational context. Apply the organization's
@@ -276,7 +270,8 @@ Rollback restores service first, then preserves evidence for diagnosis.
    first observed symptom, and current traffic assignment.
 3. Check whether the incident is application code, runtime configuration,
    database schema, data, network, model gateway, or another dependency.
-4. If the previous revision is compatible with the current schema and data,
+4. With explicit incident-owner authorization, and after confirming revision mode
+   and that the previous revision is compatible with the current schema and data,
    reactivate it and move all traffic back to that known-good revision.
 5. Verify revision state, startup logs, the application health endpoint, and the
    affected user flow.
