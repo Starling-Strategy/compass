@@ -135,9 +135,10 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
         </a>
       <?php endif; ?>
     </nav>
-    <!-- Top spacing: 98px = 20 (nav top offset) + 48 (icon button height) + 30 (gap to headline).
-         Dialled back from 148→108→98 to bring the headline closer to the corner icons. -->
-    <div id="chatWrapper" class="flex flex-col w-full min-h-0 mt-[98px]">
+    <!-- Top spacing: 86px = 20 (nav top offset) + 48 (icon button height) + 18 (gap to headline).
+         Keep modest 12px headline gaps and a 24px bottom margin so the
+         question form stays high on the page. -->
+    <div id="chatWrapper" class="flex flex-col w-full min-h-0 mt-[86px]">
 
       <div class="flex w-full">
         <div id="promptSection">
@@ -146,15 +147,16 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
       </div>
 
       <!-- Headline -->
-      <section class="text-center max-w-prompt mx-auto space-y-md mb-xl" id="headline">
+      <section class="text-center max-w-prompt mx-auto space-y-3 mb-lg" id="headline">
         <h1 class="font-serif font-regular text-headline-sm md:text-headline">
-          <span class="text-text-accent">Meet Compass</span><br />
-          <span class="text-white">your AI-powered teacher policy research assistant</span>
+          <span class="text-text-accent">Meet Compass</span>
+          <span class="text-white block text-balance">your AI-powered teacher policy research assistant</span>
         </h1>
-        <p class="text-sm text-white max-w-[656px] mx-auto">
+        <p class="text-sm text-white max-w-[656px] mx-auto text-balance">
           Ask Compass for trends or guidance on teacher policy challenges, dig into a
           specific district, or compare peers. Compass tracks 100+ data points across
           more than 130 districts.
+          <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="text-on-dark-subtle underline hover:text-on-dark-strong">Watch a video demonstration.</a>
         </p>
       </section>
 
@@ -222,23 +224,27 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
     </div>
     <?php include __DIR__ . '/sample-questions.php'; ?>
 
-    <!-- Beta Disclaimer — kept visually close to the prompt form so it reads
-         as part of the chat module rather than floating disclaimer copy at
-         the bottom of the page. mt-lg = 24px gap above so it sits just under
-         the 0/2000 counter (chat-active) or just under the sample-question
-         cards (landing). mb-[40px] keeps a clear gap below to the viewport
-         bottom. Applied as margins on the disclaimer itself so it travels
-         with whatever's above it through both layout states.
-         Text uses on-dark-subtle (#9DB0CC, ~6:1 on navy) — the dimmest brand
-         token that still clears WCAG AA for this legal small-print. (The Figma's
-         #7A91B2 was only 4.18:1 and failed AA — see audit 2026-06-22.) -->
+    <!-- Beta copy follows the sample cards (or the counter during chat).
+         on-dark-subtle keeps the legal small-print accessible on navy. -->
     <p class="text-xs text-on-dark-subtle text-center mt-lg mb-[40px] max-w-prompt mx-auto leading-relaxed">
       Compass is currently in beta and, like all AI tools, may occasionally generate responses that are incomplete or imprecise. We encourage users to consult the cited sources to verify information. If you notice any issues, please contact us at <a href="mailto:policypathfinder@nctq.org" class="underline hover:text-on-dark-strong">policypathfinder@nctq.org</a>.
     </p>
+
   </main>
   <?php if (!$isEmbed): ?>
     <?php include __DIR__ . '/right-sidebar.php'; ?>
   <?php endif; ?>
+  <dialog id="demoDialog" aria-labelledby="demoTitle" class="bg-primary text-white p-lg w-[calc(100%-2rem)] max-w-[960px] max-h-[90dvh] overflow-y-auto backdrop:bg-black/70">
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <h2 id="demoTitle" class="font-serif text-xl">Compass demo</h2>
+      <form method="dialog">
+        <button autofocus class="px-4 py-2 border border-white/20 hover:bg-white/10" aria-label="Close demo">Close</button>
+      </form>
+    </div>
+    <div id="demoPlayer"></div>
+    <p class="text-sm mt-4">Video not playing? <a href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" target="_blank" rel="noopener noreferrer" class="underline hover:text-on-dark-strong">Watch on YouTube (opens in a new tab)</a>.</p>
+  </dialog>
+  <script type="module" src="./assets/js/demo.js"></script>
   <script type="module" src="./assets/js/app.js?v=20260622a"></script>
   <?php if (!$isEmbed): ?>
   <script>
