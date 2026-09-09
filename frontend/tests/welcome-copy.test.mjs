@@ -19,7 +19,9 @@ test("landing page presents Ashley's approved Compass welcome copy", async () =>
     /Ask Compass for trends or guidance on teacher policy challenges, dig into a specific district, or compare peers\./,
   );
   assert.match(page, /Compass tracks 100\+ data points across more than 130 districts\./);
-  assert.doesNotMatch(page, /Need guidance\? Watch a demo\./);
+  assert.match(page, /Need guidance\? <a[^>]+href="https:\/\/www\.youtube\.com\/watch\?v=J8KU6_e70mk&amp;feature=youtu\.be"[^>]*>Watch a demo\.<\/a>/);
+  assert.match(page, /<dialog[^>]+id="demoDialog"[^>]+aria-labelledby="demoTitle"/);
+  assert.doesNotMatch(page, /<iframe[^>]+src=/);
 });
 
 test("landing prompt uses the approved placeholder and first starter question", async () => {

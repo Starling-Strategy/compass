@@ -155,6 +155,7 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
           Ask Compass for trends or guidance on teacher policy challenges, dig into a
           specific district, or compare peers. Compass tracks 100+ data points across
           more than 130 districts.
+          Need guidance? <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="underline hover:text-on-dark-strong">Watch a demo.</a>
         </p>
       </section>
 
@@ -239,6 +240,17 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
   <?php if (!$isEmbed): ?>
     <?php include __DIR__ . '/right-sidebar.php'; ?>
   <?php endif; ?>
+  <dialog id="demoDialog" aria-labelledby="demoTitle" class="bg-primary text-white p-lg w-[calc(100%-2rem)] max-w-[960px] max-h-[90dvh] overflow-y-auto backdrop:bg-black/70">
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <h2 id="demoTitle" class="font-serif text-xl">Compass demo</h2>
+      <form method="dialog">
+        <button autofocus class="px-4 py-2 border border-white/20 hover:bg-white/10" aria-label="Close demo">Close</button>
+      </form>
+    </div>
+    <div id="demoPlayer"></div>
+    <p class="text-sm mt-4">Video not playing? <a href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" target="_blank" rel="noopener noreferrer" class="underline hover:text-on-dark-strong">Watch on YouTube (opens in a new tab)</a>.</p>
+  </dialog>
+  <script type="module" src="./assets/js/demo.js"></script>
   <script type="module" src="./assets/js/app.js?v=20260622a"></script>
   <?php if (!$isEmbed): ?>
   <script>
