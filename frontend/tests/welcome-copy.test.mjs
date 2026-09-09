@@ -4,11 +4,11 @@ import { readFile } from "node:fs/promises";
 
 const source = (name) => readFile(new URL(`../public/${name}`, import.meta.url), "utf8");
 
-test("approved welcome ends with one inline yellow video demonstration link", async () => {
+test("approved welcome ends with one inline disclaimer-colored video demonstration link", async () => {
   const page = (await source("index.php")).replace(/\s+/g, " ");
   const headline = page.match(/<section[^>]+id="headline">(.*?)<\/section>/)[1];
   assert.match(headline, /Meet Compass/);
-  assert.match(headline, /<p class="[^"]*max-w-\[656px\][^"]*text-balance[^"]*"> Ask Compass for trends or guidance on teacher policy challenges, dig into a specific district, or compare peers\. Compass tracks 100\+ data points across more than 130 districts\. <a id="demoLink" href="https:\/\/www\.youtube\.com\/watch\?v=J8KU6_e70mk&amp;feature=youtu\.be" class="text-yellow-300 underline hover:text-on-dark-strong">Watch a video demonstration\.<\/a> <\/p>/);
+  assert.match(headline, /<p class="[^"]*max-w-\[656px\][^"]*text-balance[^"]*"> Ask Compass for trends or guidance on teacher policy challenges, dig into a specific district, or compare peers\. Compass tracks 100\+ data points across more than 130 districts\. <a id="demoLink" href="https:\/\/www\.youtube\.com\/watch\?v=J8KU6_e70mk&amp;feature=youtu\.be" class="text-on-dark-subtle underline hover:text-on-dark-strong">Watch a video demonstration\.<\/a> <\/p>/);
   assert.doesNotMatch(page, /Need guidance\?/);
   assert.equal((page.match(/Watch a video demonstration\./g) || []).length, 1);
   for (const id of ["demoLink", "demoDialog", "demoPlayer", "demoTitle"]) {

@@ -156,7 +156,7 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
           Ask Compass for trends or guidance on teacher policy challenges, dig into a
           specific district, or compare peers. Compass tracks 100+ data points across
           more than 130 districts.
-          <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="text-yellow-300 underline hover:text-on-dark-strong">Watch a video demonstration.</a>
+          <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="text-on-dark-subtle underline hover:text-on-dark-strong">Watch a video demonstration.</a>
         </p>
       </section>
 
