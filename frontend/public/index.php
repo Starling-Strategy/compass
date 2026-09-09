@@ -148,14 +148,16 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
       <!-- Headline -->
       <section class="text-center max-w-prompt mx-auto space-y-md mb-xl" id="headline">
         <h1 class="font-serif font-regular text-headline-sm md:text-headline">
-          <span class="text-text-accent">Meet Compass</span><br />
-          <span class="text-white">your AI-powered teacher policy research assistant</span>
+          <span class="text-text-accent">Meet Compass</span>
+          <span class="text-white block text-balance">your AI-powered teacher policy research assistant</span>
         </h1>
-        <p class="text-sm text-white max-w-[656px] mx-auto">
+        <p class="text-sm text-white max-w-[656px] mx-auto text-balance">
           Ask Compass for trends or guidance on teacher policy challenges, dig into a
           specific district, or compare peers. Compass tracks 100+ data points across
           more than 130 districts.
-          Need guidance? <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="underline hover:text-on-dark-strong">Watch a demo.</a>
+        </p>
+        <p class="text-sm text-white">
+          Need guidance? <a id="demoLink" href="https://www.youtube.com/watch?v=J8KU6_e70mk&amp;feature=youtu.be" class="text-text-accent underline hover:text-on-dark-strong">Watch a video.</a>
         </p>
       </section>
 
