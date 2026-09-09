@@ -23,8 +23,10 @@ deployment status.
 
 ## Contributing and deployment
 
-Start with [AGENTS.md](AGENTS.md) for setup, build/test commands, code conventions,
-security boundaries, and PR approval rules. The single current release runbook is
+Start with [AGENTS.md](AGENTS.md) for shared security and PR approval rules.
+Setup, tests, and component conventions live in the [Frontend](frontend/AGENTS.md),
+[Backend](backend/AGENTS.md), and [Dashboard](dashboard/AGENTS.md) guides.
+Each `CLAUDE.md` imports its neighboring `AGENTS.md`; edit the latter only. The single current release runbook is
 [Hosting, Deployment, and Security](docs/06-hosting-deployment-security.md): it
 explains the GitHub `main` → Azure DevOps mirror/queue → Azure production path
 and separates verified release evidence from unverified staging history.
@@ -54,7 +56,7 @@ that assumes technical fluency; each fact lives in exactly one section, and a
 cross-reference points there only when a reader genuinely needs to go; diagrams are
 Mermaid so they render on GitHub and diff in review.
 
-Four reference documents sit under `docs/reference/`: the
+Reference documents under `docs/reference/` include the
 [system architecture](docs/reference/architecture.md) for the cross-system view,
 the [schema reference](docs/reference/compass-schema.md) for field-level detail,
 the [glossary](docs/reference/compass-glossary.md) for shared vocabulary, and the

@@ -1,7 +1,8 @@
 # src/compass_backend/AGENTS.md
 
-Active Compass backend. Run source-first with `PYTHONPATH=src`. Root
-`AGENTS.md` holds cross-cutting workflow; this file is backend-specific.
+Engineering guidance for this package, not runtime model prompts.
+The [backend guide](../../AGENTS.md) owns setup and checks; the
+[repository guide](../../../AGENTS.md) owns shared workflow and approvals.
 
 ## Backend Guardrails
 
@@ -21,7 +22,7 @@ Active Compass backend. Run source-first with `PYTHONPATH=src`. Root
    new work reduces that baseline. Allowed shapes (validators, candidate
    broadeners, typed referent resolvers) vs. the forbidden second-interpreter
    pattern, plus the governed typed repair loop:
-   [_structured-plans-not-prose.md](../../docs/compass_concepts/_structured-plans-not-prose.md).
+   [Product & Answer Flow](../../../docs/02-product-and-answer-flow.md).
 5. Bug fixes need focused tests under `src/compass_backend/tests/` plus a
    B-spine regression case when behavior is user-visible.
 6. **Keep functions under ~200 lines.** Split orchestration, planning,
@@ -33,7 +34,7 @@ Active Compass backend. Run source-first with `PYTHONPATH=src`. Root
    execution/result boundary (the `ResultSet`, answer text, sources, freshness),
    not to the current planner topology, so it survives the #1248 planning
    redesign. Frame:
-   [00-architecture → Invariants: ends vs. means](../../docs/compass_concepts/00-architecture.md#invariants-ends-vs-means).
+   [Quality & Evaluation](../../../docs/04-quality-and-evaluation.md).
 8. **Read the *finalized* plan, never the legacy slot.** `finalize_plan`
    canonicalizes the planner draft before execution: it folds a top-level
    `plan.sort` into a `presentation`-phase `SortStepSpec` and clears
@@ -80,8 +81,8 @@ or silently lose a real result.
   and [`orchestration/chat.py`](orchestration/chat.py)). **Consequence:** any
   *new* rejecting validator on planner output is user-visible — it can turn an
   answered turn into a clarification — so it is **eval-gated**: prove it on the
-  scorecard before merge (guardrail 5 + the Milestone Execution ends-vs-means
-  rule in the root `AGENTS.md`). The discriminative
+  scorecard before merge (guardrail 5 + the ends-vs-means
+  rule in guardrail 7). The discriminative
   `CatalogAdjudicator` inverts this on purpose with `retries={"output":1}`
   ([`catalog/adjudication.py`](catalog/adjudication.py)): its candidate set is
   finite, so a single retry is cheap and almost always correct.
@@ -109,7 +110,7 @@ or silently lose a real result.
   `outcome="error"` verdict row, `is_rescue_fallback`, or a
   `*_skipped` / `*_skip_reason` span attribute. **Never swallow an
   execution, grounding, or result-validation failure** — those are the *ends*
-  the guardrails protect (root `AGENTS.md` ends-vs-means), and a swallowed
+  the guardrails protect (guardrail 7), and a swallowed
   grounding failure is an invented answer.
 
 One-line decision tree: **planner OUTPUT failure?** → validate-reject (and know
@@ -119,11 +120,12 @@ grounding or execution failure is never silently swallowed.
 
 ## Settings And Secrets
 
-Settings read `PG_HOST`, `PG_PORT`, `PG_DATABASE`, `PG_USER`, `PG_PASSWORD`,
-and `PG_SCHEMA` directly. Secret fields (`pg_password`,
-`pydantic_ai_gateway_api_key`, `logfire_token`, `staging_slack_bot_token`)
-are `SecretStr` — call `.get_secret_value()` before passing them to asyncpg,
-the gateway client, or subprocesses.
+[`config.py`](config.py) reads case-insensitive `PG_HOST`, `PG_PORT`,
+`PG_DATABASE`, `PG_USER`, `PG_PASSWORD`, and `PG_SCHEMA` settings.
+`pg_password`, `logfire_token`, and `logfire_read_token` are `SecretStr`:
+unwrap only for authorized clients, never logs. The gateway uses
+`PYDANTIC_AI_GATEWAY_API_KEY`; inherited gateway/Slack settings-field names
+are not definitions in this backend.
 
 ## Models And Gateway
 
@@ -132,18 +134,15 @@ using `PYDANTIC_AI_GATEWAY_API_KEY`. Agents use model strings from
 `src/compass_backend/agents/model_settings.py`. Don't introduce direct
 `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` bypasses.
 
-How current model choices were made — selection framework, A/B findings,
-known Sonnet weaknesses, and how to re-run experiments:
-[how-we-pick-models.md](../../docs/how-we-pick-models.md).
-The harness itself lives at [scripts/model_ab/](../../scripts/model_ab/).
+Model defaults and overrides live in [agents/model_settings.py](agents/model_settings.py).
+The [prompt/model inventory](../../../docs/reference/prompt-and-model-inventory.md)
+is derived documentation. The inherited model A/B harness and selection guide
+are not shipped here; identify approved tooling before promising replay evidence.
 
 ## Where Guidance Lives
 
-This applies the root model — *one authority per fact; to change a fact you edit
-one file.* The root [`AGENTS.md`](../../AGENTS.md) §"Skills, Instructions, and
-Docs" states that model once; it is not recounted or restated here. The backend
-specifics for each surface, **authority first** (code owns the fact; everything
-below references it):
+Use one authority per fact: change the owning source rather than duplicating
+values across code, prompts, and documents. These surfaces have distinct audiences:
 
 - **Facts, labels, rules, thresholds → code.** One registry/validator per domain
   (`artifacts/coverage.py`, `reference/states.py`, …) — enforceable, and the
@@ -160,13 +159,11 @@ below references it):
   they never re-type a label or threshold — *unless the judgment itself
   originates here* (e.g. "$5k = real, not token pay"), in which case this is its
   authority and code/docs reference it.
-- **Architecture principles & decisions → `docs/compass_concepts/`.**
-  Human-readable end-state designs. Must not contradict code or instructions,
-  but may lag in detail — they hold stable principles, not live values; they
-  reference the operative source and define nothing operative.
-- **Engineering guidance for agents working *on* the repo → `.agents/skills/` +
-  root `AGENTS.md`.** Build-time, a different audience. Never conflate with
-  `instructions/` (runtime, Compass's own agents).
+- **Architecture explanation → [Product & Answer Flow](../../../docs/02-product-and-answer-flow.md).**
+  Documents explain the implementation; they do not own live values.
+- **Engineering guidance → [repository guide](../../../AGENTS.md),
+  [backend guide](../../AGENTS.md), and this file.** These govern work *on*
+  Compass, not runtime behavior. The inherited `.agents/skills/` is not shipped here.
 
 This is the citations/states pattern (`artifacts/citations.py`,
 `reference/states.py`) applied everywhere: when the authority changes, every
@@ -186,11 +183,15 @@ take effect immediately.
 ([`db/rows.py`](db/rows.py), the authority) — `pass`, `fail`, or `error`. Operational
 reports bucket these into product failures, skips, trace-missing, harness
 errors, and contract-invalid — quote those axes separately, don't collapse
-into one "errors" count. For scorecard or criterion changes, use
-`/check-compass` (it holds the judge-tuning workflow — `replay-criterion`
-before/after evidence on `judge_prompt` changes).
+into one "errors" count. For scorecard or criterion changes, follow
+[Quality & Evaluation](../../../docs/04-quality-and-evaluation.md).
+Judge-prompt changes require before/after criterion replay evidence. Inherited
+`/check-compass`, `replay-criterion`, and B-spine tooling are not shipped here;
+identify an approved replay environment and report unavailable gates as blocked.
 
 ## Logfire
 
-Use [../../docs/logfire-instrumentation-rules.md](../../docs/logfire-instrumentation-rules.md)
-for instrumentation; `/logfire` for session/trace debugging.
+[observability.py](observability.py) owns logging helpers and scrubbing.
+Follow adjacent call sites and preserve error/skip markers. The inherited
+Logfire guide and `/logfire` skill are not shipped here; use approved trace
+access and keep sensitive diagnostics out of Git.
