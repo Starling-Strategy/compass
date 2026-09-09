@@ -135,9 +135,10 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
         </a>
       <?php endif; ?>
     </nav>
-    <!-- Top spacing: 98px = 20 (nav top offset) + 48 (icon button height) + 30 (gap to headline).
-         Dialled back from 148→108→98 to bring the headline closer to the corner icons. -->
-    <div id="chatWrapper" class="flex flex-col w-full min-h-0 mt-[98px]">
+    <!-- Top spacing: 86px = 20 (nav top offset) + 48 (icon button height) + 18 (gap to headline).
+         Together with 12px headline gaps and a 24px bottom margin, this funds
+         the standalone video row without pushing the form or samples down. -->
+    <div id="chatWrapper" class="flex flex-col w-full min-h-0 mt-[86px]">
 
       <div class="flex w-full">
         <div id="promptSection">
@@ -146,7 +147,7 @@ $maxMessageChars = (int)($_ENV['COMPASS_CHAT_MESSAGE_MAX_CHARS'] ?? getenv('COMP
       </div>
 
       <!-- Headline -->
-      <section class="text-center max-w-prompt mx-auto space-y-md mb-xl" id="headline">
+      <section class="text-center max-w-prompt mx-auto space-y-3 mb-lg" id="headline">
         <h1 class="font-serif font-regular text-headline-sm md:text-headline">
           <span class="text-text-accent">Meet Compass</span>
           <span class="text-white block text-balance">your AI-powered teacher policy research assistant</span>

@@ -30,6 +30,17 @@ test("welcome subheading and bounded body balance naturally without forced line 
   assert.match(page, /<p class="[^"]*max-w-\[656px\][^"]*text-balance[^"]*"> Ask Compass[^<]+130 districts\. <\/p>/);
 });
 
+test("standalone video row is funded by whitespace, not smaller text or clipping", async () => {
+  const page = (await source("index.php")).replace(/\s+/g, " ");
+  // Save 12px above the heading, 4px in each of two gaps, and 16px
+  // before the form: the added 20px CTA + old 16px gap costs 36px.
+  assert.match(page, /id="chatWrapper" class="[^"]*mt-\[86px\]/);
+  assert.match(page, /<section class="[^"]*space-y-3 mb-lg" id="headline">/);
+  assert.match(page, /text-headline-sm md:text-headline/);
+  const headline = page.match(/<section[^>]+id="headline">(.*?)<\/section>/)[1];
+  assert.doesNotMatch(headline, /(?:max-)?h-\[|overflow-hidden|text-xs/);
+});
+
 test("landing prompt uses the approved placeholder and first starter question", async () => {
   const [page, cleanup, questions] = await Promise.all([
     source("index.php"),
