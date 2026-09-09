@@ -3,7 +3,7 @@
 Field descriptions on PredictionOutput serve as Gemini instructions
 (Pydantic-First AI pattern — the model IS the prompt).
 
-Nathan's PiedPiper equivalent: prediction_models.py (dataclasses).
+PiedPiper equivalent: prediction_models.py (dataclasses).
 Key difference: We use Pydantic models with field descriptions that
 double as Gemini prompts via PydanticAI structured output.
 """
@@ -164,7 +164,7 @@ class QuestionContext(BaseModel):
 
 class PredictionOutput(BaseModel):
     """PydanticAI output schema. Field descriptions are Gemini's instructions.
-    Katherine's silence rule is encoded in predicted_answer description.
+    The silence rule is encoded in predicted_answer description.
     """
     predicted_answer: str = Field(
         description=(

@@ -1,6 +1,6 @@
 """Evidence retrieval via Vespa Cloud with PostgreSQL fallback.
 
-Queries Nathan's PiedPiper Vespa instance (passage schema, BM25 ranking)
+Queries the PiedPiper Vespa instance (passage schema, BM25 ranking)
 then applies lightweight client-side re-ranking for k-diversity slicing.
 """
 import logging
@@ -138,7 +138,7 @@ class BaseRetriever(Protocol):
 
 
 class VespaRetriever:
-    """BM25 retrieval via Nathan's PiedPiper Vespa instance.
+    """BM25 retrieval via the PiedPiper Vespa instance.
 
     Schema: `passage` — each record is one pre-chunked passage with fields:
       passage_text, doc_id, doc_title, document_type, section_heading,

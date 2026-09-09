@@ -94,7 +94,7 @@ async def test_api_key_repository_accepts_valid_token_and_updates_usage() -> Non
     connection = _auth_conn(
         {
             "key_id": "pa_dev_01234567",
-            "owner_email": "macon@starlingstrategy.com",
+            "owner_email": "reviewer@example.org",
             "name": "staging admin",
             "is_admin": True,
         }
@@ -104,7 +104,7 @@ async def test_api_key_repository_accepts_valid_token_and_updates_usage() -> Non
     user = await repository.authenticate(token)
 
     assert user == AuthenticatedUser(
-        email="macon@starlingstrategy.com",
+        email="reviewer@example.org",
         name="staging admin",
         auth_method="api_key",
         api_key_id="pa_dev_01234567",
@@ -175,7 +175,7 @@ def test_repeated_unauthenticated_chat_returns_401_not_429() -> None:
 def test_chat_accepts_valid_api_key_when_api_key_auth_is_enabled() -> None:
     repository = StaticAuthRepository(
         AuthenticatedUser(
-            email="macon@starlingstrategy.com",
+            email="reviewer@example.org",
             auth_method="api_key",
             api_key_id="pa_dev_01234567",
             is_admin=True,
@@ -348,7 +348,7 @@ async def test_api_key_auth_span_records_success_attributes(
     connection = _auth_conn(
         {
             "key_id": "pa_dev_01234567",
-            "owner_email": "macon@starlingstrategy.com",
+            "owner_email": "reviewer@example.org",
             "name": "staging admin",
             "is_admin": True,
         }

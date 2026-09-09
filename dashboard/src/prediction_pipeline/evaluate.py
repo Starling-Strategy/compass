@@ -1,6 +1,6 @@
 """Evaluate predictions: 6-way INA-aware accuracy + stage diagnostics.
 
-Nathan's PiedPiper equivalent: evaluate_predictions()
+PiedPiper equivalent: evaluate_predictions()
 Key addition: type-aware comparison (numeric tolerance, sorted multi-select).
 
 Stage evaluation functions (added for Pipeline Evaluation Dashboard):
@@ -286,14 +286,14 @@ def evaluate_batch(answers: list[SuggestedAnswer], golden: dict[int, str],
             "accuracy": round(correct / evaluated * 100, 1) if evaluated else 0.0,
             "ina_precision": round(ina_tp / (ina_tp + ina_fp), 4) if (ina_tp + ina_fp) else None,
             "ina_recall": round(ina_tp / (ina_tp + ina_fn), 4) if (ina_tp + ina_fn) else None,
-            "katherine_violations": ina_fn,
+            "silence_rule_violations": ina_fn,
         }
 
         if logfire:
             logfire.info(
                 "eval_batch_summary",
                 accuracy=summary["accuracy"],
-                katherine_violations=ina_fn,
+                silence_rule_violations=ina_fn,
                 total=total,
             )
 

@@ -48,6 +48,12 @@ CREATE INDEX idx_sessions_expires_at ON nctqai.sessions(expires_at);
 CREATE INDEX idx_users_email ON nctqai.users(email);
 CREATE INDEX idx_rate_limits_ip_action ON nctqai.rate_limits(ip_address, action, created_at);
 
--- Seed first admin
-INSERT INTO nctqai.users (email, name, role)
-VALUES ('macon.phillips@gmail.com', 'Macon Phillips', 'admin');
+-- Seed the first admin.
+--
+-- Intentionally not hardcoded: bootstrap the initial administrator out of band
+-- so this migration carries no real identity. Run the statement below with the
+-- organization address that should own the account, then grant further roles
+-- through the dashboard.
+--
+--   INSERT INTO nctqai.users (email, name, role)
+--   VALUES ('<admin@your-org.example>', '<Admin Name>', 'admin');

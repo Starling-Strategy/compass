@@ -14,7 +14,7 @@ Where this code came from and how it maps to production is recorded in
 | Path | Contents |
 | --- | --- |
 | `src/compass_backend/` | The application package (run with `PYTHONPATH=src`) |
-| `static/`, `content/` | Static assets and content bundled into the image |
+| `content/` | Policy content bundled into the image |
 | `scripts/entrypoint.sh` | Container entrypoint |
 | `pyproject.toml`, `uv.lock` | Pinned dependencies (installed with `uv sync --frozen`) |
 | `Dockerfile` | The production image build |

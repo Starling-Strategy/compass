@@ -21,7 +21,7 @@ Active Compass backend. Run source-first with `PYTHONPATH=src`. Root
    new work reduces that baseline. Allowed shapes (validators, candidate
    broadeners, typed referent resolvers) vs. the forbidden second-interpreter
    pattern, plus the governed typed repair loop:
-   [_structured-plans-not-prose.md](../../docs/compass_concepts/_structured-plans-not-prose.md).
+   _structured-plans-not-prose.md (not vendored in this snapshot).
 5. Bug fixes need focused tests under `src/compass_backend/tests/` plus a
    B-spine regression case when behavior is user-visible.
 6. **Keep functions under ~200 lines.** Split orchestration, planning,
@@ -33,7 +33,7 @@ Active Compass backend. Run source-first with `PYTHONPATH=src`. Root
    execution/result boundary (the `ResultSet`, answer text, sources, freshness),
    not to the current planner topology, so it survives the #1248 planning
    redesign. Frame:
-   [00-architecture → Invariants: ends vs. means](../../docs/compass_concepts/00-architecture.md#invariants-ends-vs-means).
+   00-architecture → Invariants: ends vs. means (not vendored in this snapshot).
 8. **Read the *finalized* plan, never the legacy slot.** `finalize_plan`
    canonicalizes the planner draft before execution: it folds a top-level
    `plan.sort` into a `presentation`-phase `SortStepSpec` and clears
@@ -134,13 +134,13 @@ using `PYDANTIC_AI_GATEWAY_API_KEY`. Agents use model strings from
 
 How current model choices were made — selection framework, A/B findings,
 known Sonnet weaknesses, and how to re-run experiments:
-[how-we-pick-models.md](../../docs/how-we-pick-models.md).
-The harness itself lives at [scripts/model_ab/](../../scripts/model_ab/).
+how-we-pick-models.md (not vendored in this snapshot).
+The harness itself lives at scripts/model_ab/ (not vendored in this snapshot).
 
 ## Where Guidance Lives
 
 This applies the root model — *one authority per fact; to change a fact you edit
-one file.* The root [`AGENTS.md`](../../AGENTS.md) §"Skills, Instructions, and
+one file.* The root `AGENTS.md` (not vendored in this snapshot) §"Skills, Instructions, and
 Docs" states that model once; it is not recounted or restated here. The backend
 specifics for each surface, **authority first** (code owns the fact; everything
 below references it):
@@ -192,5 +192,5 @@ before/after evidence on `judge_prompt` changes).
 
 ## Logfire
 
-Use [../../docs/logfire-instrumentation-rules.md](../../docs/logfire-instrumentation-rules.md)
+Use ../../docs/logfire-instrumentation-rules.md (not vendored in this snapshot)
 for instrumentation; `/logfire` for session/trace debugging.

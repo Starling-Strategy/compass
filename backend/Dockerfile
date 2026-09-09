@@ -1,7 +1,6 @@
 # Compass Agent API Dockerfile
 # Production (Azure Container App) — connects to PostgreSQL directly via NAT
-# Gateway. NO proxychains, NO Tailscale, NO httpx[socks]. See
-# ai_instructions/PRODUCTION_CONFIG.md for the rule.
+# Gateway. NO proxychains, NO Tailscale, NO httpx[socks].
 FROM python:3.12-slim
 
 # Set environment variables
@@ -24,7 +23,6 @@ RUN pip install uv==0.9.15
 # Copy dependency files first (for layer caching)
 COPY pyproject.toml uv.lock README.md ./
 COPY src/compass_backend/ src/compass_backend/
-COPY static/ static/
 COPY content/ content/
 COPY scripts/entrypoint.sh scripts/entrypoint.sh
 

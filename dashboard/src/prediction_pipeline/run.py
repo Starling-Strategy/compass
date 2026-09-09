@@ -1,6 +1,6 @@
 """Prediction pipeline entry point.
 
-Nathan's PiedPiper equivalent: PredictionPipeline.run() class method.
+PiedPiper equivalent: PredictionPipeline.run() class method.
 We use a functional run_pipeline() approach with argparse CLI.
 
 Usage:
@@ -90,7 +90,7 @@ def annotate_ina_audit(suggested: SuggestedAnswer, prior_answers: dict[int, str]
     """Append audit note when INA predicted but prior year had a value.
 
     Returns True if an audit note was added. Does NOT change the answer —
-    Katherine's rule: silence = INA, always. This is observation-only.
+    The silence rule: silence = INA, always. This is observation-only.
     """
     if not suggested.is_ina or suggested.q_id not in prior_answers:
         return False
@@ -461,7 +461,7 @@ async def run_pipeline(config: Config, args: argparse.Namespace):
         logger.info("  EXACT:              %s", eval_summary['EXACT'])
         logger.info("  INA_CORRECT:        %s", eval_summary['INA_CORRECT'])
         logger.info("  INA_FALSE_POS:      %s", eval_summary['INA_FALSE_POS'])
-        logger.info("  INA_FALSE_NEG:      %s (Katherine violations)", eval_summary['INA_FALSE_NEG'])
+        logger.info("  INA_FALSE_NEG:      %s (silence-rule violations)", eval_summary['INA_FALSE_NEG'])
         logger.info("  VALUE_DIFFERENT:    %s", eval_summary['VALUE_DIFFERENT'])
         logger.info("  NOGOLDEN:           %s", eval_summary['NOGOLDEN'])
         if eval_summary.get("ina_precision") is not None:

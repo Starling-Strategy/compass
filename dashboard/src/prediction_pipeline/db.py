@@ -2,7 +2,7 @@
 
 Pattern: match document_pipeline/db.py — all SQL in one file, psycopg2, RealDictCursor.
 
-Nathan's PiedPiper equivalent: database.py (SQLAlchemy ORM).
+PiedPiper equivalent: database.py (SQLAlchemy ORM).
 We use raw psycopg2 + RealDictCursor to match the docpipe pattern.
 """
 import json
@@ -150,7 +150,7 @@ def load_prior_year_answers(config: Config, district_id: int, prior_ay_id: int) 
     """Load prior-year golden answers for INA audit trail.
 
     When we predict INA but the prior year had a value, analysts should review.
-    This does NOT override predictions (Katherine's rule: silence = INA always).
+    This does NOT override predictions (the silence rule: silence = INA always).
     Returns {q_id: answer_text} for non-INA answers only.
     """
     sql = f"""
