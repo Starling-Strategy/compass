@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "echo 'Frontend tests are not part of this published snapshot (see PROVENANCE.md).' && exit 0",
     "watch-css": "npx tailwindcss -i ./src/input.css -o ./public/assets/css/index.css --watch",
     "build-css": "npx tailwindcss -i ./src/input.css -o ./public/assets/css/index.css --minify",
     "dev": "php -S localhost:3000 -t public"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "National Council on Teacher Quality",
+  "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
     "autoprefixer": "^10.4.23",

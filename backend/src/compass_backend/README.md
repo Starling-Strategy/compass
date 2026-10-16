@@ -67,6 +67,6 @@ deterministic execution memory.
 
 Static model instructions and planner snippet bodies live in
 `src/compass_backend/instructions/`. See
-[../../docs/architecture/compass-prompt-and-prose-guidance.md](../../docs/architecture/compass-prompt-and-prose-guidance.md)
+../../docs/architecture/compass-prompt-and-prose-guidance.md (not vendored in this snapshot)
 for the ownership rules that separate prompts, Pydantic field descriptions,
 renderer copy, NCTQ policy content, and model routing.

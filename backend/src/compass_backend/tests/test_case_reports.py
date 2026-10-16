@@ -55,7 +55,7 @@ async def test_insert_report_inserts_and_returns_id() -> None:
         dimension="selection",
         outcome="partial",
         comments="Missed one district",
-        reviewer="macon@starlingstrategy.com",
+        reviewer="reviewer@example.org",
     )
 
     assert returned == new_id
@@ -80,7 +80,7 @@ async def test_get_latest_report_returns_most_recent_row() -> None:
         "outcome": "fail",
         "comments": "Wrong sort",
         "status": "open",
-        "reviewer": "macon@starlingstrategy.com",
+        "reviewer": "reviewer@example.org",
         "linked_issue": None,
         "created_at": datetime(2026, 6, 8, tzinfo=UTC),
         "updated_at": datetime(2026, 6, 8, tzinfo=UTC),
@@ -131,7 +131,7 @@ async def test_update_status_updates_and_bumps_updated_at() -> None:
     repo = CaseReportRepository(_settings(), pool=_pool_for(connection))
 
     updated = await repo.update_status(
-        report_id, status="triaged", reviewer="macon@starlingstrategy.com"
+        report_id, status="triaged", reviewer="reviewer@example.org"
     )
 
     assert updated is True
@@ -144,7 +144,7 @@ async def test_update_status_updates_and_bumps_updated_at() -> None:
     # id is bound first, status second, reviewer third.
     assert args[0] == report_id
     assert "triaged" in args
-    assert "macon@starlingstrategy.com" in args
+    assert "reviewer@example.org" in args
 
 
 @pytest.mark.asyncio
@@ -223,7 +223,7 @@ def test_post_report_happy_path_returns_id_and_open_status() -> None:
             "dimension": "selection",
             "outcome": "partial",
             "comments": "Missed one district",
-            "reviewer": "macon@starlingstrategy.com",
+            "reviewer": "reviewer@example.org",
         },
     )
 
@@ -335,7 +335,7 @@ def test_post_status_happy_path_returns_id_and_status() -> None:
 
     response = client.post(
         f"/api/v1/debug/report/{report_id}/status",
-        json={"status": "triaged", "reviewer": "macon@starlingstrategy.com"},
+        json={"status": "triaged", "reviewer": "reviewer@example.org"},
     )
 
     assert response.status_code == 200
@@ -344,7 +344,7 @@ def test_post_status_happy_path_returns_id_and_status() -> None:
     assert body["status"] == "triaged"
     assert len(repo.status_updates) == 1
     assert repo.status_updates[0]["status"] == "triaged"
-    assert repo.status_updates[0]["reviewer"] == "macon@starlingstrategy.com"
+    assert repo.status_updates[0]["reviewer"] == "reviewer@example.org"
 
 
 def test_post_status_requires_no_auth_header() -> None:

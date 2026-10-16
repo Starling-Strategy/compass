@@ -39,11 +39,11 @@ Production and other non-staging hosts may still use signed launch params.
 ## Logfire
 
 Configure and instrument Starlette before middleware registration. See
-[../../docs/logfire-instrumentation-rules.md](../../docs/logfire-instrumentation-rules.md).
+../../docs/logfire-instrumentation-rules.md (not vendored in this snapshot).
 
 ## Auth & Roles
 
 Human login is email OTP + session cookies; authorization is one central map in
 `models/auth.py` (`Role` enum + `User.can_access`). Full model:
-[../../docs/compass_concepts/_permissions-and-user-roles.md](../../docs/compass_concepts/_permissions-and-user-roles.md).
+../../docs/compass_concepts/_permissions-and-user-roles.md (not vendored in this snapshot).
 Don't add a second role list or a route that bypasses the central gates.

@@ -52,8 +52,8 @@ def _report(
 
 
 class _FakeUser:
-    email = "macon@starlingstrategy.com"
-    name = "Macon"
+    email = "reviewer@example.org"
+    name = "Test Reviewer"
     role = "admin"
 
     def can_access(self, _section: str) -> bool:
@@ -480,7 +480,7 @@ def test_reports_status_update_proxies_to_backend(monkeypatch):
 
     assert calls["report_id"] == rid
     assert calls["status"] == "triaged"
-    assert calls["reviewer"] == "macon@starlingstrategy.com"
+    assert calls["reviewer"] == "reviewer@example.org"
     assert "Status updated to triaged" in html
 
 

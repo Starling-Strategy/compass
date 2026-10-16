@@ -308,8 +308,8 @@ class _FakeUser:
     test prove the *panel* link is what's absent, not just the nav tab.
     """
 
-    name = "Macon"
-    email = "macon@starlingstrategy.com"
+    name = "Test Reviewer"
+    email = "reviewer@example.org"
 
     def __init__(self, *, admin: bool) -> None:
         self._admin = admin

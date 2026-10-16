@@ -1,6 +1,7 @@
 # NCTQ.ai Dashboard — minimal dependencies
 # Excludes heavy ML packages (torch, docling) not needed by the web UI.
-# Full pipeline deps remain in requirements.txt for local dev.
+# The source repository keeps the full pipeline dependency set in a separate
+# requirements.txt, which is not vendored into this snapshot (see PROVENANCE.md).
 
 # Web framework
 python-fasthtml>=0.12.48

@@ -1,4 +1,4 @@
-"""Feed district documents into Nathan's PiedPiper Vespa instance.
+"""Feed district documents into the PiedPiper Vespa instance.
 
 Loads documents from silver.district_documents, chunks them, generates
 Gemini summaries, and feeds each chunk as a `passage` record to Vespa.

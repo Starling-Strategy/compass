@@ -1,0 +1,41 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.code-workspace
+
+# Environment and secrets — never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# PHP — Composer install target only. Anchored so it does not swallow
+# frontend/public/assets/vendor/, which holds committed third-party JS.
+/frontend/vendor/
+
+# Agent and workspace scratch (local only)
+.context/
+.claude/
+.worktrees/
+ai_instructions/

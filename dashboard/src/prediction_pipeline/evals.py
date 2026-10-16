@@ -1,6 +1,6 @@
 """pydantic-evals integration for structured evaluation and regression testing.
 
-No direct Nathan PiedPiper equivalent — this is our addition.
+No direct PiedPiper equivalent — this is our addition.
 Provides snapshot save/load/compare for regression testing across runs.
 """
 import json

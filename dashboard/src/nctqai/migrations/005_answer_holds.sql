@@ -3,7 +3,7 @@
 -- Allows power users to freeze specific answers from analyst review
 -- while keeping them visible. Holds are an administrative overlay,
 -- entirely separate from suggested_answers to avoid interfering with
--- Nathan's pipeline ON CONFLICT logic.
+-- the PiedPiper pipeline ON CONFLICT logic.
 
 BEGIN;
 
