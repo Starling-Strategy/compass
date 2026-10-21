@@ -22,7 +22,7 @@ RUN npm ci && npm run build-css
 # -----------------
 # Stage 2: PHP Runtime
 # -----------------
-FROM php:8.3-apache
+FROM php:8.3.36-apache
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
